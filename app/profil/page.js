@@ -58,22 +58,18 @@ export default function ProfilPage() {
               </p>
               
               <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '12px' }}>Misi Strategis:</h4>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.92rem', color: 'var(--text-muted)' }}>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.92rem', color: 'var(--text-muted)' }}>
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                   <span style={{ color: 'var(--primary-green)', fontWeight: 800 }}>01.</span>
-                  <span>Membangun ekosistem riset terapan dan inovasi sains teknologi yang kompetitif.</span>
+                  <span>Mewujudkan kepemimpinan yang inklusif, profesional, dan berintegritas untuk menciptakan lingkungan organisasi yang hangat serta terbuka bagi seluruh mahasiswa.</span>
                 </li>
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                   <span style={{ color: 'var(--primary-green)', fontWeight: 800 }}>02.</span>
-                  <span>Mengoptimalkan fungsi advokasi mahasiswa yang cepat tanggap, transparan, dan terpercaya.</span>
+                  <span>Memperkuat branding dan prestasi FST melalui publikasi, promosi, dan penyelenggaraan kegiatan sains dan teknologi yang berdampak luas.</span>
                 </li>
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                   <span style={{ color: 'var(--primary-green)', fontWeight: 800 }}>03.</span>
-                  <span>Menggalakkan program pengabdian berbasis teknologi bagi kemandirian masyarakat dan desa.</span>
-                </li>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                  <span style={{ color: 'var(--primary-green)', fontWeight: 800 }}>04.</span>
-                  <span>Mempererat harmonisasi dan sinergi antar-lembaga mahasiswa serta kemitraan industri.</span>
+                  <span>Mengoptimalkan aspirasi mahasiswa dengan menyediakan wadah yang responsif, kolaboratif, dan berorientasi pada kemajuan seluruh program studi di FST.</span>
                 </li>
               </ul>
             </div>
