@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { IconTrophy, IconZap } from '@/components/Icons';
 
-export default function HeroEmblem({ programCount = 6 }) {
+export default function HeroEmblem() {
   const cardRef = useRef(null);
   const [style, setStyle] = useState({
     transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)',
@@ -21,7 +20,7 @@ export default function HeroEmblem({ programCount = 6 }) {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    // Rotate values between -15deg and +15deg
+    // Rotate values between -12deg and +12deg
     const rotateX = ((centerY - y) / centerY) * 12;
     const rotateY = ((x - centerX) / centerX) * 12;
 
@@ -60,15 +59,6 @@ export default function HeroEmblem({ programCount = 6 }) {
               : undefined
           }}
         ></div>
-        
-        {/* Floating Badge Left / Top */}
-        <div className="floating-badge badge-top interactive-badge">
-          <div className="badge-icon green"><IconTrophy size={18} /></div>
-          <div className="badge-content">
-            <h4>{programCount}+ Program</h4>
-            <p>Terlaksana &amp; Terekam</p>
-          </div>
-        </div>
 
         {/* Center Interactive Emblem Box */}
         <div 
@@ -88,15 +78,6 @@ export default function HeroEmblem({ programCount = 6 }) {
           <div className="hero-emblem-title">DEMA FST</div>
           <div className="hero-emblem-subtitle">Kabinet Wigyamerta Antasena</div>
           <div className="emblem-interactive-hint">Arahkan kursor &bull; 3D Interaktif</div>
-        </div>
-
-        {/* Floating Badge Right / Bottom */}
-        <div className="floating-badge badge-bottom interactive-badge">
-          <div className="badge-icon orange"><IconZap size={18} /></div>
-          <div className="badge-content">
-            <h4>100% Terbuka</h4>
-            <p>Kanal Aspirasi Mahasiswa</p>
-          </div>
         </div>
       </div>
     </div>

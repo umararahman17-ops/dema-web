@@ -18,8 +18,8 @@ export default async function HomePage() {
       <section className="hero-section hero-showcase-layout">
         <div className="container">
           <div className="hero-top-center">
-            {/* 1. LOGO DULUAN: 3D Interactive Emblem with Glow & Badges */}
-            <HeroEmblem programCount={programs.length} />
+            {/* 1. LOGO DULUAN: 3D Interactive Emblem with Glow */}
+            <HeroEmblem />
 
             {/* 2. Headline & Call to Actions */}
             <div className="hero-content-center">
@@ -88,10 +88,10 @@ export default async function HomePage() {
                   <img src="/logo.png" alt="Logo DEMA" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 </div>
                 <div className="banner-quote">
-                  &ldquo;Terwujudnya DEMA sebagai motor penggerak transformasi yang progresif, adaptif terhadap perkembangan teknologi, berintegritas tinggi, dan senantiasa berpihak pada kesejahteraan mahasiswa.&rdquo;
+                  &ldquo;Mewujudkan kepemimpinan yang inklusif, profesional, dan berintegritas untuk menciptakan lingkungan organisasi yang hangat serta terbuka bagi seluruh mahasiswa.&rdquo;
                 </div>
                 <div className="banner-author">
-                  &mdash; Visi Agung Kabinet Wigyamerta Antasena 2026/2027
+                  &mdash; Komitmen Kabinet Wigyamerta Antasena
                 </div>
               </div>
             </div>

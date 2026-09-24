@@ -44,31 +44,27 @@ export default function ProfilPage() {
             </div>
 
             <div className="profile-history-card">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(30, 107, 55, 0.15)', color: 'var(--primary-green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <IconTarget size={26} />
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700, color: 'var(--accent-orange)', letterSpacing: '1px' }}>Komitmen Utama</div>
-                  <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-heading)' }}>Visi Kabinet Wigyamerta Antasena</h3>
+                  <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700, color: 'var(--accent-orange)', letterSpacing: '1px' }}>Landasan Gerak</div>
+                  <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-heading)' }}>Visi &amp; Misi Kabinet Wigyamerta Antasena</h3>
                 </div>
               </div>
-              <p style={{ fontSize: '1.05rem', fontStyle: 'italic', color: 'var(--primary-green-light)', lineHeight: 1.7, marginBottom: '24px' }}>
-                &ldquo;Mewujudkan DEMA sebagai episentrum pergerakan mahasiswa yang adaptif, inovatif dalam riset sains dan teknologi, serta bersinergi secara inklusif demi memberikan kebermanfaatan nyata.&rdquo;
-              </p>
               
-              <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '12px' }}>Misi Strategis:</h4>
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.92rem', color: 'var(--text-muted)' }}>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                  <span style={{ color: 'var(--primary-green)', fontWeight: 800 }}>01.</span>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '0.96rem', lineHeight: '1.7', color: 'var(--text-main)', paddingLeft: '0', listStyle: 'none' }}>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <span style={{ color: 'var(--accent-orange)', fontSize: '1.4rem', lineHeight: '1.2', flexShrink: 0 }}>&bull;</span>
                   <span>Mewujudkan kepemimpinan yang inklusif, profesional, dan berintegritas untuk menciptakan lingkungan organisasi yang hangat serta terbuka bagi seluruh mahasiswa.</span>
                 </li>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                  <span style={{ color: 'var(--primary-green)', fontWeight: 800 }}>02.</span>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <span style={{ color: 'var(--accent-orange)', fontSize: '1.4rem', lineHeight: '1.2', flexShrink: 0 }}>&bull;</span>
                   <span>Memperkuat branding dan prestasi FST melalui publikasi, promosi, dan penyelenggaraan kegiatan sains dan teknologi yang berdampak luas.</span>
                 </li>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                  <span style={{ color: 'var(--primary-green)', fontWeight: 800 }}>03.</span>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                  <span style={{ color: 'var(--accent-orange)', fontSize: '1.4rem', lineHeight: '1.2', flexShrink: 0 }}>&bull;</span>
                   <span>Mengoptimalkan aspirasi mahasiswa dengan menyediakan wadah yang responsif, kolaboratif, dan berorientasi pada kemajuan seluruh program studi di FST.</span>
                 </li>
               </ul>
