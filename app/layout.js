@@ -4,15 +4,15 @@ import Footer from '@/components/Footer';
 
 export const metadata = {
   metadataBase: new URL('http://localhost:3000'),
-  title: 'DEMA | Dewan Eksekutif Mahasiswa - Kabinet Sinergi Inovasi',
-  description: 'Portal Resmi Dewan Eksekutif Mahasiswa (DEMA). Menghadirkan profil kabinet, filosofi lambang, portofolio program kerja inovatif, serta layanan aspirasi terpadu berbasis Next.js.',
+  title: 'DEMA | Dewan Eksekutif Mahasiswa - Kabinet Wigyamerta Antasena',
+  description: 'Portal Resmi Dewan Eksekutif Mahasiswa (DEMA) Fakultas Sains dan Teknologi UIN Sunan Ampel Surabaya - Kabinet Wigyamerta Antasena. Menghadirkan profil kabinet, filosofi lambang, portofolio program kerja inovatif, serta layanan aspirasi terpadu berbasis Next.js.',
   icons: {
     icon: '/logo.png',
     apple: '/logo.png',
   },
   openGraph: {
-    title: 'DEMA | Dewan Eksekutif Mahasiswa',
-    description: 'Wadah pergerakan, riset teknologi, dan aspirasi mahasiswa.',
+    title: 'DEMA | Dewan Eksekutif Mahasiswa - Kabinet Wigyamerta Antasena',
+    description: 'Wadah pergerakan, riset sains teknologi, dan aspirasi mahasiswa FST UINSA.',
     images: ['/logo.png'],
   },
 };

@@ -20,15 +20,15 @@ export default function HomePage() {
             <div>
               <div className="hero-pill">
                 <span className="hero-pill-dot"></span>
-                <span>Dewan Eksekutif Mahasiswa &bull; Periode 2026/2027</span>
+                <span>Dewan Eksekutif Mahasiswa &bull; Kabinet Wigyamerta Antasena</span>
               </div>
               
               <h1 className="hero-title">
-                Mewujudkan <span className="gradient-text-green">Sinergi Inovasi</span> &amp; <span className="gradient-text-orange">Aksi Berdampak</span>
+                Mewujudkan <span className="gradient-text-green">Inovasi Sains</span> &amp; <span className="gradient-text-orange">Aksi Berdampak</span>
               </h1>
               
               <p className="hero-subtitle">
-                Selamat datang di platform resmi Dewan Eksekutif Mahasiswa (DEMA). Wadah representasi, eksplorasi riset teknologi, advokasi kesejahteraan, dan pengabdian nyata untuk almamater dan masyarakat.
+                Selamat datang di platform resmi Dewan Eksekutif Mahasiswa (DEMA) Fakultas Sains dan Teknologi UIN Sunan Ampel Surabaya. Wadah representasi, eksplorasi riset teknologi, advokasi kesejahteraan, dan pengabdian nyata mahasiswa.
               </p>
 
               <div className="hero-actions">
@@ -38,19 +38,6 @@ export default function HomePage() {
                 <Link href="/profil" className="btn btn-outline-green btn-lg">
                   <span>📖</span> Profil &amp; Filosofi Logo
                 </Link>
-              </div>
-
-              <div className="hero-social-proof">
-                <div className="avatar-group">
-                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Pengurus 1" />
-                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80" alt="Pengurus 2" />
-                  <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" alt="Pengurus 3" />
-                  <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80" alt="Pengurus 4" />
-                </div>
-                <div className="hero-proof-text">
-                  <strong>Bergerak Kolektif &amp; Inklusif</strong><br />
-                  Didukung oleh 8 Departemen &amp; Ratusan Mahasiswa Penggerak
-                </div>
               </div>
             </div>
 
@@ -70,8 +57,8 @@ export default function HomePage() {
               {/* Center Emblem Box */}
               <div className="hero-emblem-wrapper">
                 <img src="/logo.png" alt="Emblem DEMA" className="hero-emblem-img" />
-                <div className="hero-emblem-title">DEMA 2026</div>
-                <div className="hero-emblem-subtitle">Sinergi Inovasi</div>
+                <div className="hero-emblem-title">DEMA FST</div>
+                <div className="hero-emblem-subtitle">Wigyamerta Antasena</div>
               </div>
 
               {/* Floating Badge Bottom */}
@@ -127,7 +114,7 @@ export default function HomePage() {
                   &ldquo;Terwujudnya DEMA sebagai motor penggerak transformasi yang progresif, adaptif terhadap perkembangan teknologi, berintegritas tinggi, dan senantiasa berpihak pada kesejahteraan mahasiswa.&rdquo;
                 </div>
                 <div className="banner-author">
-                  &mdash; Visi Agung Kabinet Sinergi Inovasi 2026/2027
+                  &mdash; Visi Agung Kabinet Wigyamerta Antasena 2026/2027
                 </div>
               </div>
             </div>

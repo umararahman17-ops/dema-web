@@ -33,8 +33,8 @@ export default function Navbar() {
             <a href="mailto:sekretariat@dema-univ.ac.id">
               <span>✉️</span> sekretariat@dema-univ.ac.id
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-              <span>📸</span> @dema.official
+            <a href="https://www.instagram.com/demafstuinsa/" target="_blank" rel="noopener noreferrer">
+              <span>📸</span> @demafstuinsa
             </a>
           </div>
         </div>
@@ -49,7 +49,7 @@ export default function Navbar() {
             </div>
             <div>
               <div className="brand-title">DEMA <span>FST</span></div>
-              <div className="brand-subtitle">Kabinet Sinergi Inovasi</div>
+              <div className="brand-subtitle">Kabinet Wigyamerta Antasena</div>
             </div>
           </Link>
 

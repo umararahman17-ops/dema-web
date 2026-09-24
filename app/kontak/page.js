@@ -28,7 +28,7 @@ export default function KontakPage() {
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '28px', textAlign: 'center' }}>
               <div style={{ width: '50px', height: '50px', background: 'rgba(30,107,55,0.15)', color: 'var(--primary-green)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', margin: '0 auto 16px' }}>📍</div>
               <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '8px' }}>Sekretariat</h4>
-              <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Gedung Student Center Lt. 2, Sayap Timur Kampus Sains &amp; Teknologi</p>
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Gedung TA Lantai 5, Lab Saintek UINSA, Kampus 2 Gunung Anyar, Surabaya</p>
             </div>
 
             {/* Card 2 */}
@@ -54,7 +54,7 @@ export default function KontakPage() {
               <div style={{ width: '50px', height: '50px', background: 'rgba(224,99,31,0.15)', color: 'var(--accent-orange)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', margin: '0 auto 16px' }}>📸</div>
               <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '8px' }}>Instagram</h4>
               <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-orange)', fontWeight: 600 }}>@dema.official</a>
+                <a href="https://www.instagram.com/demafstuinsa/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-orange)', fontWeight: 600 }}>@demafstuinsa</a>
               </p>
             </div>
           </div>
@@ -87,7 +87,7 @@ export default function KontakPage() {
 
                 <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '20px' }}>
                   <h4 style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '6px' }}>Kapan Open Recruitment DEMA dibuka?</h4>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Perekrutan pengurus dan relawan kepanitiaan dibuka pada awal tahun kepengurusan dan setiap menjelang acara akbar nasional. Pantau Instagram kami untuk info terbaru.</p>
+                  <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Perekrutan pengurus dan relawan kepanitiaan dibuka pada awal tahun kepengurusan dan setiap menjelang agenda akbar. Pantau Instagram resmi kami di <a href="https://www.instagram.com/demafstuinsa/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-orange)', fontWeight: 600 }}>@demafstuinsa</a> untuk pengumuman terbaru.</p>
                 </div>
               </div>
             </div>

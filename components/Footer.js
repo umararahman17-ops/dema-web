@@ -15,7 +15,7 @@ export default function Footer() {
               Dewan Eksekutif Mahasiswa — Wadah pergerakan, advokasi, pengabdian, dan akselerasi potensi mahasiswa dalam bidang sains dan teknologi yang progresif, inklusif, dan berdampak nyata.
             </p>
             <div className="footer-social-links">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="footer-social-link" title="Instagram">📸</a>
+              <a href="https://www.instagram.com/demafstuinsa/" target="_blank" rel="noopener noreferrer" className="footer-social-link" title="Instagram @demafstuinsa">📸</a>
               <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="footer-social-link" title="LinkedIn">💼</a>
               <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="footer-social-link" title="YouTube">▶️</a>
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="footer-social-link" title="Twitter/X">🐦</a>
@@ -51,9 +51,8 @@ export default function Footer() {
           <div>
             <h4 className="footer-heading">Sekretariat DEMA</h4>
             <p style={{ fontSize: '0.88rem', lineHeight: '1.6', color: '#8fa697', marginBottom: '12px' }}>
-              📍 Gedung Student Center Lt. 2, Sayap Timur<br />
-              Kampus Sains &amp; Teknologi Terpadu<br />
-              Jl. Sains &amp; Teknologi No. 45
+              📍 Gedung TA Lantai 5, Lab Saintek UINSA<br />
+              Kampus 2 Gunung Anyar, Surabaya
             </p>
             <p style={{ fontSize: '0.85rem', color: '#b6cec1' }}>
               🕒 <strong>Jam Pelayanan Mahasiswa:</strong><br />
@@ -68,7 +67,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} <strong>Dewan Eksekutif Mahasiswa (DEMA)</strong>. Seluruh Hak Cipta Dilindungi.
           </div>
           <div>
-            Dikembangkan dengan <strong>Next.js (React)</strong> • Sinergi &amp; Inovasi Sains Teknologi
+            Dikembangkan dengan <strong>Next.js (React)</strong> • Kabinet Wigyamerta Antasena
           </div>
         </div>
       </div>

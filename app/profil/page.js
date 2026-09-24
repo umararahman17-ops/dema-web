@@ -2,8 +2,8 @@ import Link from 'next/link';
 import { logoPhilosophy } from '@/lib/data';
 
 export const metadata = {
-  title: 'Profil & Filosofi Lambang | DEMA Kabinet Sinergi Inovasi',
-  description: 'Pelajari sejarah, visi misi, serta filosofi lambang atom dan roda bergerigi DEMA.',
+  title: 'Profil & Filosofi Lambang | DEMA Kabinet Wigyamerta Antasena',
+  description: 'Pelajari sejarah, visi misi, serta filosofi lambang atom dan roda bergerigi DEMA Fakultas Sains dan Teknologi UINSA.',
 };
 
 export default function ProfilPage() {
@@ -40,7 +40,7 @@ export default function ProfilPage() {
                 <div style={{ fontSize: '2rem' }}>🎯</div>
                 <div>
                   <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700, color: 'var(--accent-orange)', letterSpacing: '1px' }}>Komitmen Utama</div>
-                  <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-heading)' }}>Visi Kabinet Sinergi Inovasi</h3>
+                  <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-heading)' }}>Visi Kabinet Wigyamerta Antasena</h3>
                 </div>
               </div>
               <p style={{ fontSize: '1.05rem', fontStyle: 'italic', color: 'var(--primary-green-light)', lineHeight: 1.7, marginBottom: '24px' }}>
