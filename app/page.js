@@ -131,7 +131,7 @@ export default async function HomePage() {
             <p className="section-subtitle">Empat nilai fundamental yang menjadi kompas dalam setiap perumusan program kerja dan pengambilan kebijakan.</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
+          <div className="core-values-grid">
             <div style={{ background: 'var(--bg-card)', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>💡</div>
               <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '10px' }}>Inovatif &amp; Kritis</h4>

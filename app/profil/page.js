@@ -23,7 +23,7 @@ export default function ProfilPage() {
       {/* Section 1: Sejarah & Visi Misi */}
       <section style={{ padding: '80px 0', background: 'var(--bg-surface)' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '50px', alignItems: 'center' }}>
+          <div className="profile-history-grid">
             <div>
               <div className="section-tag">Sejarah &amp; Peran</div>
               <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '20px' }}>Lembaga Eksekutif Tertinggi Mahasiswa</h2>
@@ -35,7 +35,7 @@ export default function ProfilPage() {
               </p>
             </div>
 
-            <div style={{ background: 'var(--bg-surface-subtle)', borderRadius: 'var(--radius-lg)', padding: '40px', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
+            <div className="profile-history-card">
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
                 <div style={{ fontSize: '2rem' }}>🎯</div>
                 <div>
@@ -80,18 +80,18 @@ export default function ProfilPage() {
             <p className="section-subtitle">Setiap garis, warna, dan lambang geometris dirancang dengan makna filosofis yang merefleksikan karakter DEMA.</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '360px 1fr', gap: '50px', alignItems: 'center' }}>
+          <div className="profile-logo-grid">
             {/* Logo Showcase Box */}
-            <div style={{ background: 'var(--bg-card)', borderRadius: '28px', padding: '40px', boxShadow: 'var(--shadow-md)', border: '1px solid var(--border-color)', textAlign: 'center' }}>
-              <img src="/logo.png" alt="Logo DEMA" style={{ width: '200px', height: '200px', margin: '0 auto 24px', objectFit: 'contain' }} />
+            <div className="profile-logo-showcase">
+              <img src="/logo.png" alt="Logo DEMA" className="profile-logo-img" />
               <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-heading)' }}>Lambang Resmi DEMA</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--accent-orange)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Integrasi Sains &amp; Teknologi</p>
             </div>
 
             {/* Philosophy Detailed Breakdown */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div className="profile-philo-list">
               {logoPhilosophy.map((philo, index) => (
-                <div key={index} style={{ background: 'var(--bg-card)', padding: '24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
+                <div key={index} className="profile-philo-item">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
                     <div className={`philosophy-icon ${philo.color}`}>{philo.icon}</div>
                     <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-heading)' }}>{philo.title}</h4>

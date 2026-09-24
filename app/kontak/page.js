@@ -23,7 +23,7 @@ export default function KontakPage() {
       {/* Contact Info Grid */}
       <section style={{ padding: '70px 0 40px', background: 'var(--bg-surface)' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', marginBottom: '60px' }}>
+          <div className="contact-info-grid">
             {/* Card 1 */}
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '28px', textAlign: 'center' }}>
               <div style={{ width: '50px', height: '50px', background: 'rgba(30,107,55,0.15)', color: 'var(--primary-green)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', margin: '0 auto 16px' }}>📍</div>
@@ -60,9 +60,9 @@ export default function KontakPage() {
           </div>
 
           {/* Main Aspirasi & FAQ Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '50px', alignItems: 'flex-start' }} id="aspirasi">
+          <div className="contact-main-grid" id="aspirasi">
             {/* Aspirasi Form */}
-            <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '40px', boxShadow: 'var(--shadow-md)' }}>
+            <div className="contact-form-card">
               <div className="section-tag">Layanan Terpadu</div>
               <h2 style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '8px' }}>Formulir Aspirasi &amp; Aduan Mahasiswa</h2>
               <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginBottom: '24px' }}>Silakan sampaikan usulan, laporan fasilitas, maupun permohonan advokasi dengan mengisi formulir di bawah ini.</p>
