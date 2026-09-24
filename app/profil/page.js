@@ -1,5 +1,13 @@
 import Link from 'next/link';
 import { logoPhilosophy } from '@/lib/data';
+import { IconAtom, IconGear, IconOctagon, IconPillar, IconTarget } from '@/components/Icons';
+
+const philoIcons = {
+  atom: <IconAtom size={22} />,
+  gear: <IconGear size={22} />,
+  octagon: <IconOctagon size={22} />,
+  pillar: <IconPillar size={22} />,
+};
 
 export const metadata = {
   title: 'Profil & Filosofi Lambang | DEMA Kabinet Wigyamerta Antasena',
@@ -37,7 +45,9 @@ export default function ProfilPage() {
 
             <div className="profile-history-card">
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
-                <div style={{ fontSize: '2rem' }}>🎯</div>
+                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(30, 107, 55, 0.15)', color: 'var(--primary-green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <IconTarget size={26} />
+                </div>
                 <div>
                   <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 700, color: 'var(--accent-orange)', letterSpacing: '1px' }}>Komitmen Utama</div>
                   <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-heading)' }}>Visi Kabinet Wigyamerta Antasena</h3>
@@ -82,21 +92,36 @@ export default function ProfilPage() {
 
           <div className="profile-logo-grid">
             {/* Logo Showcase Box */}
+            {/* Logo Showcase Box */}
             <div className="profile-logo-showcase">
               <img src="/logo.png" alt="Logo DEMA" className="profile-logo-img" />
-              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-heading)' }}>Lambang Resmi DEMA</h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--accent-orange)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px' }}>Integrasi Sains &amp; Teknologi</p>
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '4px' }}>Lambang Resmi DEMA</h3>
+              <p style={{ fontSize: '0.85rem', color: 'var(--accent-orange)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '12px' }}>Integrasi Sains &amp; Teknologi</p>
+              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', background: 'var(--bg-surface-subtle)', padding: '6px 14px', borderRadius: '99px', border: '1px solid var(--border-color)' }}>
+                Dekonstruksi 4 Elemen Utama &bull; Terpisah Sesuai Makna
+              </div>
             </div>
 
             {/* Philosophy Detailed Breakdown */}
             <div className="profile-philo-list">
               {logoPhilosophy.map((philo, index) => (
                 <div key={index} className="profile-philo-item">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                    <div className={`philosophy-icon ${philo.color}`}>{philo.icon}</div>
-                    <h4 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-heading)' }}>{philo.title}</h4>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '14px' }}>
+                    <div className="philo-element-preview">
+                      <img 
+                        src={philo.image} 
+                        alt={philo.title} 
+                        className="philo-element-img" 
+                      />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', color: philo.color === 'orange' ? 'var(--accent-orange)' : 'var(--primary-green-light)', marginBottom: '2px' }}>
+                        Elemen Lambang #{index + 1}
+                      </div>
+                      <h4 style={{ fontSize: '1.08rem', fontWeight: 800, color: 'var(--text-heading)' }}>{philo.title}</h4>
+                    </div>
                   </div>
-                  <p style={{ fontSize: '0.88rem', lineHeight: 1.6, color: 'var(--text-muted)' }}>{philo.desc}</p>
+                  <p style={{ fontSize: '0.9rem', lineHeight: 1.65, color: 'var(--text-muted)' }}>{philo.desc}</p>
                 </div>
               ))}
             </div>

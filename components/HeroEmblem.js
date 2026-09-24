@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { IconTrophy, IconZap } from '@/components/Icons';
 
 export default function HeroEmblem({ programCount = 6 }) {
   const cardRef = useRef(null);
@@ -62,7 +63,7 @@ export default function HeroEmblem({ programCount = 6 }) {
         
         {/* Floating Badge Left / Top */}
         <div className="floating-badge badge-top interactive-badge">
-          <div className="badge-icon green">🏆</div>
+          <div className="badge-icon green"><IconTrophy size={18} /></div>
           <div className="badge-content">
             <h4>{programCount}+ Program</h4>
             <p>Terlaksana &amp; Terekam</p>
@@ -91,7 +92,7 @@ export default function HeroEmblem({ programCount = 6 }) {
 
         {/* Floating Badge Right / Bottom */}
         <div className="floating-badge badge-bottom interactive-badge">
-          <div className="badge-icon orange">⚡</div>
+          <div className="badge-icon orange"><IconZap size={18} /></div>
           <div className="badge-content">
             <h4>100% Terbuka</h4>
             <p>Kanal Aspirasi Mahasiswa</p>

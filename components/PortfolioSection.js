@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import PortfolioModal from './PortfolioModal';
+import { IconCalendar } from './Icons';
 
 export default function PortfolioSection({ initialPrograms, showAllButton = true }) {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -46,7 +47,9 @@ export default function PortfolioSection({ initialPrograms, showAllButton = true
 
             <div className="portfolio-card-body">
               <div className="portfolio-meta">
-                <span>📅 {p.date}</span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                  <IconCalendar size={13} /> {p.date}
+                </span>
               </div>
 
               <h3 className="portfolio-card-title">{p.title}</h3>

@@ -2,6 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { 
+  IconLock, 
+  IconUnlock, 
+  IconAlert, 
+  IconCheck, 
+  IconPlus, 
+  IconRefresh, 
+  IconEdit, 
+  IconTrash, 
+  IconDisk, 
+  IconCalendar,
+  IconClose
+} from '@/components/Icons';
 
 export default function KelolaProgramKerjaPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -227,7 +240,9 @@ export default function KelolaProgramKerjaPage() {
     return (
       <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
-          <div style={{ fontSize: '2rem', marginBottom: '12px' }}>🔒</div>
+          <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(30, 107, 55, 0.12)', color: 'var(--primary-green)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+            <IconLock size={26} />
+          </div>
           <p>Memeriksa otorisasi keamanan pengurus...</p>
         </div>
       </div>
@@ -256,10 +271,9 @@ export default function KelolaProgramKerjaPage() {
               display: 'inline-flex', 
               alignItems: 'center', 
               justifyContent: 'center', 
-              fontSize: '2rem',
               marginBottom: '20px'
             }}>
-              🔒
+              <IconLock size={28} />
             </div>
 
             <h1 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '8px' }}>
@@ -278,9 +292,12 @@ export default function KelolaProgramKerjaPage() {
                 padding: '12px 16px', 
                 fontSize: '0.85rem', 
                 marginBottom: '20px', 
-                textAlign: 'left' 
+                textAlign: 'left',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}>
-                ⚠️ {authError}
+                <IconAlert size={16} /> <span>{authError}</span>
               </div>
             )}
 
@@ -299,8 +316,8 @@ export default function KelolaProgramKerjaPage() {
                 />
               </div>
 
-              <button type="submit" className="btn btn-orange" style={{ width: '100%', justifyContent: 'center', padding: '12px' }}>
-                <span>🔓</span> Buka Panel Kelola
+              <button type="submit" className="btn btn-orange" style={{ width: '100%', justifyContent: 'center', padding: '12px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <IconUnlock size={18} /> Buka Panel Kelola
               </button>
             </form>
 
@@ -321,7 +338,7 @@ export default function KelolaProgramKerjaPage() {
       <section className="page-banner">
         <div className="container">
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(34, 197, 94, 0.2)', border: '1px solid rgba(34, 197, 94, 0.4)', color: '#4ade80', padding: '6px 14px', borderRadius: '99px', fontSize: '0.8rem', fontWeight: 700, marginBottom: '14px' }}>
-            <span>🔒</span> Sesi Pengurus Aktif (Privat)
+            <IconLock size={14} /> Sesi Pengurus Aktif (Privat)
           </div>
           <h1>Kelola Database Program Kerja</h1>
           <p>Panel pengelolaan database tertutup khusus pengurus DEMA. Seluruh perubahan langsung tersimpan ke basis data internal.</p>
@@ -335,8 +352,9 @@ export default function KelolaProgramKerjaPage() {
         <div className="container">
           {/* Toast Notice */}
           {toast && (
-            <div className="toast-notice show" style={{ borderLeftColor: toast.type === 'error' ? '#ef4444' : 'var(--accent-orange)' }}>
-              <span style={{ fontSize: '1.2rem' }}>{toast.type === 'error' ? '⚠️' : '✓'}</span> {toast.message}
+            <div className="toast-notice show" style={{ borderLeftColor: toast.type === 'error' ? '#ef4444' : 'var(--accent-orange)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {toast.type === 'error' ? <IconAlert size={18} /> : <IconCheck size={18} />}
+              <span>{toast.message}</span>
             </div>
           )}
 
@@ -349,14 +367,14 @@ export default function KelolaProgramKerjaPage() {
               </p>
             </div>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-              <button className="btn btn-orange" onClick={handleOpenAdd}>
-                <span>➕</span> Tambah Program Baru
+              <button className="btn btn-orange" onClick={handleOpenAdd} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <IconPlus size={16} /> Tambah Program Baru
               </button>
-              <button onClick={handleReset} className="btn btn-outline-green" style={{ fontSize: '0.85rem' }}>
-                <span>🔄</span> Reset ke Data Awal
+              <button onClick={handleReset} className="btn btn-outline-green" style={{ fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <IconRefresh size={15} /> Reset ke Data Awal
               </button>
-              <button onClick={handleLogout} className="btn btn-sm" style={{ background: 'var(--bg-surface-subtle)', color: 'var(--text-main)', border: '1px solid var(--border-color)', fontSize: '0.85rem', padding: '8px 14px' }}>
-                <span>🔒</span> Kunci &amp; Keluar
+              <button onClick={handleLogout} className="btn btn-sm" style={{ background: 'var(--bg-surface-subtle)', color: 'var(--text-main)', border: '1px solid var(--border-color)', fontSize: '0.85rem', padding: '8px 14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                <IconLock size={14} /> Kunci &amp; Keluar
               </button>
             </div>
           </div>
@@ -365,10 +383,13 @@ export default function KelolaProgramKerjaPage() {
           {showForm && (
             <div style={{ background: 'var(--bg-card)', border: '2px solid var(--accent-orange)', borderRadius: 'var(--radius-lg)', padding: '32px', marginBottom: '40px', boxShadow: 'var(--shadow-md)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-heading)' }}>
-                  {editingId ? `✏️ Edit Program Kerja #${editingId}` : '➕ Tambah Program Kerja Baru'}
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-heading)', display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
+                  {editingId ? <IconEdit size={22} /> : <IconPlus size={22} />}
+                  <span>{editingId ? `Edit Program Kerja #${editingId}` : 'Tambah Program Kerja Baru'}</span>
                 </h3>
-                <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--text-muted)' }}>&times;</button>
+                <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Tutup Form">
+                  <IconClose size={22} />
+                </button>
               </div>
 
               <form onSubmit={handleSubmit}>
@@ -475,8 +496,8 @@ export default function KelolaProgramKerjaPage() {
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-                  <button type="submit" className="btn btn-orange" style={{ padding: '12px 28px' }}>
-                    <span>💾</span> Simpan ke Database
+                  <button type="submit" className="btn btn-orange" style={{ padding: '12px 28px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                    <IconDisk size={16} /> Simpan ke Database
                   </button>
                   <button type="button" onClick={() => setShowForm(false)} className="btn btn-outline-green" style={{ padding: '12px 24px' }}>
                     Batal
@@ -534,7 +555,9 @@ export default function KelolaProgramKerjaPage() {
                           </span>
                         </td>
                         <td style={{ padding: '14px 20px', fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap' }}>
-                          📅 {p.date}
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                            <IconCalendar size={13} /> {p.date}
+                          </span>
                         </td>
                         <td style={{ padding: '14px 20px' }}>
                           <span style={{ fontSize: '0.75rem', background: 'rgba(224,99,31,0.15)', color: 'var(--accent-orange-light)', padding: '4px 10px', borderRadius: '99px', fontWeight: 700, whiteSpace: 'nowrap' }}>
@@ -548,17 +571,18 @@ export default function KelolaProgramKerjaPage() {
                           <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                             <button 
                               className="btn btn-sm btn-outline-green" 
-                              style={{ padding: '6px 12px', fontSize: '0.8rem' }}
+                              style={{ padding: '6px 12px', fontSize: '0.8rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                               onClick={() => handleEdit(p)}
                             >
-                              ✏️ Edit
+                              <IconEdit size={13} /> Edit
                             </button>
                             <button 
                               className="btn btn-sm" 
-                              style={{ padding: '6px 10px', fontSize: '0.8rem', background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5' }}
+                              style={{ padding: '6px 10px', fontSize: '0.8rem', background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                               onClick={() => handleDelete(p.id, p.title)}
+                              aria-label="Hapus program"
                             >
-                              🗑️
+                              <IconTrash size={14} />
                             </button>
                           </div>
                         </td>

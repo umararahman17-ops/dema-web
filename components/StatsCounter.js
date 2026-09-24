@@ -2,6 +2,15 @@
 
 import { useState, useEffect, useRef } from 'react';
 
+import { IconBuilding, IconRocket, IconUsers, IconHandshake } from '@/components/Icons';
+
+const statIcons = {
+  building: <IconBuilding size={24} />,
+  rocket: <IconRocket size={24} />,
+  users: <IconUsers size={24} />,
+  handshake: <IconHandshake size={24} />,
+};
+
 export default function StatsCounter({ items }) {
   const [counts, setCounts] = useState(items.map(() => 0));
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -57,7 +66,7 @@ export default function StatsCounter({ items }) {
           {items.map((item, index) => (
             <div key={index} className="stat-item">
               <div className={`stat-icon-wrap ${item.color === 'orange' ? 'orange' : ''}`}>
-                {item.icon}
+                {statIcons[item.iconKey] || item.icon}
               </div>
               <div>
                 <div className="stat-number">

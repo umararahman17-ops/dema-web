@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { IconSend, IconCheck } from '@/components/Icons';
 
 export default function AspirasiForm() {
   const [formData, setFormData] = useState({
@@ -47,11 +48,11 @@ export default function AspirasiForm() {
     <>
       <form onSubmit={handleSubmit} className="aspirasi-form">
         <div className="form-group">
-          <label className="form-label">Nama Lengkap (Boleh dikosongkan jika Anonim)</label>
-          <input 
-            type="text" 
-            className="form-control" 
-            placeholder="Cth: Ahmad Fauzi / (Kosongkan jika anonim)"
+          <label className="form-label">Nama Lengkap </label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder=""
             value={formData.nama}
             onChange={(e) => setFormData({ ...formData, nama: e.target.value })}
           />
@@ -59,10 +60,10 @@ export default function AspirasiForm() {
 
         <div className="form-group">
           <label className="form-label">Program Studi &amp; Angkatan *</label>
-          <input 
-            type="text" 
-            className="form-control" 
-            placeholder="Cth: Teknik Informatika 2024"
+          <input
+            type="text"
+            className="form-control"
+            placeholder=""
             required
             value={formData.prodi}
             onChange={(e) => setFormData({ ...formData, prodi: e.target.value })}
@@ -71,7 +72,7 @@ export default function AspirasiForm() {
 
         <div className="form-group">
           <label className="form-label">Kategori Aspirasi *</label>
-          <select 
+          <select
             className="form-control"
             value={formData.kategori}
             onChange={(e) => setFormData({ ...formData, kategori: e.target.value })}
@@ -87,8 +88,8 @@ export default function AspirasiForm() {
 
         <div className="form-group">
           <label className="form-label">Isi Aspirasi / Pesan *</label>
-          <textarea 
-            className="form-control" 
+          <textarea
+            className="form-control"
             placeholder="Tuliskan aspirasi atau masukan Anda secara jelas..."
             required
             value={formData.pesan}
@@ -96,15 +97,15 @@ export default function AspirasiForm() {
           ></textarea>
         </div>
 
-        <button type="submit" disabled={loading} className="btn btn-orange" style={{ width: '100%', padding: '13px' }}>
-          <span>📨</span> {loading ? 'Mengirim Aspirasi...' : 'Kirimkan Aspirasi Sekarang'}
+        <button type="submit" disabled={loading} className="btn btn-orange" style={{ width: '100%', padding: '13px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <IconSend size={16} /> {loading ? 'Mengirim Aspirasi...' : 'Kirimkan Aspirasi Sekarang'}
         </button>
       </form>
 
       {/* Toast Notice */}
       {toastMessage && (
-        <div className="toast-notice show">
-          <span style={{ fontSize: '1.2rem' }}>✓</span> {toastMessage}
+        <div className="toast-notice show" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <IconCheck size={20} /> {toastMessage}
         </div>
       )}
     </>

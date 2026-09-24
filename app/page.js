@@ -5,6 +5,7 @@ import StatsCounter from '@/components/StatsCounter';
 import PortfolioSection from '@/components/PortfolioSection';
 import AspirasiForm from '@/components/AspirasiForm';
 import HeroEmblem from '@/components/HeroEmblem';
+import { IconCompass, IconBook, IconBulb, IconNetwork, IconShield, IconChart } from '@/components/Icons';
 
 export const revalidate = 0; // Dynamic data for real-time portfolio updates
 
@@ -36,11 +37,11 @@ export default async function HomePage() {
               </p>
 
               <div className="hero-actions">
-                <Link href="/portofolio" className="btn btn-orange btn-lg">
-                  <span>🚀</span> Jelajahi Portofolio
+                <Link href="/portofolio" className="btn btn-orange btn-lg" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px' }}>
+                  <IconCompass size={20} /> Jelajahi Portofolio
                 </Link>
-                <Link href="/profil" className="btn btn-outline-green btn-lg">
-                  <span>📖</span> Profil &amp; Filosofi Logo
+                <Link href="/profil" className="btn btn-outline-green btn-lg" style={{ display: 'inline-flex', alignItems: 'center', gap: '9px' }}>
+                  <IconBook size={20} /> Profil &amp; Filosofi Logo
                 </Link>
               </div>
             </div>
@@ -69,7 +70,9 @@ export default async function HomePage() {
                 {logoPhilosophy.map((philo, index) => (
                   <div key={index} className="philosophy-card">
                     <div className="philosophy-header">
-                      <div className={`philosophy-icon ${philo.color}`}>{philo.icon}</div>
+                      <div className={`philosophy-icon ${philo.color}`} style={{ padding: '5px' }}>
+                        <img src={philo.image} alt={philo.title} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                      </div>
                       <h4>{philo.title}</h4>
                     </div>
                     <p>{philo.desc}</p>
@@ -107,25 +110,33 @@ export default async function HomePage() {
 
           <div className="core-values-grid">
             <div style={{ background: 'var(--bg-card)', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>💡</div>
+              <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'rgba(224, 99, 31, 0.12)', color: 'var(--accent-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                <IconBulb size={26} />
+              </div>
               <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '10px' }}>Inovatif &amp; Kritis</h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Mendorong riset terapan dan kreasi solutif yang berorientasi pada pemecahan masalah riil di lingkungan kampus dan masyarakat.</p>
             </div>
 
             <div style={{ background: 'var(--bg-card)', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>🤝</div>
+              <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'rgba(30, 107, 55, 0.12)', color: 'var(--primary-green)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                <IconNetwork size={26} />
+              </div>
               <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '10px' }}>Sinergis &amp; Kolaboratif</h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Menjalin kemitraan strategis yang harmonis antar himpunan jurusan, lembaga eksternal kampus, dan mitra industri teknologi.</p>
             </div>
 
             <div style={{ background: 'var(--bg-card)', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>🛡️</div>
+              <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'rgba(224, 99, 31, 0.12)', color: 'var(--accent-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                <IconShield size={26} />
+              </div>
               <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '10px' }}>Advokatif &amp; Peduli</h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Garda terdepan dalam mengawal hak-hak akademis, penjaminan kesejahteraan ekonomi, dan inklusivitas fasilitas bagi seluruh mahasiswa.</p>
             </div>
 
             <div style={{ background: 'var(--bg-card)', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
-              <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>📊</div>
+              <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'rgba(30, 107, 55, 0.12)', color: 'var(--primary-green)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                <IconChart size={26} />
+              </div>
               <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '10px' }}>Akuntabel &amp; Transparan</h4>
               <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Menjunjung tinggi etika kejujuran dan keterbukaan informasi publik dalam pengelolaan anggaran serta pelaksanaan amanah organisasi.</p>
             </div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import ThemeToggle from '@/components/ThemeToggle';
+import { IconMail, IconInstagram, IconChat, IconMenu, IconClose } from '@/components/Icons';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -30,11 +31,11 @@ export default function Navbar() {
             <span>Selamat Datang di Portal Resmi Dewan Eksekutif Mahasiswa (DEMA)</span>
           </div>
           <div className="topbar-links">
-            <a href="mailto:sekretariat@dema-univ.ac.id">
-              <span>✉️</span> sekretariat@dema-univ.ac.id
+            <a href="mailto:sekretariat@dema-univ.ac.id" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <IconMail size={13} /> sekretariat@dema-univ.ac.id
             </a>
-            <a href="https://www.instagram.com/demafstuinsa/" target="_blank" rel="noopener noreferrer">
-              <span>📸</span> @demafstuinsa
+            <a href="https://www.instagram.com/demafstuinsa/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <IconInstagram size={13} /> @demafstuinsa
             </a>
           </div>
         </div>
@@ -89,15 +90,16 @@ export default function Navbar() {
           {/* Action Button & Theme Toggle */}
           <div className="nav-actions">
             <ThemeToggle />
-            <Link href="/kontak#aspirasi" className="btn btn-orange btn-sm">
-              <span>💬</span> Kirim Aspirasi
+            <Link href="/kontak#aspirasi" className="btn btn-orange btn-sm" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              <IconChat size={16} /> Kirim Aspirasi
             </Link>
             <button 
               className="mobile-nav-toggle" 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle Navigation"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
             >
-              {mobileMenuOpen ? '✕' : '☰'}
+              {mobileMenuOpen ? <IconClose size={20} /> : <IconMenu size={20} />}
             </button>
           </div>
         </div>
