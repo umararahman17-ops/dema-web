@@ -4,8 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function KelolaProgramKerjaPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [adminKey, setAdminKey] = useState('');
+  const [inputKey, setInputKey] = useState('');
+  const [authChecking, setAuthChecking] = useState(true);
+  const [authError, setAuthError] = useState('');
+
   const [programs, setPrograms] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [toast, setToast] = useState(null);
   const [editingId, setEditingId] = useState(null);
@@ -21,6 +27,62 @@ export default function KelolaProgramKerjaPage() {
     desc: ''
   });
 
+  // Check saved session on mount
+  useEffect(() => {
+    const savedKey = typeof window !== 'undefined' ? sessionStorage.getItem('dema_admin_key') : null;
+    if (savedKey) {
+      verifyKey(savedKey, true);
+    } else {
+      setAuthChecking(false);
+    }
+  }, []);
+
+  const verifyKey = async (keyToTest, isAuto = false) => {
+    try {
+      if (!isAuto) setAuthChecking(true);
+      setAuthError('');
+
+      const res = await fetch('/api/admin/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: keyToTest })
+      });
+
+      const json = await res.json();
+      if (json.success) {
+        setIsAuthenticated(true);
+        setAdminKey(keyToTest);
+        sessionStorage.setItem('dema_admin_key', keyToTest);
+        fetchPrograms();
+      } else {
+        setIsAuthenticated(false);
+        setAdminKey('');
+        sessionStorage.removeItem('dema_admin_key');
+        if (!isAuto) {
+          setAuthError(json.message || 'Kunci sandi / PIN pengurus tidak valid!');
+        }
+      }
+    } catch {
+      setAuthError('Gagal melakukan verifikasi keamanan.');
+    } finally {
+      setAuthChecking(false);
+    }
+  };
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    if (!inputKey.trim()) return;
+    verifyKey(inputKey.trim());
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setAdminKey('');
+    setInputKey('');
+    sessionStorage.removeItem('dema_admin_key');
+    showToast('Akses database berhasil dikunci kembali.');
+  };
+
   const fetchPrograms = async () => {
     try {
       setLoading(true);
@@ -35,10 +97,6 @@ export default function KelolaProgramKerjaPage() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchPrograms();
-  }, []);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -80,8 +138,18 @@ export default function KelolaProgramKerjaPage() {
     if (!confirm(`Hapus program kerja "${title}" dari database?`)) return;
 
     try {
-      const res = await fetch(`/api/program-kerja?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/program-kerja?id=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'x-admin-key': adminKey
+        }
+      });
       const json = await res.json();
+      if (res.status === 401) {
+        handleLogout();
+        showToast('Akses ditolak atau sesi berakhir.', 'error');
+        return;
+      }
       if (json.success) {
         showToast(json.message);
         fetchPrograms();
@@ -94,14 +162,26 @@ export default function KelolaProgramKerjaPage() {
   };
 
   const handleReset = async () => {
-    if (!confirm('Apakah Anda yakin ingin me-reset database ke 6 data awal bawaan?')) return;
+    if (!confirm('Apakah Anda yakin ingin me-reset database ke data awal bawaan?')) return;
 
     try {
-      const res = await fetch('/api/program-kerja/reset', { method: 'POST' });
+      const res = await fetch('/api/program-kerja/reset', {
+        method: 'POST',
+        headers: {
+          'x-admin-key': adminKey
+        }
+      });
       const json = await res.json();
+      if (res.status === 401) {
+        handleLogout();
+        showToast('Akses ditolak atau sesi berakhir.', 'error');
+        return;
+      }
       if (json.success) {
         showToast(json.message);
         fetchPrograms();
+      } else {
+        showToast(json.message, 'error');
       }
     } catch {
       showToast('Gagal me-reset database.', 'error');
@@ -118,10 +198,18 @@ export default function KelolaProgramKerjaPage() {
 
       const res = await fetch('/api/program-kerja', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-key': adminKey
+        },
         body: JSON.stringify(payload)
       });
       const json = await res.json();
+      if (res.status === 401) {
+        handleLogout();
+        showToast('Akses ditolak atau sesi berakhir.', 'error');
+        return;
+      }
       if (json.success) {
         showToast(json.message);
         setShowForm(false);
@@ -134,12 +222,109 @@ export default function KelolaProgramKerjaPage() {
     }
   };
 
+  // If verifying initial session
+  if (authChecking) {
+    return (
+      <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '12px' }}>🔒</div>
+          <p>Memeriksa otorisasi keamanan pengurus...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If Not Authenticated -> Show Private Admin Lock Screen
+  if (!isAuthenticated) {
+    return (
+      <section style={{ minHeight: '80vh', padding: '100px 0', background: 'var(--bg-page)', display: 'flex', alignItems: 'center' }}>
+        <div className="container" style={{ maxWidth: '520px' }}>
+          <div style={{ 
+            background: 'var(--bg-card)', 
+            border: '1px solid var(--border-color)', 
+            borderRadius: 'var(--radius-lg)', 
+            padding: '40px 32px', 
+            boxShadow: 'var(--shadow-md)',
+            textAlign: 'center'
+          }}>
+            <div style={{ 
+              width: '64px', 
+              height: '64px', 
+              borderRadius: '50%', 
+              background: 'rgba(224, 99, 31, 0.1)', 
+              color: 'var(--accent-orange)', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              fontSize: '2rem',
+              marginBottom: '20px'
+            }}>
+              🔒
+            </div>
+
+            <h1 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '8px' }}>
+              Area Khusus Pengurus DEMA
+            </h1>
+            <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '24px', lineHeight: 1.6 }}>
+              Basis data program kerja bersifat privat dan terlindungi dari akses publik. Masukkan kunci sandi atau PIN pengurus untuk mengakses panel pengelolaan.
+            </p>
+
+            {authError && (
+              <div style={{ 
+                background: '#fee2e2', 
+                color: '#991b1b', 
+                border: '1px solid #fca5a5', 
+                borderRadius: '8px', 
+                padding: '12px 16px', 
+                fontSize: '0.85rem', 
+                marginBottom: '20px', 
+                textAlign: 'left' 
+              }}>
+                ⚠️ {authError}
+              </div>
+            )}
+
+            <form onSubmit={handleLoginSubmit}>
+              <div className="form-group" style={{ textAlign: 'left', marginBottom: '20px' }}>
+                <label className="form-label" style={{ fontWeight: 700 }}>Kunci Akses / PIN Pengurus</label>
+                <input 
+                  type="password" 
+                  className="form-control" 
+                  placeholder="Masukkan kunci sandi pengurus..." 
+                  value={inputKey}
+                  onChange={(e) => setInputKey(e.target.value)}
+                  required
+                  autoFocus
+                  style={{ fontSize: '1rem', padding: '12px 16px' }}
+                />
+              </div>
+
+              <button type="submit" className="btn btn-orange" style={{ width: '100%', justifyContent: 'center', padding: '12px' }}>
+                <span>🔓</span> Buka Panel Kelola
+              </button>
+            </form>
+
+            <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid var(--border-color)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              <Link href="/" style={{ color: 'var(--primary-green-light)', textDecoration: 'none', fontWeight: 600 }}>
+                &larr; Kembali ke Beranda Publik
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // If Authenticated -> Render Full Secure Dashboard
   return (
     <>
       <section className="page-banner">
         <div className="container">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(34, 197, 94, 0.2)', border: '1px solid rgba(34, 197, 94, 0.4)', color: '#4ade80', padding: '6px 14px', borderRadius: '99px', fontSize: '0.8rem', fontWeight: 700, marginBottom: '14px' }}>
+            <span>🔒</span> Sesi Pengurus Aktif (Privat)
+          </div>
           <h1>Kelola Database Program Kerja</h1>
-          <p>Panel pengelolaan basis data program kerja &amp; portofolio DEMA. Data yang diubah di sini langsung tersimpan ke database Next.js dan tampil secara real-time di seluruh halaman website.</p>
+          <p>Panel pengelolaan database tertutup khusus pengurus DEMA. Seluruh perubahan langsung tersimpan ke basis data internal.</p>
           <div className="breadcrumb-trail">
             <Link href="/">Beranda</Link> &bull; <Link href="/portofolio">Portofolio</Link> &bull; <span>Kelola Database</span>
           </div>
@@ -160,19 +345,19 @@ export default function KelolaProgramKerjaPage() {
             <div>
               <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '4px' }}>Daftar Program Kerja di Database</h2>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                Total: <strong>{programs.length} Program Tersimpan</strong> di database JSON/SQLite (<code>data/program_kerja.json</code>).
+                Total: <strong>{programs.length} Program Tersimpan</strong> &bull; Basis data terenkripsi &amp; terlindungi.
               </p>
             </div>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
               <button className="btn btn-orange" onClick={handleOpenAdd}>
                 <span>➕</span> Tambah Program Baru
               </button>
               <button onClick={handleReset} className="btn btn-outline-green" style={{ fontSize: '0.85rem' }}>
                 <span>🔄</span> Reset ke Data Awal
               </button>
-              <Link href="/portofolio" target="_blank" className="btn btn-primary" style={{ fontSize: '0.85rem' }}>
-                <span>👁️</span> Lihat Tampilan Publik &rarr;
-              </Link>
+              <button onClick={handleLogout} className="btn btn-sm" style={{ background: 'var(--bg-surface-subtle)', color: 'var(--text-main)', border: '1px solid var(--border-color)', fontSize: '0.85rem', padding: '8px 14px' }}>
+                <span>🔒</span> Kunci &amp; Keluar
+              </button>
             </div>
           </div>
 

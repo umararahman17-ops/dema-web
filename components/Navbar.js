@@ -76,13 +76,7 @@ export default function Navbar() {
             >
               Portofolio &amp; Proker
             </Link>
-            <Link 
-              href="/program-kerja/kelola" 
-              className={`nav-link ${pathname.startsWith('/program-kerja/kelola') ? 'active' : ''}`}
-              onClick={closeMenu}
-            >
-              Kelola Database
-            </Link>
+
             <Link 
               href="/kontak" 
               className={`nav-link ${pathname.startsWith('/kontak') ? 'active' : ''}`}

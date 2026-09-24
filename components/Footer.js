@@ -30,7 +30,6 @@ export default function Footer() {
               <li><Link href="/">Beranda Utama</Link></li>
               <li><Link href="/profil">Profil &amp; Filosofi Lambang</Link></li>
               <li><Link href="/portofolio">Portofolio Program Kerja</Link></li>
-              <li><Link href="/program-kerja/kelola">Kelola Database Proker</Link></li>
               <li><Link href="/kontak">Layanan Aspirasi</Link></li>
             </ul>
           </div>
@@ -67,7 +66,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} <strong>Dewan Eksekutif Mahasiswa (DEMA)</strong>. Seluruh Hak Cipta Dilindungi.
           </div>
           <div>
-            Dikembangkan dengan <strong>Next.js (React)</strong> • Kabinet Wigyamerta Antasena
+            Dikembangkan dengan <strong>Next.js (React)</strong> • Kabinet Wigyamerta Antasena • <Link href="/program-kerja/kelola" style={{ opacity: 0.45, color: 'inherit', textDecoration: 'none' }} title="Portal Privat Pengurus">🔒 Akses Pengurus</Link>
           </div>
         </div>
       </div>

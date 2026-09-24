@@ -1,8 +1,8 @@
 [
   {
     "id": 1,
-    "slug": "science-tech-innovation-expo",
-    "title": "Science & Technology Expo (STIX 2026)",
+    "slug": "expo",
+    "title": "EXPO",
     "category": "sains-teknologi",
     "categoryName": "Sains & Teknologi",
     "date": "15-18 Mei 2026",
@@ -16,7 +16,8 @@
       "AI",
       "Riset"
     ],
-    "featured": true
+    "featured": true,
+    "updatedAt": "2026-09-24T06:55:34.757Z"
   },
   {
     "id": 2,

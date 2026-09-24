@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getAllPrograms, saveProgram, deleteProgram } from '@/lib/db';
+import { verifyAdminAuth } from '@/lib/auth';
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -10,6 +11,10 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    if (!verifyAdminAuth(request)) {
+      return NextResponse.json({ success: false, message: 'Akses ditolak: Hanya pengurus/admin yang berhak mengubah database!' }, { status: 401 });
+    }
+
     const body = await request.json();
     if (!body.title) {
       return NextResponse.json({ success: false, message: 'Judul program kerja wajib diisi!' }, { status: 400 });
@@ -23,6 +28,10 @@ export async function POST(request) {
 
 export async function DELETE(request) {
   try {
+    if (!verifyAdminAuth(request)) {
+      return NextResponse.json({ success: false, message: 'Akses ditolak: Hanya pengurus/admin yang berhak menghapus data!' }, { status: 401 });
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
     if (!id) {
