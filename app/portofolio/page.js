@@ -9,8 +9,8 @@ export const metadata = {
 
 export const revalidate = 0; // Dynamic data
 
-export default function PortofolioPage() {
-  const programs = getAllPrograms();
+export default async function PortofolioPage() {
+  const programs = await getAllPrograms();
 
   return (
     <>

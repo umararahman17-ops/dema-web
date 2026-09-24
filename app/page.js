@@ -7,8 +7,8 @@ import AspirasiForm from '@/components/AspirasiForm';
 
 export const revalidate = 0; // Dynamic data for real-time portfolio updates
 
-export default function HomePage() {
-  const programs = getAllPrograms();
+export default async function HomePage() {
+  const programs = await getAllPrograms();
 
   return (
     <>
