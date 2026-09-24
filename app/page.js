@@ -4,6 +4,7 @@ import { getAllPrograms } from '@/lib/db';
 import StatsCounter from '@/components/StatsCounter';
 import PortfolioSection from '@/components/PortfolioSection';
 import AspirasiForm from '@/components/AspirasiForm';
+import HeroEmblem from '@/components/HeroEmblem';
 
 export const revalidate = 0; // Dynamic data for real-time portfolio updates
 
@@ -12,12 +13,15 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* 1. HERO SECTION */}
-      <section className="hero-section">
+      {/* 1. HERO SECTION - LOGO DULUAN */}
+      <section className="hero-section hero-showcase-layout">
         <div className="container">
-          <div className="hero-grid">
-            {/* Left Column: Copywriting & CTAs */}
-            <div>
+          <div className="hero-top-center">
+            {/* 1. LOGO DULUAN: 3D Interactive Emblem with Glow & Badges */}
+            <HeroEmblem programCount={programs.length} />
+
+            {/* 2. Headline & Call to Actions */}
+            <div className="hero-content-center">
               <div className="hero-pill">
                 <span className="hero-pill-dot"></span>
                 <span>Dewan Eksekutif Mahasiswa &bull; Kabinet Wigyamerta Antasena</span>
@@ -38,36 +42,6 @@ export default async function HomePage() {
                 <Link href="/profil" className="btn btn-outline-green btn-lg">
                   <span>📖</span> Profil &amp; Filosofi Logo
                 </Link>
-              </div>
-            </div>
-
-            {/* Right Column: Interactive Logo Emblem & Floating Badges */}
-            <div className="hero-visual-card">
-              <div className="hero-emblem-glow"></div>
-              
-              {/* Floating Badge Top */}
-              <div className="floating-badge badge-top">
-                <div className="badge-icon green">🏆</div>
-                <div className="badge-content">
-                  <h4>{programs.length}+ Program</h4>
-                  <p>Tersimpan di Database</p>
-                </div>
-              </div>
-
-              {/* Center Emblem Box */}
-              <div className="hero-emblem-wrapper">
-                <img src="/logo.png" alt="Emblem DEMA" className="hero-emblem-img" />
-                <div className="hero-emblem-title">DEMA FST</div>
-                <div className="hero-emblem-subtitle">Wigyamerta Antasena</div>
-              </div>
-
-              {/* Floating Badge Bottom */}
-              <div className="floating-badge badge-bottom">
-                <div className="badge-icon orange">⚡</div>
-                <div className="badge-content">
-                  <h4>100% Terbuka</h4>
-                  <p>Kanal Aspirasi Mahasiswa</p>
-                </div>
               </div>
             </div>
           </div>
