@@ -8,7 +8,7 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: 'Akses ditolak: Hanya pengurus/admin yang berhak mereset database!' }, { status: 401 });
     }
 
-    const data = resetPrograms();
+    const data = await resetPrograms();
     return NextResponse.json({ success: true, message: 'Database berhasil di-reset ke data bawaan!', data });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
