@@ -146,7 +146,7 @@ export default function KelolaProgramKerjaPage() {
         </div>
       </section>
 
-      <section style={{ padding: '60px 0 100px', background: '#f7faf8' }}>
+      <section style={{ padding: '60px 0 100px', background: 'var(--bg-page)' }}>
         <div className="container">
           {/* Toast Notice */}
           {toast && (
@@ -156,10 +156,10 @@ export default function KelolaProgramKerjaPage() {
           )}
 
           {/* Control Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '30px', background: '#ffffff', padding: '20px 24px', borderRadius: 'var(--radius-md)', border: '1px solid #dbe8e0', boxShadow: 'var(--shadow-sm)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '30px', background: 'var(--bg-card)', padding: '20px 24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
             <div>
-              <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#102619', marginBottom: '4px' }}>Daftar Program Kerja di Database</h2>
-              <p style={{ fontSize: '0.85rem', color: '#526c5d' }}>
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '4px' }}>Daftar Program Kerja di Database</h2>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 Total: <strong>{programs.length} Program Tersimpan</strong> di database JSON/SQLite (<code>data/program_kerja.json</code>).
               </p>
             </div>
@@ -178,12 +178,12 @@ export default function KelolaProgramKerjaPage() {
 
           {/* Form Tambah / Edit */}
           {showForm && (
-            <div style={{ background: '#ffffff', border: '2px solid var(--accent-orange)', borderRadius: 'var(--radius-lg)', padding: '32px', marginBottom: '40px', boxShadow: 'var(--shadow-md)' }}>
+            <div style={{ background: 'var(--bg-card)', border: '2px solid var(--accent-orange)', borderRadius: 'var(--radius-lg)', padding: '32px', marginBottom: '40px', boxShadow: 'var(--shadow-md)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#12281b' }}>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-heading)' }}>
                   {editingId ? `✏️ Edit Program Kerja #${editingId}` : '➕ Tambah Program Kerja Baru'}
                 </h3>
-                <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#62776b' }}>&times;</button>
+                <button onClick={() => setShowForm(false)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--text-muted)' }}>&times;</button>
               </div>
 
               <form onSubmit={handleSubmit}>
@@ -302,11 +302,11 @@ export default function KelolaProgramKerjaPage() {
           )}
 
           {/* Table */}
-          <div style={{ background: '#ffffff', borderRadius: 'var(--radius-lg)', border: '1px solid #dcebe1', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
+          <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
                 <thead>
-                  <tr style={{ background: '#eef5f0', borderBottom: '2px solid #d8e7dc', color: '#102d1a' }}>
+                  <tr style={{ background: 'var(--table-head-bg)', borderBottom: '2px solid var(--table-head-border)', color: 'var(--text-heading)' }}>
                     <th style={{ padding: '16px 20px', fontWeight: 800, width: '60px' }}>Foto</th>
                     <th style={{ padding: '16px 20px', fontWeight: 800 }}>Judul Program Kerja</th>
                     <th style={{ padding: '16px 20px', fontWeight: 800 }}>Kategori</th>
@@ -319,44 +319,44 @@ export default function KelolaProgramKerjaPage() {
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="7" style={{ padding: '40px', textAlign: 'center', color: '#62776b' }}>
+                      <td colSpan="7" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                         Memuat data dari database...
                       </td>
                     </tr>
                   ) : programs.length === 0 ? (
                     <tr>
-                      <td colSpan="7" style={{ padding: '40px', textAlign: 'center', color: '#62776b' }}>
+                      <td colSpan="7" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
                         Belum ada program kerja di database. Klik tombol <strong>Tambah Program Baru</strong> atau <strong>Reset ke Data Awal</strong> di atas.
                       </td>
                     </tr>
                   ) : (
                     programs.map((p) => (
-                      <tr key={p.id} style={{ borderBottom: '1px solid #eaf1ec', transition: 'background 0.15s ease' }}>
+                      <tr key={p.id} style={{ borderBottom: '1px solid var(--table-row-border)', transition: 'background 0.15s ease' }}>
                         <td style={{ padding: '14px 20px' }}>
-                          <img src={p.image} alt="Thumbnail" style={{ width: '50px', height: '50px', borderRadius: '8px', objectFit: 'cover', background: '#e0e0e0' }} />
+                          <img src={p.image} alt="Thumbnail" style={{ width: '50px', height: '50px', borderRadius: '8px', objectFit: 'cover', background: 'var(--bg-surface-subtle)' }} />
                         </td>
                         <td style={{ padding: '14px 20px' }}>
-                          <div style={{ fontWeight: 700, color: '#11281c', fontSize: '0.95rem', marginBottom: '4px' }}>
+                          <div style={{ fontWeight: 700, color: 'var(--text-heading)', fontSize: '0.95rem', marginBottom: '4px' }}>
                             {p.title}
                           </div>
-                          <div style={{ fontSize: '0.8rem', color: '#657e70' }}>
+                          <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                             {p.desc ? p.desc.slice(0, 80) + '...' : ''}
                           </div>
                         </td>
                         <td style={{ padding: '14px 20px' }}>
-                          <span style={{ fontSize: '0.75rem', background: '#f0f6f2', color: '#1e6b37', border: '1px solid #cce2d3', padding: '4px 10px', borderRadius: '99px', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          <span style={{ fontSize: '0.75rem', background: 'var(--tag-bg)', color: 'var(--primary-green-light)', border: '1px solid var(--border-color)', padding: '4px 10px', borderRadius: '99px', fontWeight: 700, whiteSpace: 'nowrap' }}>
                             {p.categoryName || p.category}
                           </span>
                         </td>
-                        <td style={{ padding: '14px 20px', fontSize: '0.85rem', color: '#44594c', whiteSpace: 'nowrap' }}>
+                        <td style={{ padding: '14px 20px', fontSize: '0.85rem', color: 'var(--text-main)', whiteSpace: 'nowrap' }}>
                           📅 {p.date}
                         </td>
                         <td style={{ padding: '14px 20px' }}>
-                          <span style={{ fontSize: '0.75rem', background: '#fff0e6', color: '#c54e10', padding: '4px 10px', borderRadius: '99px', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          <span style={{ fontSize: '0.75rem', background: 'rgba(224,99,31,0.15)', color: 'var(--accent-orange-light)', padding: '4px 10px', borderRadius: '99px', fontWeight: 700, whiteSpace: 'nowrap' }}>
                             {p.status}
                           </span>
                         </td>
-                        <td style={{ padding: '14px 20px', fontSize: '0.82rem', color: '#435b4d' }}>
+                        <td style={{ padding: '14px 20px', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                           {p.impact}
                         </td>
                         <td style={{ padding: '14px 20px', textAlign: 'center' }}>

@@ -136,7 +136,7 @@ export default function HomePage() {
       </section>
 
       {/* 4. CORE VALUES */}
-      <section style={{ padding: '70px 0', background: 'linear-gradient(180deg, #ffffff 0%, #f4f8f5 100%)' }}>
+      <section style={{ padding: '70px 0', background: 'var(--bg-surface)' }}>
         <div className="container">
           <div className="section-header">
             <div className="section-tag">Pilar Nilai</div>
@@ -145,28 +145,28 @@ export default function HomePage() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px' }}>
-            <div style={{ background: '#ffffff', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid #e1eee5', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ background: 'var(--bg-card)', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>💡</div>
-              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#102619', marginBottom: '10px' }}>Inovatif &amp; Kritis</h4>
-              <p style={{ fontSize: '0.9rem', color: '#536c5e', lineHeight: 1.6 }}>Mendorong riset terapan dan kreasi solutif yang berorientasi pada pemecahan masalah riil di lingkungan kampus dan masyarakat.</p>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '10px' }}>Inovatif &amp; Kritis</h4>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Mendorong riset terapan dan kreasi solutif yang berorientasi pada pemecahan masalah riil di lingkungan kampus dan masyarakat.</p>
             </div>
 
-            <div style={{ background: '#ffffff', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid #e1eee5', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ background: 'var(--bg-card)', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>🤝</div>
-              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#102619', marginBottom: '10px' }}>Sinergis &amp; Kolaboratif</h4>
-              <p style={{ fontSize: '0.9rem', color: '#536c5e', lineHeight: 1.6 }}>Menjalin kemitraan strategis yang harmonis antar himpunan jurusan, lembaga eksternal kampus, dan mitra industri teknologi.</p>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '10px' }}>Sinergis &amp; Kolaboratif</h4>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Menjalin kemitraan strategis yang harmonis antar himpunan jurusan, lembaga eksternal kampus, dan mitra industri teknologi.</p>
             </div>
 
-            <div style={{ background: '#ffffff', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid #e1eee5', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ background: 'var(--bg-card)', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>🛡️</div>
-              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#102619', marginBottom: '10px' }}>Advokatif &amp; Peduli</h4>
-              <p style={{ fontSize: '0.9rem', color: '#536c5e', lineHeight: 1.6 }}>Garda terdepan dalam mengawal hak-hak akademis, penjaminan kesejahteraan ekonomi, dan inklusivitas fasilitas bagi seluruh mahasiswa.</p>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '10px' }}>Advokatif &amp; Peduli</h4>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Garda terdepan dalam mengawal hak-hak akademis, penjaminan kesejahteraan ekonomi, dan inklusivitas fasilitas bagi seluruh mahasiswa.</p>
             </div>
 
-            <div style={{ background: '#ffffff', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid #e1eee5', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ background: 'var(--bg-card)', padding: '30px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
               <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>📊</div>
-              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#102619', marginBottom: '10px' }}>Akuntabel &amp; Transparan</h4>
-              <p style={{ fontSize: '0.9rem', color: '#536c5e', lineHeight: 1.6 }}>Menjunjung tinggi etika kejujuran dan keterbukaan informasi publik dalam pengelolaan anggaran serta pelaksanaan amanah organisasi.</p>
+              <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '10px' }}>Akuntabel &amp; Transparan</h4>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>Menjunjung tinggi etika kejujuran dan keterbukaan informasi publik dalam pengelolaan anggaran serta pelaksanaan amanah organisasi.</p>
             </div>
           </div>
         </div>

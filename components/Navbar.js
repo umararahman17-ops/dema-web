@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -91,8 +92,9 @@ export default function Navbar() {
             </Link>
           </nav>
 
-          {/* Action Button */}
+          {/* Action Button & Theme Toggle */}
           <div className="nav-actions">
+            <ThemeToggle />
             <Link href="/kontak#aspirasi" className="btn btn-orange btn-sm">
               <span>💬</span> Kirim Aspirasi
             </Link>

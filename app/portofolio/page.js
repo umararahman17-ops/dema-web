@@ -26,7 +26,7 @@ export default function PortofolioPage() {
       </section>
 
       {/* Portfolio Showcase */}
-      <section style={{ padding: '70px 0 100px', background: '#f6faf7' }}>
+      <section style={{ padding: '70px 0 100px', background: 'var(--bg-page)' }}>
         <div className="container">
           <PortfolioSection initialPrograms={programs} showAllButton={false} />
 

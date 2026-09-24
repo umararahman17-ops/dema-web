@@ -1,12 +1,12 @@
 /* ==========================================================================
-   DEMA - Dewan Eksekutif Mahasiswa | Next.js Official Stylesheet
-   Modern, Clean, Glassmorphism & High-Visual Identity
+   DEMA - Dewan Eksekutif Mahasiswa | Official Theme Stylesheet
+   Modern, Clean, Glassmorphism, Light & Dark Mode
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap');
 
 :root {
-  /* Brand Identity Colors based on Logo */
+  /* Brand Fixed Accents (Derived from Logo) */
   --primary-green: #1e6b37;
   --primary-green-dark: #124b25;
   --primary-green-light: #2c8c4b;
@@ -16,21 +16,42 @@
   --accent-orange-dark: #c54e10;
   --accent-orange-light: #f57e3d;
   --accent-orange-rgb: 224, 99, 31;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   THEME: LIGHT MODE (Default)
+   ========================================================================== */
+:root, [data-theme="light"] {
+  --bg-page: #f8faf9;
+  --bg-surface: #ffffff;
+  --bg-surface-subtle: #f4f8f5;
+  --bg-card: #ffffff;
+  --bg-card-hover: #ffffff;
+  --border-color: #e2ede5;
+  --border-subtle: #ebf3ee;
   
-  --dark-bg: #09130d;
-  --dark-surface: #0f1e16;
-  --dark-card: #14281e;
-  --dark-border: rgba(46, 140, 75, 0.2);
-  
-  --light-bg: #f8faf9;
-  --light-surface: #ffffff;
-  --light-card: #ffffff;
-  --light-border: #e2e8e4;
-  
-  --text-main: #14211a;
+  --text-main: #122419;
+  --text-heading: #0d2116;
   --text-muted: #52665a;
-  --text-light: #f3f6f4;
-  --text-light-muted: #9eb5a7;
+  --text-subtle: #7a9485;
+
+  --nav-bg: rgba(255, 255, 255, 0.92);
+  --nav-scrolled: rgba(255, 255, 255, 0.98);
+  --nav-border: rgba(30, 107, 55, 0.12);
+
+  --hero-bg: radial-gradient(circle at 10% 20%, rgba(30, 107, 55, 0.08) 0%, transparent 40%),
+             radial-gradient(circle at 90% 80%, rgba(224, 99, 31, 0.08) 0%, transparent 45%),
+             linear-gradient(180deg, #f0f7f2 0%, #f8faf9 100%);
+  --hero-card-bg: rgba(255, 255, 255, 0.85);
 
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 8px 24px rgba(30, 107, 55, 0.08);
@@ -38,14 +59,54 @@
   --shadow-orange: 0 10px 30px rgba(224, 99, 31, 0.25);
   --shadow-green: 0 10px 30px rgba(30, 107, 55, 0.25);
 
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-full: 9999px;
-  
-  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --form-bg: #ffffff;
+  --form-border: #d3e2d8;
+  --table-head-bg: #eef5f0;
+  --table-head-border: #d8e7dc;
+  --table-row-border: #eaf1ec;
+  --modal-bg: #ffffff;
+  --tag-bg: #f0f6f2;
+}
+
+/* ==========================================================================
+   THEME: DARK MODE
+   ========================================================================== */
+[data-theme="dark"] {
+  --bg-page: #060e09;
+  --bg-surface: #0b1810;
+  --bg-surface-subtle: #0f2116;
+  --bg-card: #0e1e14;
+  --bg-card-hover: #13261a;
+  --border-color: rgba(46, 140, 75, 0.25);
+  --border-subtle: rgba(46, 140, 75, 0.15);
+
+  --text-main: #e2ede6;
+  --text-heading: #f2f8f4;
+  --text-muted: #95b3a1;
+  --text-subtle: #6d8e7b;
+
+  --nav-bg: rgba(8, 18, 12, 0.92);
+  --nav-scrolled: rgba(10, 22, 15, 0.98);
+  --nav-border: rgba(46, 140, 75, 0.25);
+
+  --hero-bg: radial-gradient(circle at 10% 20%, rgba(30, 107, 55, 0.25) 0%, transparent 45%),
+             radial-gradient(circle at 90% 80%, rgba(224, 99, 31, 0.2) 0%, transparent 50%),
+             linear-gradient(180deg, #09150e 0%, #060e09 100%);
+  --hero-card-bg: rgba(14, 30, 20, 0.85);
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.45);
+  --shadow-orange: 0 10px 30px rgba(224, 99, 31, 0.35);
+  --shadow-green: 0 10px 30px rgba(30, 107, 55, 0.35);
+
+  --form-bg: #0c1a12;
+  --form-border: rgba(46, 140, 75, 0.35);
+  --table-head-bg: #0d1e14;
+  --table-head-border: rgba(46, 140, 75, 0.3);
+  --table-row-border: rgba(46, 140, 75, 0.15);
+  --modal-bg: #0e1e14;
+  --tag-bg: #132a1d;
 }
 
 /* Base Styles */
@@ -63,10 +124,11 @@ html {
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-main);
-  background-color: var(--light-bg);
+  background-color: var(--bg-page);
   line-height: 1.65;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 a {
@@ -174,16 +236,16 @@ button, input, textarea, select {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: rgba(255, 255, 255, 0.92);
+  background: var(--nav-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(30, 107, 55, 0.12);
+  border-bottom: 1px solid var(--nav-border);
   transition: all 0.3s ease;
 }
 
 .main-nav.scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  background: var(--nav-scrolled);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
 .nav-container {
@@ -226,7 +288,7 @@ button, input, textarea, select {
 .brand-title {
   font-weight: 800;
   font-size: 1.35rem;
-  color: var(--primary-green-dark);
+  color: var(--text-heading);
   line-height: 1.1;
   letter-spacing: -0.5px;
 }
@@ -246,13 +308,13 @@ button, input, textarea, select {
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 30px;
 }
 
 .nav-link {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #334e3f;
+  color: var(--text-main);
   position: relative;
   padding: 6px 2px;
   transition: color 0.2s ease;
@@ -271,7 +333,7 @@ button, input, textarea, select {
 }
 
 .nav-link:hover, .nav-link.active {
-  color: var(--primary-green-dark);
+  color: var(--accent-orange);
 }
 
 .nav-link:hover::after, .nav-link.active::after {
@@ -281,7 +343,30 @@ button, input, textarea, select {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle-btn:hover {
+  background: var(--bg-surface-subtle);
+  border-color: var(--primary-green);
+  transform: rotate(15deg) scale(1.08);
 }
 
 /* Button Component */
@@ -338,17 +423,14 @@ button, input, textarea, select {
   transform: translateY(-2px);
 }
 
-.btn-outline-white {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(8px);
+[data-theme="dark"] .btn-outline-green {
+  color: var(--primary-green-light);
+  border-color: var(--primary-green-light);
 }
 
-.btn-outline-white:hover {
-  background: #ffffff;
-  color: var(--primary-green-dark);
-  border-color: #ffffff;
+[data-theme="dark"] .btn-outline-green:hover {
+  background: var(--primary-green-light);
+  color: #051009;
 }
 
 .btn-sm {
@@ -369,7 +451,7 @@ button, input, textarea, select {
   border: none;
   cursor: pointer;
   padding: 8px;
-  color: var(--primary-green-dark);
+  color: var(--text-heading);
   font-size: 1.5rem;
 }
 
@@ -377,10 +459,9 @@ button, input, textarea, select {
 .hero-section {
   position: relative;
   padding: 90px 0 100px;
-  background: radial-gradient(circle at 10% 20%, rgba(30, 107, 55, 0.08) 0%, transparent 40%),
-              radial-gradient(circle at 90% 80%, rgba(224, 99, 31, 0.08) 0%, transparent 45%),
-              linear-gradient(180deg, #f0f7f2 0%, #f8faf9 100%);
+  background: var(--hero-bg);
   overflow: hidden;
+  transition: background 0.3s ease;
 }
 
 .hero-grid {
@@ -394,13 +475,13 @@ button, input, textarea, select {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: rgba(30, 107, 55, 0.08);
-  border: 1px solid rgba(30, 107, 55, 0.2);
+  background: rgba(30, 107, 55, 0.12);
+  border: 1px solid var(--border-color);
   padding: 6px 16px;
   border-radius: var(--radius-full);
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--primary-green-dark);
+  color: var(--primary-green-light);
   margin-bottom: 24px;
 }
 
@@ -423,14 +504,14 @@ button, input, textarea, select {
   font-size: 3.25rem;
   line-height: 1.15;
   font-weight: 800;
-  color: #0d2116;
+  color: var(--text-heading);
   letter-spacing: -1.2px;
   margin-bottom: 20px;
 }
 
 .hero-subtitle {
   font-size: 1.125rem;
-  color: #4b6154;
+  color: var(--text-muted);
   line-height: 1.7;
   margin-bottom: 34px;
   max-width: 580px;
@@ -448,7 +529,7 @@ button, input, textarea, select {
   align-items: center;
   gap: 16px;
   padding-top: 20px;
-  border-top: 1px solid rgba(30, 107, 55, 0.15);
+  border-top: 1px solid var(--border-color);
 }
 
 .avatar-group {
@@ -459,7 +540,7 @@ button, input, textarea, select {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 3px solid #ffffff;
+  border: 3px solid var(--bg-surface);
   margin-left: -10px;
   object-fit: cover;
 }
@@ -470,12 +551,12 @@ button, input, textarea, select {
 
 .hero-proof-text {
   font-size: 0.875rem;
-  color: #3b5043;
+  color: var(--text-muted);
   line-height: 1.35;
 }
 
 .hero-proof-text strong {
-  color: var(--primary-green-dark);
+  color: var(--text-heading);
 }
 
 /* Hero Visual Box */
@@ -500,13 +581,12 @@ button, input, textarea, select {
   z-index: 2;
   width: 360px;
   height: 360px;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--hero-card-bg);
   backdrop-filter: blur(20px);
   border-radius: 36px;
   padding: 36px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 24px 60px rgba(30, 107, 55, 0.15),
-              inset 0 0 24px rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -523,14 +603,14 @@ button, input, textarea, select {
   width: 190px;
   height: 190px;
   object-fit: contain;
-  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.15));
 }
 
 .hero-emblem-title {
   margin-top: 18px;
   font-weight: 800;
   font-size: 1.25rem;
-  color: var(--primary-green-dark);
+  color: var(--text-heading);
   text-align: center;
 }
 
@@ -546,12 +626,12 @@ button, input, textarea, select {
 .floating-badge {
   position: absolute;
   z-index: 3;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-surface);
   backdrop-filter: blur(10px);
   border-radius: var(--radius-md);
   padding: 12px 18px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(30, 107, 55, 0.15);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -591,7 +671,7 @@ button, input, textarea, select {
 .badge-content h4 {
   font-size: 0.95rem;
   font-weight: 800;
-  color: #162a1e;
+  color: var(--text-heading);
   line-height: 1.1;
 }
 
@@ -609,14 +689,15 @@ button, input, textarea, select {
 }
 
 .stats-card-wrapper {
-  background: #ffffff;
+  background: var(--bg-surface);
   border-radius: var(--radius-lg);
-  box-shadow: 0 16px 40px rgba(30, 107, 55, 0.08);
-  border: 1px solid rgba(30, 107, 55, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
   padding: 34px 40px;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 30px;
+  transition: all 0.3s ease;
 }
 
 .stat-item {
@@ -633,15 +714,15 @@ button, input, textarea, select {
   top: 15%;
   height: 70%;
   width: 1px;
-  background: #e2ece5;
+  background: var(--border-subtle);
 }
 
 .stat-icon-wrap {
   width: 54px;
   height: 54px;
   border-radius: 14px;
-  background: rgba(30, 107, 55, 0.08);
-  color: var(--primary-green);
+  background: rgba(30, 107, 55, 0.12);
+  color: var(--primary-green-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -650,14 +731,14 @@ button, input, textarea, select {
 }
 
 .stat-icon-wrap.orange {
-  background: rgba(224, 99, 31, 0.1);
+  background: rgba(224, 99, 31, 0.14);
   color: var(--accent-orange);
 }
 
 .stat-number {
   font-size: 2rem;
   font-weight: 800;
-  color: #102619;
+  color: var(--text-heading);
   line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
@@ -684,7 +765,7 @@ button, input, textarea, select {
   color: var(--accent-orange);
   text-transform: uppercase;
   letter-spacing: 1.2px;
-  background: rgba(224, 99, 31, 0.09);
+  background: rgba(224, 99, 31, 0.12);
   padding: 5px 14px;
   border-radius: var(--radius-full);
   margin-bottom: 12px;
@@ -693,7 +774,7 @@ button, input, textarea, select {
 .section-title {
   font-size: 2.35rem;
   font-weight: 800;
-  color: #102418;
+  color: var(--text-heading);
   letter-spacing: -0.8px;
   line-height: 1.25;
   margin-bottom: 14px;
@@ -708,7 +789,8 @@ button, input, textarea, select {
 /* Section: About & Logo Philosophy */
 .section-about {
   padding: 70px 0 90px;
-  background: #ffffff;
+  background: var(--bg-surface);
+  transition: background 0.3s ease;
 }
 
 .about-grid {
@@ -721,21 +803,21 @@ button, input, textarea, select {
 .about-text-content h3 {
   font-size: 1.95rem;
   font-weight: 800;
-  color: #0f2418;
+  color: var(--text-heading);
   margin-bottom: 20px;
   line-height: 1.3;
 }
 
 .about-lead {
   font-size: 1.08rem;
-  color: #274032;
+  color: var(--text-main);
   font-weight: 500;
   margin-bottom: 18px;
 }
 
 .about-desc {
   font-size: 0.95rem;
-  color: #556c5f;
+  color: var(--text-muted);
   margin-bottom: 30px;
   line-height: 1.7;
 }
@@ -747,15 +829,15 @@ button, input, textarea, select {
 }
 
 .philosophy-card {
-  background: #f7faf8;
-  border: 1px solid #e2ede5;
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 20px;
   transition: all var(--transition-normal);
 }
 
 .philosophy-card:hover {
-  background: #ffffff;
+  background: var(--bg-card);
   border-color: var(--primary-green-light);
   transform: translateY(-4px);
   box-shadow: var(--shadow-md);
@@ -779,24 +861,24 @@ button, input, textarea, select {
 }
 
 .philosophy-icon.green {
-  background: rgba(30, 107, 55, 0.12);
-  color: var(--primary-green);
+  background: rgba(30, 107, 55, 0.15);
+  color: var(--primary-green-light);
 }
 
 .philosophy-icon.orange {
-  background: rgba(224, 99, 31, 0.12);
+  background: rgba(224, 99, 31, 0.15);
   color: var(--accent-orange);
 }
 
 .philosophy-card h4 {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #12281b;
+  color: var(--text-heading);
 }
 
 .philosophy-card p {
   font-size: 0.84rem;
-  color: #556b5d;
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
@@ -811,7 +893,7 @@ button, input, textarea, select {
   padding: 44px;
   color: white;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(18, 56, 30, 0.25);
+  box-shadow: 0 20px 50px rgba(18, 56, 30, 0.3);
 }
 
 .about-banner-card::before {
@@ -856,7 +938,8 @@ button, input, textarea, select {
 /* Section: Portfolio & Programs */
 .section-portfolio {
   padding: 90px 0;
-  background: #f4f8f5;
+  background: var(--bg-surface-subtle);
+  transition: background 0.3s ease;
 }
 
 .portfolio-filter-bar {
@@ -870,9 +953,9 @@ button, input, textarea, select {
 .filter-btn {
   padding: 9px 20px;
   border-radius: var(--radius-full);
-  border: 1px solid rgba(30, 107, 55, 0.2);
-  background: #ffffff;
-  color: #3b5042;
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  color: var(--text-main);
   font-weight: 600;
   font-size: 0.88rem;
   cursor: pointer;
@@ -880,15 +963,15 @@ button, input, textarea, select {
 }
 
 .filter-btn:hover {
-  background: rgba(30, 107, 55, 0.08);
-  color: var(--primary-green-dark);
+  background: var(--border-subtle);
+  color: var(--primary-green-light);
 }
 
 .filter-btn.active {
   background: var(--primary-green);
   color: #ffffff;
   border-color: var(--primary-green);
-  box-shadow: 0 4px 14px rgba(30, 107, 55, 0.25);
+  box-shadow: 0 4px 14px rgba(30, 107, 55, 0.3);
 }
 
 .portfolio-grid {
@@ -898,11 +981,11 @@ button, input, textarea, select {
 }
 
 .portfolio-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-  border: 1px solid #e1eee5;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
   transition: all var(--transition-normal);
   display: flex;
   flex-direction: column;
@@ -911,13 +994,13 @@ button, input, textarea, select {
 .portfolio-card:hover {
   transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(30, 107, 55, 0.35);
+  border-color: rgba(30, 107, 55, 0.45);
 }
 
 .portfolio-card-media {
   position: relative;
   height: 220px;
-  background: #14281e;
+  background: #0d1a12;
   overflow: hidden;
 }
 
@@ -970,33 +1053,33 @@ button, input, textarea, select {
   align-items: center;
   gap: 14px;
   font-size: 0.8rem;
-  color: #637a6d;
+  color: var(--text-subtle);
   margin-bottom: 12px;
 }
 
 .portfolio-card-title {
   font-size: 1.25rem;
   font-weight: 800;
-  color: #11261a;
+  color: var(--text-heading);
   line-height: 1.3;
   margin-bottom: 10px;
   transition: color var(--transition-fast);
 }
 
 .portfolio-card:hover .portfolio-card-title {
-  color: var(--primary-green);
+  color: var(--accent-orange);
 }
 
 .portfolio-card-desc {
   font-size: 0.9rem;
-  color: #4b6255;
+  color: var(--text-muted);
   line-height: 1.6;
   margin-bottom: 20px;
   flex: 1;
 }
 
 .portfolio-impact-strip {
-  background: #f7faf8;
+  background: var(--bg-surface-subtle);
   border-radius: var(--radius-sm);
   padding: 10px 14px;
   display: flex;
@@ -1004,7 +1087,7 @@ button, input, textarea, select {
   align-items: center;
   font-size: 0.82rem;
   margin-bottom: 18px;
-  border: 1px solid #e8f0eb;
+  border: 1px solid var(--border-color);
 }
 
 .impact-label {
@@ -1013,7 +1096,7 @@ button, input, textarea, select {
 
 .impact-value {
   font-weight: 700;
-  color: var(--primary-green-dark);
+  color: var(--primary-green-light);
 }
 
 .portfolio-card-footer {
@@ -1021,13 +1104,13 @@ button, input, textarea, select {
   align-items: center;
   justify-content: space-between;
   padding-top: 16px;
-  border-top: 1px solid #ebf2ed;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .btn-detail-link {
   font-weight: 700;
   font-size: 0.88rem;
-  color: var(--primary-green);
+  color: var(--primary-green-light);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -1086,19 +1169,19 @@ button, input, textarea, select {
 }
 
 .cta-card-form {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg-surface);
   backdrop-filter: blur(12px);
   border-radius: var(--radius-lg);
   padding: 34px;
   color: var(--text-main);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
 }
 
 .form-title {
   font-size: 1.35rem;
   font-weight: 800;
-  color: #12291c;
+  color: var(--text-heading);
   margin-bottom: 6px;
 }
 
@@ -1116,7 +1199,7 @@ button, input, textarea, select {
   display: block;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #274031;
+  color: var(--text-main);
   margin-bottom: 6px;
 }
 
@@ -1124,16 +1207,16 @@ button, input, textarea, select {
   width: 100%;
   padding: 11px 14px;
   border-radius: var(--radius-sm);
-  border: 1.5px solid #d3e2d8;
-  background: #ffffff;
-  color: #14211a;
+  border: 1.5px solid var(--form-border);
+  background: var(--form-bg);
+  color: var(--text-main);
   outline: none;
   transition: border-color var(--transition-fast);
 }
 
 .form-control:focus {
   border-color: var(--primary-green);
-  box-shadow: 0 0 0 3px rgba(30, 107, 55, 0.15);
+  box-shadow: 0 0 0 3px rgba(30, 107, 55, 0.25);
 }
 
 textarea.form-control {
@@ -1143,7 +1226,7 @@ textarea.form-control {
 
 /* Footer */
 .main-footer {
-  background: #09150e;
+  background: #060e08;
   color: #9cb5a6;
   padding: 80px 0 30px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -1267,7 +1350,7 @@ textarea.form-control {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(8, 20, 13, 0.7);
+  background: rgba(4, 12, 7, 0.75);
   backdrop-filter: blur(8px);
   z-index: 9999;
   display: flex;
@@ -1285,14 +1368,15 @@ textarea.form-control {
 }
 
 .modal-container {
-  background: #ffffff;
+  background: var(--modal-bg);
+  color: var(--text-main);
   border-radius: var(--radius-lg);
   max-width: 650px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(30, 107, 55, 0.2);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--border-color);
   transform: scale(0.92);
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
@@ -1308,7 +1392,7 @@ textarea.form-control {
   right: 16px;
   width: 36px;
   height: 36px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.5);
   color: white;
   border-radius: 50%;
   border: none;
@@ -1327,7 +1411,7 @@ textarea.form-control {
 
 .modal-media {
   height: 260px;
-  background: #14281e;
+  background: #0d1a12;
   overflow: hidden;
   position: relative;
 }
@@ -1347,11 +1431,12 @@ textarea.form-control {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background: #123820;
-  color: white;
+  background: var(--bg-surface);
+  color: var(--text-heading);
   padding: 14px 24px;
   border-radius: var(--radius-md);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-color);
   border-left: 5px solid var(--accent-orange);
   z-index: 10000;
   display: flex;
@@ -1456,11 +1541,12 @@ textarea.form-control {
     width: 80%;
     max-width: 320px;
     height: calc(100vh - 80px);
-    background: #ffffff;
+    background: var(--bg-surface);
     flex-direction: column;
     align-items: flex-start;
     padding: 30px 24px;
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+    border-right: 1px solid var(--border-color);
     transition: left 0.3s ease;
     z-index: 999;
   }
