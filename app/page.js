@@ -5,6 +5,7 @@ import StatsCounter from '@/components/StatsCounter';
 import PortfolioSection from '@/components/PortfolioSection';
 import AspirasiForm from '@/components/AspirasiForm';
 import HeroEmblem from '@/components/HeroEmblem';
+import LogoPhilosophy3D from '@/components/LogoPhilosophy3D';
 import { IconCompass, IconBook, IconBulb, IconNetwork, IconShield, IconChart } from '@/components/Icons';
 
 export const revalidate = 0; // Dynamic data for real-time portfolio updates
@@ -81,12 +82,10 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right: Vision Banner */}
+            {/* Right: Vision Banner with 3D Exploded Philosophy Logo */}
             <div className="about-visual-column">
               <div className="about-banner-card">
-                <div className="banner-logo-center">
-                  <img src="/logo.png" alt="Logo DEMA" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                </div>
+                <LogoPhilosophy3D defaultExploded={true} />
                 <div className="banner-quote">
                   &ldquo;Mewujudkan kepemimpinan yang inklusif, profesional, dan berintegritas untuk menciptakan lingkungan organisasi yang hangat serta terbuka bagi seluruh mahasiswa.&rdquo;
                 </div>

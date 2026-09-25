@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { logoPhilosophy } from '@/lib/data';
+import LogoPhilosophy3D from '@/components/LogoPhilosophy3D';
 import { IconAtom, IconGear, IconOctagon, IconPillar, IconTarget } from '@/components/Icons';
 
 const philoIcons = {
@@ -83,11 +84,10 @@ export default function ProfilPage() {
           </div>
 
           <div className="profile-logo-grid">
-            {/* Logo Showcase Box */}
-            {/* Logo Showcase Box */}
+            {/* Logo Showcase Box with 3D Exploded Layers */}
             <div className="profile-logo-showcase">
-              <img src="/logo.png" alt="Logo DEMA" className="profile-logo-img" />
-              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '4px' }}>Lambang Resmi DEMA</h3>
+              <LogoPhilosophy3D defaultExploded={true} />
+              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-heading)', marginTop: '16px', marginBottom: '4px' }}>Lambang Resmi DEMA</h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--accent-orange)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '12px' }}>Integrasi Sains &amp; Teknologi</p>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', background: 'var(--bg-surface-subtle)', padding: '6px 14px', borderRadius: '99px', border: '1px solid var(--border-color)' }}>
                 Dekonstruksi 4 Elemen Utama &bull; Terpisah Sesuai Makna
