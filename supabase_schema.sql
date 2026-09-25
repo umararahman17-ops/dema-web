@@ -146,3 +146,88 @@ SET
 
 -- Sesuaikan auto-increment sequence ke ID tertinggi berikutnya
 SELECT setval(pg_get_serial_sequence('program_kerja', 'id'), COALESCE(MAX(id), 1)) FROM public.program_kerja;
+
+-- ===================================================================
+-- 6. BUAT TABEL aspirasi (DATABASE ASPIRASI MASUK PENGURUS DEMA)
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS public.aspirasi (
+  id BIGSERIAL PRIMARY KEY,
+  nama TEXT DEFAULT 'Anonim',
+  prodi TEXT NOT NULL,
+  email TEXT DEFAULT '-',
+  kategori TEXT DEFAULT 'Umum',
+  pesan TEXT NOT NULL,
+  status TEXT DEFAULT 'Menunggu Ditinjau',
+  catatan_pengurus TEXT DEFAULT '',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Aktifkan RLS
+ALTER TABLE public.aspirasi ENABLE ROW LEVEL SECURITY;
+
+-- Kebijakan RLS
+DROP POLICY IF EXISTS "Izinkan akses penuh aspirasi" ON public.aspirasi;
+CREATE POLICY "Izinkan akses penuh aspirasi"
+ON public.aspirasi
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+
+-- Masukkan Data Contoh Aspirasi
+INSERT INTO public.aspirasi (id, nama, prodi, email, kategori, pesan, status, catatan_pengurus)
+VALUES
+  (
+    1,
+    'M. Rizky Pratama',
+    'Teknik Informatika (2024)',
+    'rizky.ti24@student.uinsa.ac.id',
+    'Fasilitas & Sarpras Kampus',
+    'Mohon izin mengusulkan penambahan colokan listrik dan perbaikan proyektor di Lab Komputasi Lantai 4 Gedung Saintek, karena proyektor sering berkedip saat jam praktikum berlangsung.',
+    'Sedang Diproses',
+    'Sudah diajukan dalam audiensi nota dinas ke Kasubbag Sarpras Fakultas pada 20 September 2026.'
+  ),
+  (
+    2,
+    'Siti Nurhaliza',
+    'Sistem Informasi (2023)',
+    'siti.si23@student.uinsa.ac.id',
+    'Advokasi Biaya / UKT',
+    'Ingin berkonsultasi mengenai alur pengajuan perpanjangan masa banding UKT semester depan dan pendampingan berkas advokasi bagi keluarga terdampak musibah.',
+    'Selesai Ditindaklanjuti',
+    'Departemen Advokasi telah mendampingi pengisian form banding dan berkas telah divalidasi ke Dekanat.'
+  ),
+  (
+    3,
+    'Ahmad Fajar',
+    'Biologi (2025)',
+    'fajar.bio25@student.uinsa.ac.id',
+    'Akademik & Perkuliahan',
+    'Saran untuk penjadwalan ujian responsi praktikum agar tidak bertumpuk pada hari yang sama dengan ujian teori, agar mahasiswa lebih fokus dan optimal.',
+    'Menunggu Ditinjau',
+    ''
+  ),
+  (
+    4,
+    'Dian Ayu Lestari',
+    'Teknik Lingkungan (2024)',
+    'dian.tl24@student.uinsa.ac.id',
+    'Ide Program & Kolaborasi',
+    'Gagasan usulan program kolaborasi riset pengolahan limbah plastik dan audit emisi karbon di lingkungan kampus FST UINSA bersama HMJ dan Komunitas Green Campus.',
+    'Sedang Diproses',
+    'Diteruskan ke Biro Ristek & Inovasi untuk diagendakan dalam diskusi proker gabungan.'
+  ),
+  (
+    5,
+    'Bayu Hendrawan',
+    'Arsitektur (2023)',
+    'bayu.arsitektur23@gmail.com',
+    'Kritik & Masukan DEMA',
+    'Apresiasi untuk peluncuran website resmi DEMA yang sangat interaktif dan responsif! Usulan ke depannya agar ringkasan hasil rapat dan ketercapaian program kerja dapat diakses rutin di portal ini.',
+    'Selesai Ditindaklanjuti',
+    'Terima kasih atas apresiasinya. Fitur publikasi portofolio berkala telah diintegrasikan pada portal resmi.'
+  )
+ON CONFLICT (id) DO NOTHING;
+
+SELECT setval(pg_get_serial_sequence('aspirasi', 'id'), COALESCE(MAX(id), 1)) FROM public.aspirasi;
