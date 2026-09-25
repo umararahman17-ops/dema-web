@@ -1,6 +1,7 @@
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import MobileTaskbar from '@/components/MobileTaskbar';
 
 export const metadata = {
   metadataBase: new URL('http://localhost:3000'),
@@ -45,6 +46,7 @@ export default function RootLayout({ children }) {
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <MobileTaskbar />
       </body>
     </html>
   );
