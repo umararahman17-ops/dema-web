@@ -63,11 +63,26 @@ export default function AspirasiForm() {
           <input
             type="text"
             className="form-control"
-            placeholder=""
+            placeholder="Cth: Teknik Informatika 2024"
             required
             value={formData.prodi}
             onChange={(e) => setFormData({ ...formData, prodi: e.target.value })}
           />
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Alamat Email Aktif *</label>
+          <input
+            type="email"
+            className="form-control"
+            placeholder="nama@student.uinsa.ac.id atau email pribadi aktif"
+            required
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          />
+          <small style={{ display: 'block', marginTop: '6px', fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+            💡 <strong>Wajib diisi:</strong> Pengurus DEMA akan mengirimkan respon resmi dan pembaruan progres tindak lanjut langsung ke email Anda.
+          </small>
         </div>
 
         <div className="form-group">

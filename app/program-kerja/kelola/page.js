@@ -885,7 +885,7 @@ export default function KelolaPengurusPage() {
                       </div>
 
                       {/* Catatan Tindak Lanjut */}
-                      <div className="form-group" style={{ marginBottom: '24px' }}>
+                      <div className="form-group" style={{ marginBottom: '18px' }}>
                         <label className="form-label" style={{ fontWeight: 700 }}>Catatan Tindak Lanjut / Respon Pengurus</label>
                         <textarea
                           className="form-control"
@@ -895,6 +895,26 @@ export default function KelolaPengurusPage() {
                           onChange={(e) => setModalTanggapan(e.target.value)}
                         />
                       </div>
+
+                      {/* Tombol Kirim Email Balasan Langsung */}
+                      {selectedAspirasi.email && selectedAspirasi.email !== '-' && (
+                        <div style={{ marginBottom: '22px', background: 'rgba(30, 107, 55, 0.08)', padding: '12px 16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(30, 107, 55, 0.2)' }}>
+                          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                            Kirim balasan resmi langsung ke mahasiswa via email:
+                          </div>
+                          <a
+                            href={`mailto:${selectedAspirasi.email}?subject=${encodeURIComponent(`[Respon DEMA FST] Tindak Lanjut Aspirasi: ${selectedAspirasi.kategori}`)}&body=${encodeURIComponent(
+                              `Halo ${selectedAspirasi.nama},\n\nTerima kasih telah menyampaikan aspirasi Anda kepada Dewan Eksekutif Mahasiswa (DEMA) FST UIN Sunan Ampel Surabaya.\n\nRingkasan Aspirasi Anda:\n"${selectedAspirasi.pesan}"\n\nStatus: ${modalStatus}\nTindak Lanjut & Respon DEMA:\n${modalTanggapan || 'Aspirasi Anda sedang kami tindaklanjuti bersama pihak terkait.'}\n\nJika ada pertanyaan lebih lanjut, silakan balas email ini.\n\nSalam hangat,\nBadan Pengurus DEMA FST UINSA\nKabinet Wigyamerta Antasena`
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn btn-outline-green btn-sm"
+                            style={{ width: '100%', padding: '9px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '0.85rem' }}
+                          >
+                            ✉️ Buka Email untuk Kirim Feedback ke {selectedAspirasi.email}
+                          </a>
+                        </div>
+                      )}
 
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
                         <button

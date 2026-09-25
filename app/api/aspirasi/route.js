@@ -21,10 +21,10 @@ export async function POST(request) {
   try {
     const body = await request.json();
 
-    if (!body.prodi || !body.pesan) {
+    if (!body.prodi || !body.pesan || !body.email || !body.email.trim().includes('@')) {
       return NextResponse.json({
         success: false,
-        message: 'Program studi dan pesan aspirasi wajib diisi.'
+        message: 'Program studi, alamat email aktif, dan pesan aspirasi wajib diisi agar pengurus dapat mengirimkan feedback.'
       }, { status: 400 });
     }
 
