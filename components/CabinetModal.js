@@ -16,7 +16,8 @@ import {
   IconRocket, 
   IconCheck, 
   IconChat, 
-  IconBook 
+  IconBook,
+  IconTrophy 
 } from '@/components/Icons';
 
 const deptIcons = {
@@ -28,6 +29,7 @@ const deptIcons = {
   compass: <IconCompass size={20} />,
   building: <IconBuilding size={20} />,
   bulb: <IconBulb size={20} />,
+  trophy: <IconTrophy size={20} />,
 };
 
 export default function CabinetModal({ isOpen, onClose }) {
@@ -113,7 +115,7 @@ export default function CabinetModal({ isOpen, onClose }) {
             className={`cabinet-tab-btn ${activeTab === 'departments' ? 'active' : ''}`}
             onClick={() => setActiveTab('departments')}
           >
-            <span>Struktur &amp; 8 Departemen</span>
+            <span>Struktur BPI &amp; 6 Departemen</span>
           </button>
           <button 
             type="button"
@@ -208,25 +210,25 @@ export default function CabinetModal({ isOpen, onClose }) {
           {/* TAB 2: STRUCTURE & 8 DEPARTMENTS */}
           {activeTab === 'departments' && (
             <div className="cabinet-tab-content">
-              {/* Badan Pengurus Harian */}
+              {/* Badan Pengurus Inti (BPI) */}
               <div className="cabinet-section-group">
                 <h3 className="cabinet-subheading">
-                  <span className="subheading-accent">#</span> Badan Pengurus Harian (BPH)
+                  <span className="subheading-accent">#</span> Badan Pengurus Inti (BPI)
                 </h3>
                 <div className="cabinet-bph-grid">
-                  {cabinetDetails.bph.map((bph, idx) => (
+                  {(cabinetDetails.bpi || cabinetDetails.bph).map((bpi, idx) => (
                     <div key={idx} className="cabinet-bph-card">
-                      <div className="bph-role-title">{bph.role}</div>
-                      <div className="bph-role-desc">{bph.label}</div>
+                      <div className="bph-role-title">{bpi.role}</div>
+                      <div className="bph-role-desc">{bpi.label}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* 8 Departemen & Biro */}
+              {/* 6 Departemen Pelaksana */}
               <div className="cabinet-section-group">
                 <h3 className="cabinet-subheading">
-                  <span className="subheading-accent">#</span> 8 Departemen &amp; Biro Pelaksana
+                  <span className="subheading-accent">#</span> 6 Departemen Pelaksana
                 </h3>
                 <div className="cabinet-dept-grid">
                   {cabinetDetails.departments.map((dept, idx) => (

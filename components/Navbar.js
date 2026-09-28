@@ -201,7 +201,7 @@ export default function Navbar() {
               <h4 className="drawer-cabinet-name">Kabinet Wigyamerta Antasena</h4>
             </div>
           </div>
-          <p className="drawer-cabinet-desc">Sentuh untuk melihat filosofi, visi misi, &amp; struktur 8 departemen</p>
+          <p className="drawer-cabinet-desc">Sentuh untuk melihat filosofi, visi misi, &amp; struktur BPI serta 6 departemen</p>
           <div className="drawer-cabinet-action">
             <span>Buka Detail Kabinet</span>
             <span className="arrow-right">&rarr;</span>
