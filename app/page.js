@@ -1,17 +1,22 @@
 import Link from 'next/link';
 import { stats, logoPhilosophy } from '@/lib/data';
 import { getAllPrograms } from '@/lib/db';
+import { getAllAlumni } from '@/lib/alumni';
 import StatsCounter from '@/components/StatsCounter';
 import PortfolioSection from '@/components/PortfolioSection';
+import AlumniSection from '@/components/AlumniSection';
 import AspirasiForm from '@/components/AspirasiForm';
 import HeroEmblem from '@/components/HeroEmblem';
 import LogoPhilosophy3D from '@/components/LogoPhilosophy3D';
 import { IconCompass, IconBook, IconBulb, IconNetwork, IconShield, IconChart } from '@/components/Icons';
 
-export const revalidate = 0; // Dynamic data for real-time portfolio updates
+export const revalidate = 0; // Dynamic data for real-time updates
 
 export default async function HomePage() {
-  const programs = await getAllPrograms();
+  const [programs, alumni] = await Promise.all([
+    getAllPrograms(),
+    getAllAlumni()
+  ]);
 
   return (
     <>
@@ -156,7 +161,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 6. SUARA MAHASISWA & ASPIRASI (CTA) */}
+      {/* 6. KESAN & PESAN ALUMNI FST */}
+      <AlumniSection initialAlumni={alumni} />
+
+      {/* 7. SUARA MAHASISWA & ASPIRASI (CTA) */}
       <section className="section-cta" id="aspirasi">
         <div className="container">
           <div className="cta-grid">

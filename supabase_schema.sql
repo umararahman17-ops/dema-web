@@ -231,3 +231,89 @@ VALUES
 ON CONFLICT (id) DO NOTHING;
 
 SELECT setval(pg_get_serial_sequence('aspirasi', 'id'), COALESCE(MAX(id), 1)) FROM public.aspirasi;
+
+-- ===================================================================
+-- 7. BUAT TABEL kesan_pesan_alumni (TESTIMONI & INSPIRASI ALUMNI)
+-- ===================================================================
+CREATE TABLE IF NOT EXISTS public.kesan_pesan_alumni (
+  id BIGSERIAL PRIMARY KEY,
+  nama TEXT NOT NULL,
+  prodi TEXT NOT NULL,
+  angkatan TEXT DEFAULT '-',
+  tahun_lulus TEXT DEFAULT '-',
+  jabatan TEXT DEFAULT 'Praktisi Profesional',
+  instansi TEXT DEFAULT '-',
+  kesan TEXT NOT NULL,
+  pesan TEXT NOT NULL,
+  avatar TEXT DEFAULT '',
+  rating INTEGER DEFAULT 5,
+  kategori_prodi TEXT DEFAULT 'umum',
+  verified BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Aktifkan RLS
+ALTER TABLE public.kesan_pesan_alumni ENABLE ROW LEVEL SECURITY;
+
+-- Kebijakan RLS
+DROP POLICY IF EXISTS "Izinkan akses penuh alumni" ON public.kesan_pesan_alumni;
+CREATE POLICY "Izinkan akses penuh alumni"
+ON public.kesan_pesan_alumni
+FOR ALL
+TO anon, authenticated
+USING (true)
+WITH CHECK (true);
+
+-- Masukkan Data Contoh Alumni
+INSERT INTO public.kesan_pesan_alumni (id, nama, prodi, angkatan, tahun_lulus, jabatan, instansi, kesan, pesan, avatar, rating, kategori_prodi, verified)
+VALUES
+  (
+    1,
+    'Muhammad Farhan, S.Kom.',
+    'Sistem Informasi',
+    '2019',
+    '2023',
+    'Lead Enterprise Data Architect',
+    'Tech Enterprise Indonesia',
+    'Berproses di DEMA FST UINSA menempa kepemimpinan, cara berpikir kritis, dan kemampuan diplomasi di luar bangku kuliah. Ruang riset dan kolaborasi ormawa membuka gerbang karir saya di industri teknologi informasi modern.',
+    'Kuasai fundamental arsitektur sistem dan data, jangan ragu melahirkan inovasi digital dari riset kampus, dan rawat etika integritas moral. Dunia industri menanti karya terbaik kalian!',
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+    5,
+    'sistem-informasi',
+    true
+  ),
+  (
+    2,
+    'Nadia Safitri, S.Si.',
+    'Biologi',
+    '2018',
+    '2022',
+    'Environmental Sustainability Specialist',
+    'Lembaga Konservasi & Riset Hayati',
+    'DEMA FST adalah rumah yang menyatukan sains hayati dengan kepekaan sosial kemasyarakatan. Setiap program kerja pengabdian melatih kami untuk selalu membumikan sains demi kemaslahatan masyarakat luas.',
+    'Jangan pernah merasa riset sains itu jauh dari masyarakat. Teruslah bereksplorasi di laboratorium, publikasikan karya ilmiah, dan jadikan ilmu bermanfaat sebagai jariyah peradaban.',
+    'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
+    5,
+    'sains-eksakta',
+    true
+  ),
+  (
+    3,
+    'Ahmad Zaki Al-Farisi, S.Ars.',
+    'Arsitektur',
+    '2019',
+    '2023',
+    'Architectural Project Lead & Urban Designer',
+    'Studio Rancang Bangun Nusantara',
+    'Sinergi antar program studi di FST melalui DEMA mengajarkan saya bahwa arsitektur bukan sekadar estetika bangunan fisik, melainkan integrasi harmoni lingkungan hidup, sains komputasi, dan nilai humanisme.',
+    'Manfaatkan ruang organisasi ormawa untuk melatih negosiasi gagasan dan kerja lintas disiplin. Jaga terus semangat paseduluran dan kebanggaan almamater FST UINSA.',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+    5,
+    'arsitektur',
+    true
+  )
+ON CONFLICT (id) DO NOTHING;
+
+SELECT setval(pg_get_serial_sequence('kesan_pesan_alumni', 'id'), COALESCE(MAX(id), 1)) FROM public.kesan_pesan_alumni;
+

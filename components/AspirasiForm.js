@@ -63,7 +63,7 @@ export default function AspirasiForm() {
           <input
             type="text"
             className="form-control"
-            placeholder="Cth: Teknik Informatika 2024"
+            placeholder="Cth: Sistem Informasi 2024 / Teknik Sipil 2023"
             required
             value={formData.prodi}
             onChange={(e) => setFormData({ ...formData, prodi: e.target.value })}

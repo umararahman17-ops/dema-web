@@ -41,6 +41,7 @@ export default function Footer() {
               <li><Link href="/">Beranda Utama</Link></li>
               <li><Link href="/profil">Profil &amp; Filosofi Lambang</Link></li>
               <li><Link href="/portofolio">Portofolio Program Kerja</Link></li>
+              <li><Link href="/#kesan-pesan-alumni">Kesan &amp; Pesan Alumni</Link></li>
               <li><Link href="/kontak">Layanan Aspirasi</Link></li>
             </ul>
           </div>
