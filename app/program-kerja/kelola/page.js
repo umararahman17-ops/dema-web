@@ -1115,87 +1115,118 @@ export default function KelolaPengurusPage() {
 
               {/* Modal Detail / Tindak Lanjut */}
               {selectedAspirasi && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                  <div style={{ background: 'var(--bg-card)', width: '100%', maxWidth: '580px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-lg)', overflow: 'hidden' }}>
-                    <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <div 
+                  style={{ 
+                    position: 'fixed', 
+                    inset: 0, 
+                    background: 'rgba(0,0,0,0.7)', 
+                    backdropFilter: 'blur(6px)', 
+                    zIndex: 9999, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    padding: '20px',
+                    overflowY: 'auto'
+                  }}
+                  onClick={() => setSelectedAspirasi(null)}
+                >
+                  <div 
+                    style={{ 
+                      background: 'var(--bg-card)', 
+                      width: '100%', 
+                      maxWidth: '580px', 
+                      maxHeight: '90vh', 
+                      borderRadius: 'var(--radius-lg)', 
+                      border: '1px solid var(--border-color)', 
+                      boxShadow: '0 25px 60px rgba(0,0,0,0.4)', 
+                      display: 'flex',
+                      flexDirection: 'column',
+                      overflow: 'hidden',
+                      margin: 'auto'
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0, background: 'var(--bg-card)' }}>
+                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)', display: 'inline-flex', alignItems: 'center', gap: '8px', margin: 0 }}>
                         <IconEdit size={20} /> Tindak Lanjut Aspirasi #{selectedAspirasi.id}
                       </h3>
                       <button
                         type="button"
                         onClick={() => setSelectedAspirasi(null)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', padding: '4px' }}
                       >
                         <IconClose size={20} />
                       </button>
                     </div>
 
-                    <form onSubmit={handleSaveAspirasiStatus} style={{ padding: '24px' }}>
-                      {/* Rincian Pengirim */}
-                      <div style={{ background: 'var(--bg-surface-subtle)', padding: '14px', borderRadius: 'var(--radius-md)', marginBottom: '18px', fontSize: '0.85rem' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-                          <div><strong>Pengirim:</strong> {selectedAspirasi.nama}</div>
-                          <div><strong>Prodi:</strong> {selectedAspirasi.prodi}</div>
-                          <div><strong>Email:</strong> {selectedAspirasi.email}</div>
-                          <div><strong>Kategori:</strong> {selectedAspirasi.kategori}</div>
-                        </div>
-                        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '8px', marginTop: '8px' }}>
-                          <strong>Isi Aspirasi:</strong>
-                          <p style={{ marginTop: '4px', color: 'var(--text-main)', lineHeight: 1.6 }}>
-                            &ldquo;{selectedAspirasi.pesan}&rdquo;
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Update Status */}
-                      <div className="form-group" style={{ marginBottom: '16px' }}>
-                        <label className="form-label" style={{ fontWeight: 700 }}>Status Aspirasi Saat Ini</label>
-                        <select
-                          className="form-control"
-                          value={modalStatus}
-                          onChange={(e) => setModalStatus(e.target.value)}
-                          required
-                        >
-                          <option value="Menunggu Ditinjau">Menunggu Ditinjau</option>
-                          <option value="Sedang Diproses">Sedang Diproses (Audiensi / Koordinasi)</option>
-                          <option value="Selesai Ditindaklanjuti">Selesai Ditindaklanjuti</option>
-                          <option value="Diarsipkan">Diarsipkan</option>
-                        </select>
-                      </div>
-
-                      {/* Catatan Tindak Lanjut */}
-                      <div className="form-group" style={{ marginBottom: '18px' }}>
-                        <label className="form-label" style={{ fontWeight: 700 }}>Catatan Tindak Lanjut / Respon Pengurus</label>
-                        <textarea
-                          className="form-control"
-                          rows="4"
-                          placeholder="Tuliskan respon resmi DEMA atau nota dinas tindak lanjut untuk aspirasi ini..."
-                          value={modalTanggapan}
-                          onChange={(e) => setModalTanggapan(e.target.value)}
-                        />
-                      </div>
-
-                      {/* Tombol Kirim Email Balasan Langsung */}
-                      {selectedAspirasi.email && selectedAspirasi.email !== '-' && (
-                        <div style={{ marginBottom: '22px', background: 'rgba(30, 107, 55, 0.08)', padding: '12px 16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(30, 107, 55, 0.2)' }}>
-                          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                            Kirim balasan resmi langsung ke mahasiswa via email:
+                    <form onSubmit={handleSaveAspirasiStatus} style={{ display: 'flex', flexDirection: 'column', flex: '1 1 auto', overflow: 'hidden' }}>
+                      <div style={{ padding: '24px', overflowY: 'auto', flex: '1 1 auto', WebkitOverflowScrolling: 'touch' }}>
+                        {/* Rincian Pengirim */}
+                        <div style={{ background: 'var(--bg-surface-subtle)', padding: '14px', borderRadius: 'var(--radius-md)', marginBottom: '18px', fontSize: '0.85rem' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+                            <div><strong>Pengirim:</strong> {selectedAspirasi.nama}</div>
+                            <div><strong>Prodi:</strong> {selectedAspirasi.prodi}</div>
+                            <div><strong>Email:</strong> {selectedAspirasi.email}</div>
+                            <div><strong>Kategori:</strong> {selectedAspirasi.kategori}</div>
                           </div>
-                          <a
-                            href={`mailto:${selectedAspirasi.email}?subject=${encodeURIComponent(`[Respon DEMA FST] Tindak Lanjut Aspirasi: ${selectedAspirasi.kategori}`)}&body=${encodeURIComponent(
-                              `Halo ${selectedAspirasi.nama},\n\nTerima kasih telah menyampaikan aspirasi Anda kepada Dewan Eksekutif Mahasiswa (DEMA) FST UIN Sunan Ampel Surabaya.\n\nRingkasan Aspirasi Anda:\n"${selectedAspirasi.pesan}"\n\nStatus: ${modalStatus}\nTindak Lanjut & Respon DEMA:\n${modalTanggapan || 'Aspirasi Anda sedang kami tindaklanjuti bersama pihak terkait.'}\n\nJika ada pertanyaan lebih lanjut, silakan balas email ini.\n\nSalam hangat,\nBadan Pengurus DEMA FST UINSA\nKabinet Wigyamerta Antasena`
-                            )}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn btn-outline-green btn-sm"
-                            style={{ width: '100%', padding: '9px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '0.85rem' }}
-                          >
-                            ✉️ Buka Email untuk Kirim Feedback ke {selectedAspirasi.email}
-                          </a>
+                          <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '8px', marginTop: '8px' }}>
+                            <strong>Isi Aspirasi:</strong>
+                            <p style={{ marginTop: '4px', color: 'var(--text-main)', lineHeight: 1.6 }}>
+                              &ldquo;{selectedAspirasi.pesan}&rdquo;
+                            </p>
+                          </div>
                         </div>
-                      )}
 
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                        {/* Update Status */}
+                        <div className="form-group" style={{ marginBottom: '16px' }}>
+                          <label className="form-label" style={{ fontWeight: 700 }}>Status Aspirasi Saat Ini</label>
+                          <select
+                            className="form-control"
+                            value={modalStatus}
+                            onChange={(e) => setModalStatus(e.target.value)}
+                            required
+                          >
+                            <option value="Menunggu Ditinjau">Menunggu Ditinjau</option>
+                            <option value="Sedang Diproses">Sedang Diproses (Audiensi / Koordinasi)</option>
+                            <option value="Selesai Ditindaklanjuti">Selesai Ditindaklanjuti</option>
+                            <option value="Diarsipkan">Diarsipkan</option>
+                          </select>
+                        </div>
+
+                        {/* Catatan Tindak Lanjut */}
+                        <div className="form-group" style={{ marginBottom: '18px' }}>
+                          <label className="form-label" style={{ fontWeight: 700 }}>Catatan Tindak Lanjut / Respon Pengurus</label>
+                          <textarea
+                            className="form-control"
+                            rows="4"
+                            placeholder="Tuliskan respon resmi DEMA atau nota dinas tindak lanjut untuk aspirasi ini..."
+                            value={modalTanggapan}
+                            onChange={(e) => setModalTanggapan(e.target.value)}
+                          />
+                        </div>
+
+                        {/* Tombol Kirim Email Balasan Langsung */}
+                        {selectedAspirasi.email && selectedAspirasi.email !== '-' && (
+                          <div style={{ marginBottom: '8px', background: 'rgba(30, 107, 55, 0.08)', padding: '12px 16px', borderRadius: 'var(--radius-md)', border: '1px solid rgba(30, 107, 55, 0.2)' }}>
+                            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
+                              Kirim balasan resmi langsung ke mahasiswa via email:
+                            </div>
+                            <a
+                              href={`mailto:${selectedAspirasi.email}?subject=${encodeURIComponent(`[Respon DEMA FST] Tindak Lanjut Aspirasi: ${selectedAspirasi.kategori}`)}&body=${encodeURIComponent(
+                                `Halo ${selectedAspirasi.nama},\n\nTerima kasih telah menyampaikan aspirasi Anda kepada Dewan Eksekutif Mahasiswa (DEMA) FST UIN Sunan Ampel Surabaya.\n\nRingkasan Aspirasi Anda:\n"${selectedAspirasi.pesan}"\n\nStatus: ${modalStatus}\nTindak Lanjut & Respon DEMA:\n${modalTanggapan || 'Aspirasi Anda sedang kami tindaklanjuti bersama pihak terkait.'}\n\nJika ada pertanyaan lebih lanjut, silakan balas email ini.\n\nSalam hangat,\nBadan Pengurus DEMA FST UINSA\nKabinet Wigyamerta Antasena`
+                              )}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-outline-green btn-sm"
+                              style={{ width: '100%', padding: '9px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '0.85rem' }}
+                            >
+                              ✉️ Buka Email untuk Kirim Feedback ke {selectedAspirasi.email}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+
+                      <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end', gap: '10px', background: 'var(--bg-card)', flexShrink: 0 }}>
                         <button
                           type="button"
                           onClick={() => setSelectedAspirasi(null)}
@@ -1805,136 +1836,167 @@ export default function KelolaPengurusPage() {
 
               {/* Modal Detail & Moderasi Alumni */}
               {selectedAlumni && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                  <div style={{ background: 'var(--bg-card)', width: '100%', maxWidth: '620px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-lg)', overflow: 'hidden' }}>
-                    <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <div 
+                  style={{ 
+                    position: 'fixed', 
+                    inset: 0, 
+                    background: 'rgba(0,0,0,0.7)', 
+                    backdropFilter: 'blur(6px)', 
+                    zIndex: 9999, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    padding: '20px',
+                    overflowY: 'auto'
+                  }}
+                  onClick={() => setSelectedAlumni(null)}
+                >
+                  <div 
+                    style={{ 
+                      background: 'var(--bg-card)', 
+                      width: '100%', 
+                      maxWidth: '640px', 
+                      maxHeight: '90vh', 
+                      borderRadius: 'var(--radius-lg)', 
+                      border: '1px solid var(--border-color)', 
+                      boxShadow: '0 25px 60px rgba(0,0,0,0.4)', 
+                      display: 'flex',
+                      flexDirection: 'column',
+                      overflow: 'hidden',
+                      margin: 'auto'
+                    }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div style={{ padding: '18px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0, background: 'var(--bg-card)' }}>
+                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)', display: 'inline-flex', alignItems: 'center', gap: '8px', margin: 0 }}>
                         <IconGraduationCap size={22} /> Peninjauan Testimoni #{selectedAlumni.id}
                       </h3>
                       <button
                         type="button"
                         onClick={() => setSelectedAlumni(null)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', padding: '4px' }}
                       >
                         <IconClose size={20} />
                       </button>
                     </div>
 
-                    <form onSubmit={handleSaveAlumniStatus} style={{ padding: '24px' }}>
-                      {/* Rincian Profil Alumni */}
-                      <div style={{ background: 'var(--bg-surface-subtle)', padding: '16px', borderRadius: 'var(--radius-md)', marginBottom: '18px', fontSize: '0.88rem' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '8px' }}>
-                          <div><strong>Nama:</strong> {selectedAlumni.nama}</div>
-                          <div><strong>Program Studi:</strong> {selectedAlumni.prodi}</div>
-                          <div><strong>Angkatan:</strong> {selectedAlumni.angkatan}</div>
-                          <div><strong>Tahun Lulus:</strong> {selectedAlumni.tahunLulus}</div>
-                          <div><strong>Jabatan:</strong> {selectedAlumni.jabatan || '-'}</div>
-                          <div><strong>Instansi:</strong> {selectedAlumni.instansi || '-'}</div>
+                    <form onSubmit={handleSaveAlumniStatus} style={{ display: 'flex', flexDirection: 'column', flex: '1 1 auto', overflow: 'hidden' }}>
+                      <div style={{ padding: '24px', overflowY: 'auto', flex: '1 1 auto', WebkitOverflowScrolling: 'touch' }}>
+                        {/* Rincian Profil Alumni */}
+                        <div style={{ background: 'var(--bg-surface-subtle)', padding: '16px', borderRadius: 'var(--radius-md)', marginBottom: '18px', fontSize: '0.88rem' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '8px' }}>
+                            <div><strong>Nama:</strong> {selectedAlumni.nama}</div>
+                            <div><strong>Program Studi:</strong> {selectedAlumni.prodi}</div>
+                            <div><strong>Angkatan:</strong> {selectedAlumni.angkatan}</div>
+                            <div><strong>Tahun Lulus:</strong> {selectedAlumni.tahunLulus}</div>
+                            <div><strong>Jabatan:</strong> {selectedAlumni.jabatan || '-'}</div>
+                            <div><strong>Instansi:</strong> {selectedAlumni.instansi || '-'}</div>
+                          </div>
+                          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', paddingTop: '6px', borderTop: '1px solid var(--border-color)' }}>
+                            Terkirim pada: {new Date(selectedAlumni.createdAt).toLocaleString('id-ID')}
+                          </div>
                         </div>
-                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', paddingTop: '6px', borderTop: '1px solid var(--border-color)' }}>
-                          Terkirim pada: {new Date(selectedAlumni.createdAt).toLocaleString('id-ID')}
-                        </div>
-                      </div>
 
-                      {/* Isi Kesan Lengkap */}
-                      <div style={{ marginBottom: '16px' }}>
-                        <label style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--primary-green)', display: 'block', marginBottom: '4px' }}>
-                          Kesan Selama Berproses di Kampus &amp; DEMA:
-                        </label>
-                        <div style={{ background: 'var(--bg-surface)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--text-main)', maxHeight: '120px', overflowY: 'auto' }}>
-                          {selectedAlumni.kesan}
-                        </div>
-                      </div>
-
-                      {/* Isi Pesan Lengkap */}
-                      <div style={{ marginBottom: '20px' }}>
-                        <label style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--accent-orange)', display: 'block', marginBottom: '4px' }}>
-                          Pesan &amp; Wejangan untuk Mahasiswa:
-                        </label>
-                        <div style={{ background: 'var(--bg-surface)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--text-main)', maxHeight: '120px', overflowY: 'auto' }}>
-                          {selectedAlumni.pesan}
-                        </div>
-                      </div>
-
-                      {/* Keputusan Moderasi */}
-                      <div className="form-group" style={{ marginBottom: '24px' }}>
-                        <label className="form-label" style={{ fontWeight: 800, fontSize: '0.9rem' }}>
-                          Keputusan Moderasi Pengurus:
-                        </label>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
-                          <label style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            padding: '12px 16px',
-                            borderRadius: 'var(--radius-sm)',
-                            border: modalAlumniStatus === 'Disetujui' ? '2px solid #22c55e' : '1px solid var(--border-color)',
-                            background: modalAlumniStatus === 'Disetujui' ? 'rgba(34, 197, 94, 0.08)' : 'var(--bg-card)',
-                            cursor: 'pointer'
-                          }}>
-                            <input
-                              type="radio"
-                              name="moderationStatus"
-                              value="Disetujui"
-                              checked={modalAlumniStatus === 'Disetujui'}
-                              onChange={(e) => setModalAlumniStatus(e.target.value)}
-                            />
-                            <div>
-                              <strong style={{ color: '#16a34a' }}>✅ Setujui &amp; Publikasikan</strong>
-                              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Pesan akan langsung tampil di beranda utama website DEMA</div>
-                            </div>
+                        {/* Isi Kesan Lengkap */}
+                        <div style={{ marginBottom: '16px' }}>
+                          <label style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--primary-green)', display: 'block', marginBottom: '4px' }}>
+                            Kesan Selama Berproses di Kampus &amp; DEMA:
                           </label>
+                          <div style={{ background: 'var(--bg-surface)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--text-main)', maxHeight: '130px', overflowY: 'auto' }}>
+                            {selectedAlumni.kesan}
+                          </div>
+                        </div>
 
-                          <label style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            padding: '12px 16px',
-                            borderRadius: 'var(--radius-sm)',
-                            border: modalAlumniStatus === 'Menunggu Ditinjau' ? '2px solid #eab308' : '1px solid var(--border-color)',
-                            background: modalAlumniStatus === 'Menunggu Ditinjau' ? 'rgba(234, 179, 8, 0.08)' : 'var(--bg-card)',
-                            cursor: 'pointer'
-                          }}>
-                            <input
-                              type="radio"
-                              name="moderationStatus"
-                              value="Menunggu Ditinjau"
-                              checked={modalAlumniStatus === 'Menunggu Ditinjau'}
-                              onChange={(e) => setModalAlumniStatus(e.target.value)}
-                            />
-                            <div>
-                              <strong style={{ color: '#ca8a04' }}>⏳ Simpan di Database Pengurus (Pending)</strong>
-                              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Tersimpan di panel pengurus dan belum dipublikasikan ke publik</div>
-                            </div>
+                        {/* Isi Pesan Lengkap */}
+                        <div style={{ marginBottom: '20px' }}>
+                          <label style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--accent-orange)', display: 'block', marginBottom: '4px' }}>
+                            Pesan &amp; Wejangan untuk Mahasiswa:
                           </label>
+                          <div style={{ background: 'var(--bg-surface)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--text-main)', maxHeight: '130px', overflowY: 'auto' }}>
+                            {selectedAlumni.pesan}
+                          </div>
+                        </div>
 
-                          <label style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '10px',
-                            padding: '12px 16px',
-                            borderRadius: 'var(--radius-sm)',
-                            border: modalAlumniStatus === 'Ditolak' ? '2px solid #ef4444' : '1px solid var(--border-color)',
-                            background: modalAlumniStatus === 'Ditolak' ? 'rgba(239, 68, 68, 0.08)' : 'var(--bg-card)',
-                            cursor: 'pointer'
-                          }}>
-                            <input
-                              type="radio"
-                              name="moderationStatus"
-                              value="Ditolak"
-                              checked={modalAlumniStatus === 'Ditolak'}
-                              onChange={(e) => setModalAlumniStatus(e.target.value)}
-                            />
-                            <div>
-                              <strong style={{ color: '#dc2626' }}>🚫 Tolak Publikasi</strong>
-                              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Testimoni tidak akan ditampilkan di website</div>
-                            </div>
+                        {/* Keputusan Moderasi */}
+                        <div className="form-group" style={{ marginBottom: '12px' }}>
+                          <label className="form-label" style={{ fontWeight: 800, fontSize: '0.9rem' }}>
+                            Keputusan Moderasi Pengurus:
                           </label>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
+                            <label style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '10px',
+                              padding: '12px 16px',
+                              borderRadius: 'var(--radius-sm)',
+                              border: modalAlumniStatus === 'Disetujui' ? '2px solid #22c55e' : '1px solid var(--border-color)',
+                              background: modalAlumniStatus === 'Disetujui' ? 'rgba(34, 197, 94, 0.08)' : 'var(--bg-card)',
+                              cursor: 'pointer'
+                            }}>
+                              <input
+                                type="radio"
+                                name="moderationStatus"
+                                value="Disetujui"
+                                checked={modalAlumniStatus === 'Disetujui'}
+                                onChange={(e) => setModalAlumniStatus(e.target.value)}
+                              />
+                              <div>
+                                <strong style={{ color: '#16a34a' }}>✅ Setujui &amp; Publikasikan</strong>
+                                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Pesan akan langsung tampil di beranda utama website DEMA</div>
+                              </div>
+                            </label>
+
+                            <label style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '10px',
+                              padding: '12px 16px',
+                              borderRadius: 'var(--radius-sm)',
+                              border: modalAlumniStatus === 'Menunggu Ditinjau' ? '2px solid #eab308' : '1px solid var(--border-color)',
+                              background: modalAlumniStatus === 'Menunggu Ditinjau' ? 'rgba(234, 179, 8, 0.08)' : 'var(--bg-card)',
+                              cursor: 'pointer'
+                            }}>
+                              <input
+                                type="radio"
+                                name="moderationStatus"
+                                value="Menunggu Ditinjau"
+                                checked={modalAlumniStatus === 'Menunggu Ditinjau'}
+                                onChange={(e) => setModalAlumniStatus(e.target.value)}
+                              />
+                              <div>
+                                <strong style={{ color: '#ca8a04' }}>⏳ Simpan di Database Pengurus (Pending)</strong>
+                                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Tersimpan di panel pengurus dan belum dipublikasikan ke publik</div>
+                              </div>
+                            </label>
+
+                            <label style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '10px',
+                              padding: '12px 16px',
+                              borderRadius: 'var(--radius-sm)',
+                              border: modalAlumniStatus === 'Ditolak' ? '2px solid #ef4444' : '1px solid var(--border-color)',
+                              background: modalAlumniStatus === 'Ditolak' ? 'rgba(239, 68, 68, 0.08)' : 'var(--bg-card)',
+                              cursor: 'pointer'
+                            }}>
+                              <input
+                                type="radio"
+                                name="moderationStatus"
+                                value="Ditolak"
+                                checked={modalAlumniStatus === 'Ditolak'}
+                                onChange={(e) => setModalAlumniStatus(e.target.value)}
+                              />
+                              <div>
+                                <strong style={{ color: '#dc2626' }}>🚫 Tolak Publikasi</strong>
+                                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Testimoni tidak akan ditampilkan di website</div>
+                              </div>
+                            </label>
+                          </div>
                         </div>
                       </div>
 
-                      {/* Modal Buttons */}
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                      {/* Sticky Modal Buttons Footer */}
+                      <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'flex-end', gap: '10px', background: 'var(--bg-card)', flexShrink: 0 }}>
                         <button
                           type="button"
                           className="btn btn-outline-green"
