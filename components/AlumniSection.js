@@ -71,9 +71,8 @@ export default function AlumniSection({ initialAlumni = [] }) {
       });
       const json = await res.json();
 
-      if (json.success && json.data) {
-        setAlumniList([json.data, ...alumniList]);
-        showToast('Terima kasih! Kesan dan pesan Anda berhasil dipublikasikan.');
+      if (json.success) {
+        showToast('Terima kasih! Kesan dan pesan Anda telah terkirim ke database pengurus DEMA untuk ditinjau terlebih dahulu sebelum dipublikasikan.');
         setFormData({
           nama: '',
           prodi: 'Sistem Informasi',
@@ -494,6 +493,10 @@ export default function AlumniSection({ initialAlumni = [] }) {
                 />
               </div>
 
+              <div style={{ background: 'rgba(30, 107, 55, 0.08)', border: '1px solid rgba(30, 107, 55, 0.22)', borderRadius: 'var(--radius-sm)', padding: '12px 14px', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, margin: '14px 0 18px' }}>
+                ℹ️ <strong>Alur Peninjauan Pengurus:</strong> Kesan dan pesan yang Anda kirim akan masuk ke database pengurus DEMA terlebih dahulu untuk ditinjau dan diverifikasi sebelum dipublikasikan di website demi menjaga integritas informasi.
+              </div>
+
               <div className="alumni-modal-actions">
                 <button
                   type="button"
@@ -512,7 +515,7 @@ export default function AlumniSection({ initialAlumni = [] }) {
                     'Mengirim...'
                   ) : (
                     <>
-                      <IconSend size={16} /> Publikasikan Kesan &amp; Pesan
+                      <IconSend size={16} /> Kirim untuk Ditinjau Pengurus
                     </>
                   )}
                 </button>

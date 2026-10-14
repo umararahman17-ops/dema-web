@@ -234,6 +234,8 @@ SELECT setval(pg_get_serial_sequence('aspirasi', 'id'), COALESCE(MAX(id), 1)) FR
 
 -- ===================================================================
 -- 7. BUAT TABEL kesan_pesan_alumni (TESTIMONI & INSPIRASI ALUMNI)
+--    Setiap testimoni alumni masuk ke database pengurus terlebih dahulu
+--    (status = 'Menunggu Ditinjau', verified = false) sebelum dipublish
 -- ===================================================================
 CREATE TABLE IF NOT EXISTS public.kesan_pesan_alumni (
   id BIGSERIAL PRIMARY KEY,
@@ -248,10 +250,15 @@ CREATE TABLE IF NOT EXISTS public.kesan_pesan_alumni (
   avatar TEXT DEFAULT '',
   rating INTEGER DEFAULT 5,
   kategori_prodi TEXT DEFAULT 'umum',
-  verified BOOLEAN DEFAULT true,
+  verified BOOLEAN DEFAULT false,
+  status TEXT DEFAULT 'Menunggu Ditinjau',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migrasi jika tabel sudah pernah dibuat sebelumnya:
+ALTER TABLE public.kesan_pesan_alumni ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'Menunggu Ditinjau';
+ALTER TABLE public.kesan_pesan_alumni ADD COLUMN IF NOT EXISTS verified BOOLEAN DEFAULT false;
 
 -- Aktifkan RLS
 ALTER TABLE public.kesan_pesan_alumni ENABLE ROW LEVEL SECURITY;

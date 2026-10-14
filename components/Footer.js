@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { IconMapPin, IconClock, IconLock } from '@/components/Icons';
+import ImmutableFooterCredit from '@/components/ImmutableFooterCredit';
 
 export default function Footer() {
   return (
@@ -75,15 +76,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Copyright */}
-        <div className="footer-bottom">
-          <div>
-            &copy; {new Date().getFullYear()} <strong>Dewan Eksekutif Mahasiswa (DEMA)</strong>. Seluruh Hak Cipta Dilindungi.
-          </div>
-          <div>
-            Dikembangkan dengan <strong>Next.js (React)</strong> • Kabinet Wigyamerta Antasena • <Link href="/program-kerja/kelola" style={{ opacity: 0.55, color: 'inherit', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '5px' }} title="Portal Privat Pengurus"><IconLock size={12} /> Akses Pengurus</Link>
-          </div>
-        </div>
+        {/* Bottom Copyright - Protected by Immutable Attribution System */}
+        <ImmutableFooterCredit />
       </div>
     </footer>
   );

@@ -2,6 +2,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MobileTaskbar from '@/components/MobileTaskbar';
+import { AttributionGuardian } from '@/components/ImmutableFooterCredit';
 
 export const metadata = {
   metadataBase: new URL('http://localhost:3000'),
@@ -47,6 +48,7 @@ export default function RootLayout({ children }) {
         <main>{children}</main>
         <Footer />
         <MobileTaskbar />
+        <AttributionGuardian />
       </body>
     </html>
   );

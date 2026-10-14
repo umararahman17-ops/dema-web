@@ -2258,6 +2258,35 @@ textarea.form-control {
   color: #6d8577;
 }
 
+/* ==============================================================================
+   IMMUTABLE ATTRIBUTION ENFORCEMENT (DEMA KABINET WIGYAMERTA ANTASENA)
+   Sistem perlindungan integritas atribusi hak cipta dan kabinet permanen
+   ============================================================================== */
+#immutable-dema-credit,
+.immutable-credit-container,
+[data-immutable-signature="DEMA_FST_WIGYAMERTA_ANTASENA_PERMANENT_CREDIT_V1"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.6 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  position: static !important;
+  transform: none !important;
+  clip-path: none !important;
+  filter: none !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+}
+
+#immutable-dema-credit *,
+.immutable-credit-container * {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
 /* Modal Popup Component */
 .modal-overlay {
   position: fixed;

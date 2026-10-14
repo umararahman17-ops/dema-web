@@ -17,7 +17,8 @@ import {
   IconChat,
   IconInbox,
   IconSearch,
-  IconSend
+  IconSend,
+  IconGraduationCap
 } from '@/components/Icons';
 
 export default function KelolaPengurusPage() {
@@ -27,7 +28,7 @@ export default function KelolaPengurusPage() {
   const [authChecking, setAuthChecking] = useState(true);
   const [authError, setAuthError] = useState('');
 
-  // Active Tab: 'aspirasi' | 'program-kerja'
+  // Active Tab: 'aspirasi' | 'program-kerja' | 'alumni'
   const [activeTab, setActiveTab] = useState('aspirasi');
 
   // --- PROGRAM KERJA STATES ---
@@ -56,6 +57,16 @@ export default function KelolaPengurusPage() {
   const [modalStatus, setModalStatus] = useState('');
   const [modalTanggapan, setModalTanggapan] = useState('');
   const [savingStatus, setSavingStatus] = useState(false);
+
+  // --- ALUMNI DATABASE & MODERASI STATES ---
+  const [alumniList, setAlumniList] = useState([]);
+  const [loadingAlumni, setLoadingAlumni] = useState(false);
+  const [alumniSearch, setAlumniSearch] = useState('');
+  const [alumniStatusFilter, setAlumniStatusFilter] = useState('all');
+  const [alumniProdiFilter, setAlumniProdiFilter] = useState('all');
+  const [selectedAlumni, setSelectedAlumni] = useState(null);
+  const [modalAlumniStatus, setModalAlumniStatus] = useState('Menunggu Ditinjau');
+  const [savingAlumniStatus, setSavingAlumniStatus] = useState(false);
 
   const [toast, setToast] = useState(null);
 
@@ -130,6 +141,197 @@ export default function KelolaPengurusPage() {
   const fetchAllData = (key) => {
     fetchAspirasi();
     fetchPrograms();
+    fetchAlumni(key);
+  };
+
+  // --- ALUMNI MODERASI FUNCTIONS ---
+  const fetchAlumni = async (key) => {
+    setLoadingAlumni(true);
+    try {
+      const keyToUse = key || adminKey;
+      const res = await fetch('/api/alumni?admin=true&t=' + Date.now(), {
+        headers: {
+          'x-admin-key': keyToUse
+        }
+      });
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setAlumniList(json.data);
+      }
+    } catch (err) {
+      console.error('Gagal mengambil data alumni:', err);
+    } finally {
+      setLoadingAlumni(false);
+    }
+  };
+
+  const handleApproveAlumni = async (id, nama) => {
+    try {
+      const res = await fetch('/api/alumni', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-key': adminKey
+        },
+        body: JSON.stringify({
+          id,
+          verified: true,
+          status: 'Disetujui'
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast(`Kesan & pesan dari "${nama}" telah disetujui & dipublikasikan ke portal resmi!`);
+        fetchAlumni();
+      } else {
+        showToast(json.message || 'Gagal menyetujui pesan alumni.', 'error');
+      }
+    } catch {
+      showToast('Terjadi kesalahan saat menyetujui pesan alumni.', 'error');
+    }
+  };
+
+  const handleUnpublishAlumni = async (id, nama) => {
+    if (!confirm(`Tarik publikasi kesan & pesan dari "${nama}" kembali ke antrean peninjauan?`)) return;
+    try {
+      const res = await fetch('/api/alumni', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-key': adminKey
+        },
+        body: JSON.stringify({
+          id,
+          verified: false,
+          status: 'Menunggu Ditinjau'
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast(`Publikasi pesan "${nama}" telah ditarik kembali ke peninjauan.`);
+        fetchAlumni();
+      } else {
+        showToast(json.message || 'Gagal menarik publikasi.', 'error');
+      }
+    } catch {
+      showToast('Terjadi kesalahan saat mengubah status alumni.', 'error');
+    }
+  };
+
+  const handleRejectAlumni = async (id, nama) => {
+    if (!confirm(`Tolak publikasi kesan & pesan dari "${nama}"?`)) return;
+    try {
+      const res = await fetch('/api/alumni', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-key': adminKey
+        },
+        body: JSON.stringify({
+          id,
+          verified: false,
+          status: 'Ditolak'
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast(`Testimoni alumni dari "${nama}" ditolak untuk dipublikasikan.`);
+        fetchAlumni();
+      } else {
+        showToast(json.message || 'Gagal menolak pesan alumni.', 'error');
+      }
+    } catch {
+      showToast('Terjadi kesalahan saat menolak pesan alumni.', 'error');
+    }
+  };
+
+  const handleDeleteAlumni = async (id, nama) => {
+    if (!confirm(`Hapus permanen testimoni alumni dari "${nama}" dari database? Data yang dihapus tidak dapat dipulihkan.`)) return;
+    try {
+      const res = await fetch(`/api/alumni?id=${id}`, {
+        method: 'DELETE',
+        headers: {
+          'x-admin-key': adminKey
+        }
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast(`Data testimoni alumni "${nama}" berhasil dihapus dari database.`);
+        fetchAlumni();
+      } else {
+        showToast(json.message || 'Gagal menghapus data alumni.', 'error');
+      }
+    } catch {
+      showToast('Terjadi kesalahan saat menghapus data alumni.', 'error');
+    }
+  };
+
+  const handleOpenAlumniDetail = (item) => {
+    setSelectedAlumni(item);
+    setModalAlumniStatus(item.status || (item.verified ? 'Disetujui' : 'Menunggu Ditinjau'));
+  };
+
+  const handleSaveAlumniStatus = async (e) => {
+    e.preventDefault();
+    if (!selectedAlumni) return;
+    setSavingAlumniStatus(true);
+    try {
+      const res = await fetch('/api/alumni', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-key': adminKey
+        },
+        body: JSON.stringify({
+          id: selectedAlumni.id,
+          status: modalAlumniStatus,
+          verified: modalAlumniStatus === 'Disetujui'
+        })
+      });
+      const json = await res.json();
+      if (json.success) {
+        showToast(json.message || 'Status moderasi alumni berhasil diperbarui!');
+        setSelectedAlumni(null);
+        fetchAlumni();
+      } else {
+        showToast(json.message || 'Gagal memperbarui status alumni.', 'error');
+      }
+    } catch {
+      showToast('Terjadi kesalahan koneksi saat menyimpan status moderasi.', 'error');
+    } finally {
+      setSavingAlumniStatus(false);
+    }
+  };
+
+  const handleExportAlumniCSV = () => {
+    if (alumniList.length === 0) {
+      showToast('Tidak ada data alumni untuk di-export.', 'error');
+      return;
+    }
+    const headers = ['ID', 'Tanggal Kirim', 'Nama', 'Prodi', 'Angkatan', 'Tahun Lulus', 'Jabatan', 'Instansi', 'Kesan', 'Pesan', 'Status Moderasi', 'Verified'];
+    const rows = alumniList.map(a => [
+      a.id,
+      `"${new Date(a.createdAt).toLocaleString('id-ID')}"`,
+      `"${(a.nama || '').replace(/"/g, '""')}"`,
+      `"${(a.prodi || '').replace(/"/g, '""')}"`,
+      `"${(a.angkatan || '').replace(/"/g, '""')}"`,
+      `"${(a.tahunLulus || '').replace(/"/g, '""')}"`,
+      `"${(a.jabatan || '').replace(/"/g, '""')}"`,
+      `"${(a.instansi || '').replace(/"/g, '""')}"`,
+      `"${(a.kesan || '').replace(/"/g, '""')}"`,
+      `"${(a.pesan || '').replace(/"/g, '""')}"`,
+      `"${(a.status || '').replace(/"/g, '""')}"`,
+      a.verified ? 'Ya (Dipublikasikan)' : 'Tidak'
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Kesan_Pesan_Alumni_DEMA_FST_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Data kesan & pesan alumni berhasil diunduh sebagai CSV.');
   };
 
   // --- ASPIRASI FUNCTIONS ---
@@ -375,6 +577,38 @@ export default function KelolaPengurusPage() {
   const countDiproses = aspirasiList.filter(a => a.status === 'Sedang Diproses').length;
   const countSelesai = aspirasiList.filter(a => a.status === 'Selesai Ditindaklanjuti').length;
 
+  // Alumni Moderasi Stats
+  const countTotalAlumni = alumniList.length;
+  const countAlumniPending = alumniList.filter(a => a.status === 'Menunggu Ditinjau' || (!a.verified && a.status !== 'Ditolak')).length;
+  const countAlumniDisetujui = alumniList.filter(a => a.status === 'Disetujui' || (a.verified === true && a.status !== 'Ditolak')).length;
+  const countAlumniDitolak = alumniList.filter(a => a.status === 'Ditolak').length;
+
+  // Filtered Alumni List
+  const filteredAlumni = alumniList.filter((item) => {
+    const matchSearch =
+      (item.nama || '').toLowerCase().includes(alumniSearch.toLowerCase()) ||
+      (item.prodi || '').toLowerCase().includes(alumniSearch.toLowerCase()) ||
+      (item.instansi || '').toLowerCase().includes(alumniSearch.toLowerCase()) ||
+      (item.jabatan || '').toLowerCase().includes(alumniSearch.toLowerCase()) ||
+      (item.kesan || '').toLowerCase().includes(alumniSearch.toLowerCase()) ||
+      (item.pesan || '').toLowerCase().includes(alumniSearch.toLowerCase());
+
+    const isPending = !item.verified || item.status === 'Menunggu Ditinjau';
+    const isApproved = item.verified && item.status !== 'Ditolak';
+    const isRejected = item.status === 'Ditolak';
+
+    const matchStatus =
+      alumniStatusFilter === 'all' ||
+      (alumniStatusFilter === 'Menunggu Ditinjau' && isPending && !isRejected) ||
+      (alumniStatusFilter === 'Disetujui' && isApproved) ||
+      (alumniStatusFilter === 'Ditolak' && isRejected);
+
+    const matchProdi =
+      alumniProdiFilter === 'all' || item.kategoriProdi === alumniProdiFilter;
+
+    return matchSearch && matchStatus && matchProdi;
+  });
+
   // If checking authentication
   if (authChecking) {
     return (
@@ -530,6 +764,51 @@ export default function KelolaPengurusPage() {
                 }}>
                   {programs.length}
                 </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab('alumni')}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 20px',
+                  borderRadius: 'var(--radius-sm)',
+                  border: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  background: activeTab === 'alumni' ? 'var(--primary-green)' : 'transparent',
+                  color: activeTab === 'alumni' ? '#ffffff' : 'var(--text-muted)'
+                }}
+              >
+                <IconGraduationCap size={18} />
+                <span>Kesan &amp; Pesan Alumni</span>
+                {countAlumniPending > 0 ? (
+                  <span style={{
+                    background: '#eab308',
+                    color: '#713f12',
+                    padding: '2px 8px',
+                    borderRadius: '99px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800
+                  }}>
+                    {countAlumniPending} Ditinjau
+                  </span>
+                ) : (
+                  <span style={{
+                    background: activeTab === 'alumni' ? 'var(--accent-orange)' : 'var(--bg-surface-subtle)',
+                    color: activeTab === 'alumni' ? '#ffffff' : 'var(--text-main)',
+                    padding: '2px 8px',
+                    borderRadius: '99px',
+                    fontSize: '0.75rem',
+                    fontWeight: 800
+                  }}>
+                    {countTotalAlumni}
+                  </span>
+                )}
               </button>
             </div>
 
@@ -1180,6 +1459,504 @@ export default function KelolaPengurusPage() {
                   </table>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* ==============================================================
+              TAB 3: DATABASE & MODERASI KESAN PESAN ALUMNI
+              ============================================================== */}
+          {activeTab === 'alumni' && (
+            <div>
+              {/* Alumni Statistics Cards */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '16px', marginBottom: '28px' }}>
+                <div style={{ background: 'var(--bg-card)', padding: '20px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-sm)' }}>
+                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>Total Masuk ke DB</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-heading)' }}>{countTotalAlumni}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-subtle)', marginTop: '4px' }}>Semua angkatan &amp; prodi</div>
+                </div>
+
+                <div style={{ background: 'var(--bg-card)', padding: '20px', borderRadius: 'var(--radius-md)', border: '1.5px solid rgba(234, 179, 8, 0.4)', boxShadow: 'var(--shadow-sm)' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#ca8a04', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>⏳ Menunggu Ditinjau</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, color: '#eab308' }}>{countAlumniPending}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-subtle)', marginTop: '4px' }}>Belum dipublikasikan di web</div>
+                </div>
+
+                <div style={{ background: 'var(--bg-card)', padding: '20px', borderRadius: 'var(--radius-md)', border: '1.5px solid rgba(34, 197, 94, 0.4)', boxShadow: 'var(--shadow-sm)' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#16a34a', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>✅ Disetujui &amp; Publik</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, color: '#22c55e' }}>{countAlumniDisetujui}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-subtle)', marginTop: '4px' }}>Tampil aktif di beranda</div>
+                </div>
+
+                <div style={{ background: 'var(--bg-card)', padding: '20px', borderRadius: 'var(--radius-md)', border: '1.5px solid rgba(239, 68, 68, 0.3)', boxShadow: 'var(--shadow-sm)' }}>
+                  <div style={{ fontSize: '0.8rem', color: '#dc2626', fontWeight: 700, textTransform: 'uppercase', marginBottom: '6px' }}>🚫 Ditolak / Diarsipkan</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 800, color: '#ef4444' }}>{countAlumniDitolak}</div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-subtle)', marginTop: '4px' }}>Tidak dipublikasikan</div>
+                </div>
+              </div>
+
+              {/* Control & Filter Bar */}
+              <div style={{ background: 'var(--bg-card)', padding: '20px 24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '24px', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
+                  <div>
+                    <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '4px' }}>
+                      Pusat Moderasi Kesan &amp; Pesan Alumni
+                    </h2>
+                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                      Setiap testimoni alumni masuk ke database pengurus ini terlebih dahulu untuk ditinjau sebelum dipublikasikan ke publik.
+                    </p>
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      onClick={handleExportAlumniCSV}
+                      className="btn btn-outline-green"
+                      style={{ fontSize: '0.82rem', padding: '8px 14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    >
+                      <IconDisk size={14} /> Unduh CSV
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => fetchAlumni()}
+                      className="btn btn-sm"
+                      style={{ background: 'var(--bg-surface-subtle)', color: 'var(--text-main)', border: '1px solid var(--border-color)', fontSize: '0.82rem', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                    >
+                      <IconRefresh size={14} /> Refresh
+                    </button>
+                  </div>
+                </div>
+
+                {/* Filters */}
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '14px' }}>
+                  {/* Search Bar */}
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Cari berdasarkan nama alumni, prodi, instansi, atau pesan..."
+                      value={alumniSearch}
+                      onChange={(e) => setAlumniSearch(e.target.value)}
+                      style={{ paddingLeft: '38px', fontSize: '0.88rem' }}
+                    />
+                    <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }}>
+                      <IconSearch size={16} />
+                    </div>
+                  </div>
+
+                  {/* Filter Status */}
+                  <div>
+                    <select
+                      className="form-control"
+                      value={alumniStatusFilter}
+                      onChange={(e) => setAlumniStatusFilter(e.target.value)}
+                      style={{ fontSize: '0.88rem' }}
+                    >
+                      <option value="all">Semua Status Moderasi</option>
+                      <option value="Menunggu Ditinjau">⏳ Menunggu Ditinjau ({countAlumniPending})</option>
+                      <option value="Disetujui">✅ Disetujui / Publik ({countAlumniDisetujui})</option>
+                      <option value="Ditolak">🚫 Ditolak ({countAlumniDitolak})</option>
+                    </select>
+                  </div>
+
+                  {/* Filter Prodi */}
+                  <div>
+                    <select
+                      className="form-control"
+                      value={alumniProdiFilter}
+                      onChange={(e) => setAlumniProdiFilter(e.target.value)}
+                      style={{ fontSize: '0.88rem' }}
+                    >
+                      <option value="all">Semua Program Studi</option>
+                      <option value="sistem-informasi">Sistem Informasi</option>
+                      <option value="arsitektur">Arsitektur</option>
+                      <option value="biologi">Biologi</option>
+                      <option value="matematika">Matematika</option>
+                      <option value="ilmu-kelautan">Ilmu Kelautan</option>
+                      <option value="teknik-sipil">Teknik Sipil</option>
+                      <option value="teknik-lingkungan">Teknik Lingkungan</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Table Alumni */}
+              <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
+                    <thead>
+                      <tr style={{ background: 'var(--table-head-bg)', borderBottom: '2px solid var(--table-head-border)', color: 'var(--text-heading)' }}>
+                        <th style={{ padding: '16px 20px', fontWeight: 800, width: '220px' }}>Alumni</th>
+                        <th style={{ padding: '16px 20px', fontWeight: 800, width: '200px' }}>Karir &amp; Instansi</th>
+                        <th style={{ padding: '16px 20px', fontWeight: 800 }}>Kesan &amp; Pesan</th>
+                        <th style={{ padding: '16px 20px', fontWeight: 800, width: '150px' }}>Status Publikasi</th>
+                        <th style={{ padding: '16px 20px', fontWeight: 800, textAlign: 'center', width: '220px' }}>Aksi Moderasi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {loadingAlumni ? (
+                        <tr>
+                          <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                            Memuat data testimoni alumni...
+                          </td>
+                        </tr>
+                      ) : filteredAlumni.length === 0 ? (
+                        <tr>
+                          <td colSpan="5" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+                            Tidak ada pesan alumni yang sesuai filter.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredAlumni.map((item) => {
+                          const isApproved = item.verified && item.status !== 'Ditolak';
+                          const isPending = !item.verified && item.status !== 'Ditolak';
+                          const isRejected = item.status === 'Ditolak';
+
+                          return (
+                            <tr key={item.id} style={{ borderBottom: '1px solid var(--table-row-border)', background: isPending ? 'rgba(234, 179, 8, 0.04)' : 'transparent', transition: 'background 0.15s ease' }}>
+                              {/* Alumni Info */}
+                              <td style={{ padding: '14px 20px', verticalAlign: 'top' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                  <div style={{
+                                    width: '38px',
+                                    height: '38px',
+                                    borderRadius: '50%',
+                                    background: isApproved ? 'rgba(30, 107, 55, 0.15)' : 'rgba(234, 179, 8, 0.18)',
+                                    color: isApproved ? 'var(--primary-green)' : '#ca8a04',
+                                    fontWeight: 800,
+                                    fontSize: '0.85rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0
+                                  }}>
+                                    {(item.nama || 'AL').slice(0, 2).toUpperCase()}
+                                  </div>
+                                  <div>
+                                    <div style={{ fontWeight: 700, color: 'var(--text-heading)', fontSize: '0.92rem' }}>
+                                      {item.nama}
+                                    </div>
+                                    <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                                      {item.prodi}
+                                    </div>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-subtle)' }}>
+                                      Angkatan {item.angkatan} &bull; Lulus {item.tahunLulus}
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Karir */}
+                              <td style={{ padding: '14px 20px', verticalAlign: 'top' }}>
+                                <div style={{ fontWeight: 600, color: 'var(--text-heading)', fontSize: '0.88rem' }}>
+                                  {item.jabatan || 'Praktisi'}
+                                </div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                                  {item.instansi || '-'}
+                                </div>
+                                <div style={{ fontSize: '0.72rem', color: 'var(--text-subtle)', marginTop: '4px' }}>
+                                  ID #{item.id} &bull; {new Date(item.createdAt).toLocaleDateString('id-ID')}
+                                </div>
+                              </td>
+
+                              {/* Kesan & Pesan */}
+                              <td style={{ padding: '14px 20px', verticalAlign: 'top' }}>
+                                <div style={{ marginBottom: '6px' }}>
+                                  <strong style={{ fontSize: '0.78rem', color: 'var(--primary-green)', textTransform: 'uppercase' }}>Kesan:</strong>
+                                  <p style={{ margin: '2px 0 6px', fontSize: '0.85rem', color: 'var(--text-main)', lineHeight: 1.45 }}>
+                                    {item.kesan.length > 130 ? item.kesan.slice(0, 130) + '...' : item.kesan}
+                                  </p>
+                                </div>
+                                <div>
+                                  <strong style={{ fontSize: '0.78rem', color: 'var(--accent-orange)', textTransform: 'uppercase' }}>Pesan:</strong>
+                                  <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.45 }}>
+                                    {item.pesan.length > 130 ? item.pesan.slice(0, 130) + '...' : item.pesan}
+                                  </p>
+                                </div>
+                              </td>
+
+                              {/* Status Publikasi */}
+                              <td style={{ padding: '14px 20px', verticalAlign: 'top' }}>
+                                {isApproved && (
+                                  <span style={{
+                                    fontSize: '0.75rem',
+                                    padding: '4px 10px',
+                                    borderRadius: '99px',
+                                    fontWeight: 700,
+                                    whiteSpace: 'nowrap',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    background: 'rgba(34, 197, 94, 0.15)',
+                                    color: '#16a34a',
+                                    border: '1px solid rgba(34, 197, 94, 0.4)'
+                                  }}>
+                                    <IconCheck size={12} /> Dipublikasikan
+                                  </span>
+                                )}
+                                {isPending && (
+                                  <span style={{
+                                    fontSize: '0.75rem',
+                                    padding: '4px 10px',
+                                    borderRadius: '99px',
+                                    fontWeight: 700,
+                                    whiteSpace: 'nowrap',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    background: 'rgba(234, 179, 8, 0.15)',
+                                    color: '#ca8a04',
+                                    border: '1px solid rgba(234, 179, 8, 0.4)'
+                                  }}>
+                                    ⏳ Menunggu Ditinjau
+                                  </span>
+                                )}
+                                {isRejected && (
+                                  <span style={{
+                                    fontSize: '0.75rem',
+                                    padding: '4px 10px',
+                                    borderRadius: '99px',
+                                    fontWeight: 700,
+                                    whiteSpace: 'nowrap',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '4px',
+                                    background: 'rgba(239, 68, 68, 0.12)',
+                                    color: '#dc2626',
+                                    border: '1px solid rgba(239, 68, 68, 0.3)'
+                                  }}>
+                                    <IconClose size={12} /> Ditolak
+                                  </span>
+                                )}
+                              </td>
+
+                              {/* Aksi Moderasi */}
+                              <td style={{ padding: '14px 20px', verticalAlign: 'top', textAlign: 'center' }}>
+                                <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                                  {/* Quick Action: Approve */}
+                                  {!isApproved && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleApproveAlumni(item.id, item.nama)}
+                                      className="btn btn-sm btn-orange"
+                                      style={{ padding: '5px 10px', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                                      title="Setujui dan publikasikan ke website beranda"
+                                    >
+                                      <IconCheck size={13} /> Setujui
+                                    </button>
+                                  )}
+
+                                  {/* Quick Action: Unpublish / Pending */}
+                                  {isApproved && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleUnpublishAlumni(item.id, item.nama)}
+                                      className="btn btn-sm"
+                                      style={{ padding: '5px 9px', fontSize: '0.78rem', background: 'rgba(234, 179, 8, 0.15)', color: '#ca8a04', border: '1px solid rgba(234, 179, 8, 0.4)' }}
+                                      title="Tarik publikasi kembali ke peninjauan"
+                                    >
+                                      Tarik
+                                    </button>
+                                  )}
+
+                                  {/* Quick Action: Reject */}
+                                  {isPending && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleRejectAlumni(item.id, item.nama)}
+                                      className="btn btn-sm"
+                                      style={{ padding: '5px 8px', fontSize: '0.78rem', background: '#fee2e2', color: '#991b1b', border: '1px solid #fca5a5' }}
+                                      title="Tolak testimoni ini"
+                                    >
+                                      Tolak
+                                    </button>
+                                  )}
+
+                                  {/* Detail / Full View Modal */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleOpenAlumniDetail(item)}
+                                    className="btn btn-sm btn-outline-green"
+                                    style={{ padding: '5px 9px', fontSize: '0.78rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                                    title="Lihat teks lengkap dan ubah keputusan"
+                                  >
+                                    <IconEdit size={13} /> Tinjau
+                                  </button>
+
+                                  {/* Delete */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteAlumni(item.id, item.nama)}
+                                    className="btn btn-sm"
+                                    style={{ padding: '5px 8px', fontSize: '0.78rem', background: 'var(--bg-surface-subtle)', color: '#dc2626', border: '1px solid var(--border-color)' }}
+                                    title="Hapus permanen dari database"
+                                  >
+                                    <IconTrash size={13} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Modal Detail & Moderasi Alumni */}
+              {selectedAlumni && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                  <div style={{ background: 'var(--bg-card)', width: '100%', maxWidth: '620px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', boxShadow: 'var(--shadow-lg)', overflow: 'hidden' }}>
+                    <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-heading)', display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                        <IconGraduationCap size={22} /> Peninjauan Testimoni #{selectedAlumni.id}
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedAlumni(null)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                      >
+                        <IconClose size={20} />
+                      </button>
+                    </div>
+
+                    <form onSubmit={handleSaveAlumniStatus} style={{ padding: '24px' }}>
+                      {/* Rincian Profil Alumni */}
+                      <div style={{ background: 'var(--bg-surface-subtle)', padding: '16px', borderRadius: 'var(--radius-md)', marginBottom: '18px', fontSize: '0.88rem' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '8px' }}>
+                          <div><strong>Nama:</strong> {selectedAlumni.nama}</div>
+                          <div><strong>Program Studi:</strong> {selectedAlumni.prodi}</div>
+                          <div><strong>Angkatan:</strong> {selectedAlumni.angkatan}</div>
+                          <div><strong>Tahun Lulus:</strong> {selectedAlumni.tahunLulus}</div>
+                          <div><strong>Jabatan:</strong> {selectedAlumni.jabatan || '-'}</div>
+                          <div><strong>Instansi:</strong> {selectedAlumni.instansi || '-'}</div>
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', paddingTop: '6px', borderTop: '1px solid var(--border-color)' }}>
+                          Terkirim pada: {new Date(selectedAlumni.createdAt).toLocaleString('id-ID')}
+                        </div>
+                      </div>
+
+                      {/* Isi Kesan Lengkap */}
+                      <div style={{ marginBottom: '16px' }}>
+                        <label style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--primary-green)', display: 'block', marginBottom: '4px' }}>
+                          Kesan Selama Berproses di Kampus &amp; DEMA:
+                        </label>
+                        <div style={{ background: 'var(--bg-surface)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--text-main)', maxHeight: '120px', overflowY: 'auto' }}>
+                          {selectedAlumni.kesan}
+                        </div>
+                      </div>
+
+                      {/* Isi Pesan Lengkap */}
+                      <div style={{ marginBottom: '20px' }}>
+                        <label style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--accent-orange)', display: 'block', marginBottom: '4px' }}>
+                          Pesan &amp; Wejangan untuk Mahasiswa:
+                        </label>
+                        <div style={{ background: 'var(--bg-surface)', padding: '12px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontSize: '0.9rem', lineHeight: 1.6, color: 'var(--text-main)', maxHeight: '120px', overflowY: 'auto' }}>
+                          {selectedAlumni.pesan}
+                        </div>
+                      </div>
+
+                      {/* Keputusan Moderasi */}
+                      <div className="form-group" style={{ marginBottom: '24px' }}>
+                        <label className="form-label" style={{ fontWeight: 800, fontSize: '0.9rem' }}>
+                          Keputusan Moderasi Pengurus:
+                        </label>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '10px' }}>
+                          <label style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '12px 16px',
+                            borderRadius: 'var(--radius-sm)',
+                            border: modalAlumniStatus === 'Disetujui' ? '2px solid #22c55e' : '1px solid var(--border-color)',
+                            background: modalAlumniStatus === 'Disetujui' ? 'rgba(34, 197, 94, 0.08)' : 'var(--bg-card)',
+                            cursor: 'pointer'
+                          }}>
+                            <input
+                              type="radio"
+                              name="moderationStatus"
+                              value="Disetujui"
+                              checked={modalAlumniStatus === 'Disetujui'}
+                              onChange={(e) => setModalAlumniStatus(e.target.value)}
+                            />
+                            <div>
+                              <strong style={{ color: '#16a34a' }}>✅ Setujui &amp; Publikasikan</strong>
+                              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Pesan akan langsung tampil di beranda utama website DEMA</div>
+                            </div>
+                          </label>
+
+                          <label style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '12px 16px',
+                            borderRadius: 'var(--radius-sm)',
+                            border: modalAlumniStatus === 'Menunggu Ditinjau' ? '2px solid #eab308' : '1px solid var(--border-color)',
+                            background: modalAlumniStatus === 'Menunggu Ditinjau' ? 'rgba(234, 179, 8, 0.08)' : 'var(--bg-card)',
+                            cursor: 'pointer'
+                          }}>
+                            <input
+                              type="radio"
+                              name="moderationStatus"
+                              value="Menunggu Ditinjau"
+                              checked={modalAlumniStatus === 'Menunggu Ditinjau'}
+                              onChange={(e) => setModalAlumniStatus(e.target.value)}
+                            />
+                            <div>
+                              <strong style={{ color: '#ca8a04' }}>⏳ Simpan di Database Pengurus (Pending)</strong>
+                              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Tersimpan di panel pengurus dan belum dipublikasikan ke publik</div>
+                            </div>
+                          </label>
+
+                          <label style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '12px 16px',
+                            borderRadius: 'var(--radius-sm)',
+                            border: modalAlumniStatus === 'Ditolak' ? '2px solid #ef4444' : '1px solid var(--border-color)',
+                            background: modalAlumniStatus === 'Ditolak' ? 'rgba(239, 68, 68, 0.08)' : 'var(--bg-card)',
+                            cursor: 'pointer'
+                          }}>
+                            <input
+                              type="radio"
+                              name="moderationStatus"
+                              value="Ditolak"
+                              checked={modalAlumniStatus === 'Ditolak'}
+                              onChange={(e) => setModalAlumniStatus(e.target.value)}
+                            />
+                            <div>
+                              <strong style={{ color: '#dc2626' }}>🚫 Tolak Publikasi</strong>
+                              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Testimoni tidak akan ditampilkan di website</div>
+                            </div>
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Modal Buttons */}
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+                        <button
+                          type="button"
+                          className="btn btn-outline-green"
+                          onClick={() => setSelectedAlumni(null)}
+                          style={{ padding: '10px 20px' }}
+                        >
+                          Batal
+                        </button>
+                        <button
+                          type="submit"
+                          disabled={savingAlumniStatus}
+                          className="btn btn-orange"
+                          style={{ padding: '10px 24px', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                        >
+                          <IconDisk size={16} />
+                          {savingAlumniStatus ? 'Menyimpan...' : 'Simpan Keputusan'}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
