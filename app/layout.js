@@ -31,14 +31,16 @@ export default function RootLayout({ children }) {
             __html: `
               try {
                 const saved = localStorage.getItem('dema_theme');
-                if (saved) {
+                if (saved === 'light' || saved === 'dark') {
                   document.documentElement.setAttribute('data-theme', saved);
-                } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                  document.documentElement.setAttribute('data-theme', 'dark');
-                } else {
+                } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
                   document.documentElement.setAttribute('data-theme', 'light');
+                } else {
+                  document.documentElement.setAttribute('data-theme', 'dark');
                 }
-              } catch (e) {}
+              } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+              }
             `,
           }}
         />

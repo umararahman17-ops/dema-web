@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import ThemeToggle from '@/components/ThemeToggle';
+import CabinetModal from '@/components/CabinetModal';
 import { 
   IconMail, 
   IconInstagram, 
@@ -13,18 +14,20 @@ import {
   IconHome, 
   IconBook, 
   IconRocket, 
-  IconShield, 
+  IconUsers,
   IconLock 
 } from '@/components/Icons';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cabinetModalOpen, setCabinetModalOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+      setScrolled(window.scrollY > 30);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -42,107 +45,134 @@ export default function Navbar() {
     };
   }, [mobileMenuOpen]);
 
-  // Close menu on route change
+  // Close menu on route change & handle smooth hash scrolling
   useEffect(() => {
     setMobileMenuOpen(false);
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const targetId = window.location.hash.replace('#', '');
+      const el = document.getElementById(targetId);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 180);
+      }
+    }
   }, [pathname]);
 
   const closeMenu = () => setMobileMenuOpen(false);
 
-  const openCabinetModal = () => {
+  const openCabinet = () => {
     closeMenu();
+    setCabinetModalOpen(true);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('dema:open-cabinet'));
     }
   };
 
+  const handleNavLinkClick = (targetPath, e) => {
+    closeMenu();
+    if (pathname === targetPath) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleAlumniClick = (e) => {
+    closeMenu();
+    if (pathname === '/') {
+      e.preventDefault();
+      const el = document.getElementById('kesan-pesan-alumni');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Allow browser to navigate to /#kesan-pesan-alumni
+    }
+  };
+
   return (
     <>
-      {/* Topbar Announcement */}
-      <div className="topbar">
-        <div className="container topbar-content">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <button 
-              type="button"
-              className="topbar-badge topbar-badge-clickable"
-              onClick={openCabinetModal}
-              title="Klik untuk melihat detail & struktur Kabinet Saat Ini"
-            >
-              <span className="dot-live"></span> Kabinet 2026/2027
-            </button>
-            <span>Selamat Datang di Portal Resmi Dewan Eksekutif Mahasiswa (DEMA)</span>
-          </div>
-          <div className="topbar-links">
-            <a href="mailto:sekretariat@dema-univ.ac.id" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <IconMail size={13} /> sekretariat@dema-univ.ac.id
-            </a>
-            <a href="https://www.instagram.com/demafstuinsa/" target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <IconInstagram size={13} /> @demafstuinsa
-            </a>
-          </div>
-        </div>
-      </div>
+      {/* Cabinet Details Modal */}
+      <CabinetModal 
+        isOpen={cabinetModalOpen} 
+        onClose={() => setCabinetModalOpen(false)} 
+      />
 
-      {/* Main Sticky Glassmorphism Header */}
-      <header className={`main-nav ${scrolled ? 'scrolled' : ''}`}>
-        <div className="container nav-container">
-          <Link href="/" className="brand-link" onClick={closeMenu}>
-            <div className="brand-logo-wrap">
-              <img src="/logo.png" alt="Logo DEMA" className="brand-logo-img" />
+      {/* Floating Solane Capsule Header */}
+      <header className={`solane-nav-wrapper ${scrolled ? 'scrolled' : ''}`}>
+        <div className="solane-nav-capsule">
+          {/* Brand Link */}
+          <Link 
+            href="/" 
+            className="solane-nav-brand" 
+            onClick={(e) => handleNavLinkClick('/', e)} 
+            aria-label="Beranda DEMA FST"
+          >
+            <div className="solane-brand-icon">
+              <img src="/logo.png" alt="Logo DEMA" className="solane-brand-img" />
             </div>
-            <div className="brand-text-block">
-              <div className="brand-title">DEMA <span>FST</span></div>
-              <div className="brand-subtitle">Kabinet Wigyamerta Antasena</div>
+            <div className="solane-brand-title">
+              DEMA <span>FST</span>
             </div>
           </Link>
 
           {/* Desktop Navigation Links */}
-          <nav className="nav-menu desktop-only">
+          <nav className="solane-nav-links" aria-label="Navigasi Utama">
             <Link 
               href="/" 
-              className={`nav-link ${pathname === '/' ? 'active' : ''}`}
+              className={`solane-nav-link ${pathname === '/' ? 'active' : ''}`}
+              onClick={(e) => handleNavLinkClick('/', e)}
             >
               Beranda
             </Link>
             <Link 
               href="/profil" 
-              className={`nav-link ${pathname.startsWith('/profil') ? 'active' : ''}`}
+              className={`solane-nav-link ${pathname.startsWith('/profil') ? 'active' : ''}`}
+              onClick={(e) => handleNavLinkClick('/profil', e)}
             >
               Profil &amp; Filosofi
             </Link>
             <Link 
               href="/portofolio" 
-              className={`nav-link ${pathname.startsWith('/portofolio') ? 'active' : ''}`}
+              className={`solane-nav-link ${pathname.startsWith('/portofolio') ? 'active' : ''}`}
+              onClick={(e) => handleNavLinkClick('/portofolio', e)}
             >
-              Portofolio &amp; Proker
+              Portofolio
             </Link>
-
+            <Link 
+              href="/#kesan-pesan-alumni" 
+              className="solane-nav-link"
+              onClick={handleAlumniClick}
+            >
+              Alumni
+            </Link>
             <Link 
               href="/kontak" 
-              className={`nav-link ${pathname.startsWith('/kontak') ? 'active' : ''}`}
+              className={`solane-nav-link ${pathname.startsWith('/kontak') ? 'active' : ''}`}
+              onClick={(e) => handleNavLinkClick('/kontak', e)}
             >
               Kontak
             </Link>
-
-            {/* Quick Cabinet trigger in desktop menu */}
-            <button 
-              type="button"
-              className="nav-link nav-cabinet-btn"
-              onClick={openCabinetModal}
-              title="Lihat Struktur & Profil Kabinet Wigyamerta Antasena"
-            >
-              <span className="dot-live"></span> Kabinet Saat Ini
-            </button>
           </nav>
 
-          {/* Action Button & Mobile Burger Toggle */}
-          <div className="nav-actions">
-            <ThemeToggle />
+          {/* Action Buttons & Theme Toggle */}
+          <div className="solane-nav-actions">
+            {/* Kabinet Modal Trigger Pill */}
+            <button 
+              type="button"
+              className="btn-solane-ghost desktop-only"
+              onClick={openCabinet}
+              title="Lihat Struktur & Profil Kabinet Wigyamerta Antasena"
+            >
+              <span className="dot-live"></span> Kabinet 26/27
+            </button>
 
-            {/* Desktop CTA Button */}
-            <Link href="/kontak#aspirasi" className="btn btn-orange btn-sm nav-cta-btn">
-              <IconChat size={16} /> Kirim Aspirasi
+            {/* Kirim Aspirasi Pill CTA */}
+            <Link href="/kontak#aspirasi" className="btn-solane-green desktop-only">
+              <IconChat size={15} /> Kirim Aspirasi
             </Link>
+
+            <ThemeToggle />
 
             {/* Mobile Hamburger Button */}
             <button 
@@ -152,7 +182,7 @@ export default function Navbar() {
               aria-label={mobileMenuOpen ? 'Tutup Menu' : 'Buka Menu Navigasi'}
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <IconClose size={22} /> : <IconMenu size={22} />}
+              {mobileMenuOpen ? <IconClose size={20} /> : <IconMenu size={20} />}
             </button>
           </div>
         </div>
@@ -189,7 +219,7 @@ export default function Navbar() {
         </div>
 
         {/* Interactive Cabinet Card Inside Drawer */}
-        <div className="drawer-cabinet-banner" onClick={openCabinetModal}>
+        <div className="drawer-cabinet-banner" onClick={openCabinet}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
             <div className="drawer-cabinet-logo-thumb">
               <img src="/logo-kabinet.png" alt="Logo Kabinet Wigyamerta Antasena" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
@@ -213,7 +243,7 @@ export default function Navbar() {
           <Link 
             href="/" 
             className={`drawer-link ${pathname === '/' ? 'active' : ''}`}
-            onClick={closeMenu}
+            onClick={(e) => handleNavLinkClick('/', e)}
           >
             <span className="drawer-link-icon"><IconHome size={18} /></span>
             <span>Beranda</span>
@@ -222,7 +252,7 @@ export default function Navbar() {
           <Link 
             href="/profil" 
             className={`drawer-link ${pathname.startsWith('/profil') ? 'active' : ''}`}
-            onClick={closeMenu}
+            onClick={(e) => handleNavLinkClick('/profil', e)}
           >
             <span className="drawer-link-icon"><IconBook size={18} /></span>
             <span>Profil &amp; Filosofi Lambang</span>
@@ -231,16 +261,25 @@ export default function Navbar() {
           <Link 
             href="/portofolio" 
             className={`drawer-link ${pathname.startsWith('/portofolio') ? 'active' : ''}`}
-            onClick={closeMenu}
+            onClick={(e) => handleNavLinkClick('/portofolio', e)}
           >
             <span className="drawer-link-icon"><IconRocket size={18} /></span>
             <span>Portofolio &amp; Program Kerja</span>
           </Link>
 
           <Link 
+            href="/#kesan-pesan-alumni" 
+            className="drawer-link"
+            onClick={handleAlumniClick}
+          >
+            <span className="drawer-link-icon"><IconUsers size={18} /></span>
+            <span>Kesan &amp; Pesan Alumni</span>
+          </Link>
+
+          <Link 
             href="/kontak" 
             className={`drawer-link ${pathname.startsWith('/kontak') ? 'active' : ''}`}
-            onClick={closeMenu}
+            onClick={(e) => handleNavLinkClick('/kontak', e)}
           >
             <span className="drawer-link-icon"><IconChat size={18} /></span>
             <span>Kontak &amp; Sekretariat</span>
@@ -260,8 +299,9 @@ export default function Navbar() {
         <div className="mobile-drawer-action">
           <Link 
             href="/kontak#aspirasi" 
-            className="btn btn-orange btn-block"
+            className="btn btn-solane-green btn-block"
             onClick={closeMenu}
+            style={{ width: '100%', justifyContent: 'center', padding: '12px' }}
           >
             <IconChat size={18} /> Kirim Aspirasi Mahasiswa
           </Link>

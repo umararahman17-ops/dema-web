@@ -15,21 +15,6 @@
     "updatedAt": "2026-09-25T05:39:50.061Z"
   },
   {
-    "id": 8,
-    "nama": "Test Mahasiswa",
-    "prodi": "Sistem Informasi (2025)",
-    "email": "-",
-    "kategori": "Fasilitas & Sarpras Kampus",
-    "pesan": "Ini adalah uji coba pengiriman aspirasi baru untuk pengurus DEMA.",
-    "status": "Sedang Diproses",
-    "catatan_pengurus": "",
-    "created_at": "2026-09-25T05:12:38.226Z",
-    "updated_at": "2026-09-25T05:12:38.226Z",
-    "tanggapan": "Aspirasi telah diterima dan dijadwalkan untuk audiensi dengan pimpinan dekanat.",
-    "createdAt": "2026-09-25T05:12:38.226Z",
-    "updatedAt": "2026-09-25T05:19:30.901Z"
-  },
-  {
     "id": 7,
     "nama": "Test Mahasiswa",
     "prodi": "Sistem Informasi (2025)",

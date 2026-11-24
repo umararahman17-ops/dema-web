@@ -60,24 +60,15 @@ export default function StatsCounter({ items }) {
   };
 
   return (
-    <section ref={sectionRef} className="stats-section">
-      <div className="container">
-        <div className="stats-card-wrapper">
-          {items.map((item, index) => (
-            <div key={index} className="stat-item">
-              <div className={`stat-icon-wrap ${item.color === 'orange' ? 'orange' : ''}`}>
-                {statIcons[item.iconKey] || item.icon}
-              </div>
-              <div>
-                <div className="stat-number">
-                  {formatNumber(counts[index])}{item.suffix}
-                </div>
-                <div className="stat-label">{item.label}</div>
-              </div>
-            </div>
-          ))}
+    <div ref={sectionRef} className="solane-stats-row">
+      {items.map((item, index) => (
+        <div key={index} className="solane-stat-item">
+          <div className="solane-stat-num">
+            {formatNumber(counts[index])}{item.suffix}
+          </div>
+          <div className="solane-stat-desc">{item.label}</div>
         </div>
-      </div>
-    </section>
+      ))}
+    </div>
   );
 }
