@@ -5156,6 +5156,71 @@ textarea.form-control {
   to { transform: rotate(360deg); }
 }
 
+/* Hero Emblem in Solane Style: Pure Floating, No Heavy Card Background Box */
+.solane-emblem-stage .hero-visual-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.solane-emblem-stage .hero-emblem-wrapper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  animation: float 6s ease-in-out infinite;
+}
+
+.solane-emblem-stage .hero-emblem-glow {
+  display: none !important;
+}
+
+.solane-emblem-stage .emblem-shine-layer,
+.solane-emblem-stage .hero-emblem-title,
+.solane-emblem-stage .hero-emblem-subtitle {
+  display: none !important;
+}
+
+.solane-emblem-stage .emblem-img-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.solane-emblem-stage .hero-emblem-img {
+  width: 175px !important;
+  height: 175px !important;
+  filter: drop-shadow(0 0 35px rgba(34, 197, 94, 0.45)) drop-shadow(0 15px 25px rgba(0, 0, 0, 0.5)) !important;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease !important;
+}
+
+[data-theme="light"] .solane-emblem-stage .hero-emblem-img {
+  filter: drop-shadow(0 0 25px rgba(30, 107, 55, 0.35)) drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15)) !important;
+}
+
+.solane-emblem-stage .hero-emblem-wrapper:hover .hero-emblem-img {
+  transform: scale(1.08);
+  filter: drop-shadow(0 0 50px rgba(74, 222, 128, 0.7)) drop-shadow(0 20px 30px rgba(0, 0, 0, 0.6)) !important;
+}
+
+.solane-emblem-stage .hero-emblem-3d-pure {
+  width: 250px !important;
+  height: 250px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide hover info on logo philosophy per user request */
+.philo-hover-info {
+  display: none !important;
+}
+
 /* Solane Typography */
 .solane-headline {
   font-size: clamp(2.4rem, 5.2vw, 4.1rem);

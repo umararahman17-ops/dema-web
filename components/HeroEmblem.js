@@ -246,25 +246,11 @@ export default function HeroEmblem() {
             tabIndex={0}
             aria-label="Lambang DEMA FST - Kabinet Wigyamerta Antasena"
           >
-            {/* Specular Shine Overlay */}
-            <div
-              className="emblem-shine-layer"
-              style={{
-                background: previewHover
-                  ? `radial-gradient(circle at ${previewTilt.glowX}% ${previewTilt.glowY}%, rgba(255,255,255,0.3) 0%, transparent 60%)`
-                  : 'none'
-              }}
-            />
-
             {/* Logo Image */}
             <div className="emblem-img-container">
               <img src="/logo.png" alt="Emblem Resmi DEMA" className="hero-emblem-img" />
               <div className="emblem-energy-ring"></div>
             </div>
-
-            {/* Nama Kabinet */}
-            <div className="hero-emblem-title">DEMA FST</div>
-            <div className="hero-emblem-subtitle">Kabinet Wigyamerta Antasena</div>
           </div>
         ) : (
           /* ================= TAMPILAN 3D MURNI (AUTO-ORBIT, TANPA BUTTON & TANPA TULISAN) ================= */

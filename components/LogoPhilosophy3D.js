@@ -272,13 +272,6 @@ export default function LogoPhilosophy3D({ defaultExploded = true }) {
           </div>
         </div>
       </div>
-
-      {/* Hover Information Banner */}
-      {hoveredLayer && (
-        <div className="philo-hover-info">
-          <span>💡</span> {hoveredLayer}
-        </div>
-      )}
     </div>
   );
 }
