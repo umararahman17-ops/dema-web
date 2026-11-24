@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { 
   IconLock, 
@@ -18,7 +18,9 @@ import {
   IconInbox,
   IconSearch,
   IconSend,
-  IconGraduationCap
+  IconGraduationCap,
+  IconUpload,
+  IconImage
 } from '@/components/Icons';
 
 export default function KelolaPengurusPage() {
@@ -46,6 +48,12 @@ export default function KelolaPengurusPage() {
     impact: '',
     desc: ''
   });
+
+  // Program File Upload States
+  const fileInputRef = useRef(null);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [imageInputMode, setImageInputMode] = useState('upload'); // 'upload' | 'url'
 
   // --- ASPIRASI DATABASE STATES ---
   const [aspirasiList, setAspirasiList] = useState([]);
@@ -451,6 +459,54 @@ export default function KelolaPengurusPage() {
       console.error('Gagal mengambil program kerja:', err);
     } finally {
       setLoadingPrograms(false);
+    }
+  };
+
+  const handleImageFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      setUploadError('File harus berupa format gambar (JPG, PNG, WebP, SVG, GIF)');
+      showToast('File bukan gambar yang valid', 'error');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadError('Ukuran file terlalu besar. Maksimal 10MB.');
+      showToast('Ukuran file maksimal 10MB', 'error');
+      return;
+    }
+
+    setUploadError('');
+    setIsUploadingImage(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'x-admin-key': adminKey
+        },
+        body: formData
+      });
+
+      const data = await res.json();
+      if (data.success && data.url) {
+        setProgramForm((prev) => ({ ...prev, image: data.url }));
+        showToast('Foto berhasil diimpor dari file dan tersimpan!', 'success');
+      } else {
+        setUploadError(data.message || 'Gagal mengunggah foto.');
+        showToast(data.message || 'Gagal mengunggah gambar', 'error');
+      }
+    } catch {
+      setUploadError('Terjadi kesalahan koneksi saat mengunggah.');
+      showToast('Gagal mengunggah foto', 'error');
+    } finally {
+      setIsUploadingImage(false);
+      if (e.target) e.target.value = '';
     }
   };
 
@@ -1358,15 +1414,134 @@ export default function KelolaPengurusPage() {
                       </div>
                     </div>
 
-                    <div className="form-group">
-                      <label className="form-label">URL Foto Dokumentasi / Banner</label>
-                      <input 
-                        type="url" 
-                        className="form-control" 
-                        placeholder="https://images.unsplash.com/..."
-                        value={programForm.image}
-                        onChange={(e) => setProgramForm({ ...programForm, image: e.target.value })}
-                      />
+                    <div className="form-group" style={{ marginBottom: '20px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+                        <label className="form-label" style={{ marginBottom: 0, fontWeight: 700 }}>
+                          Foto Dokumentasi / Banner Program Kerja
+                        </label>
+                        <div style={{ display: 'inline-flex', gap: '6px', fontSize: '0.8rem' }}>
+                          <button
+                            type="button"
+                            onClick={() => setImageInputMode('upload')}
+                            style={{
+                              background: imageInputMode === 'upload' ? 'var(--accent-orange)' : 'var(--bg-card)',
+                              color: imageInputMode === 'upload' ? '#fff' : 'var(--text-muted)',
+                              border: '1px solid var(--border-color)',
+                              borderRadius: '6px',
+                              padding: '4px 10px',
+                              cursor: 'pointer',
+                              fontWeight: 600,
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '5px'
+                            }}
+                          >
+                            <IconUpload size={14} /> Impor dari File
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setImageInputMode('url')}
+                            style={{
+                              background: imageInputMode === 'url' ? 'var(--accent-orange)' : 'var(--bg-card)',
+                              color: imageInputMode === 'url' ? '#fff' : 'var(--text-muted)',
+                              border: '1px solid var(--border-color)',
+                              borderRadius: '6px',
+                              padding: '4px 10px',
+                              cursor: 'pointer',
+                              fontWeight: 600
+                            }}
+                          >
+                            URL Manual
+                          </button>
+                        </div>
+                      </div>
+
+                      {imageInputMode === 'upload' ? (
+                        <div>
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={handleImageFileUpload}
+                          />
+                          <div
+                            className="proker-upload-dropzone"
+                            onClick={() => !isUploadingImage && fileInputRef.current?.click()}
+                            role="button"
+                            tabIndex={0}
+                          >
+                            {isUploadingImage ? (
+                              <div style={{ padding: '10px', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--accent-orange)' }}>
+                                <IconRefresh size={22} className="spin-animation" />
+                                <span style={{ fontWeight: 600 }}>Sedang mengunggah dan menyimpan foto...</span>
+                              </div>
+                            ) : (
+                              <>
+                                <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(224, 99, 31, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent-orange)' }}>
+                                  <IconUpload size={22} />
+                                </div>
+                                <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-heading)' }}>
+                                  Klik untuk Memilih / Mengimpor Foto dari File
+                                </div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                                  Format JPG, PNG, WebP, GIF, SVG • Otomatis tersimpan ke server
+                                </div>
+                              </>
+                            )}
+                          </div>
+                          {uploadError && (
+                            <div style={{ color: '#ef4444', fontSize: '0.82rem', marginTop: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <IconAlert size={14} /> {uploadError}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <input 
+                          type="url" 
+                          className="form-control" 
+                          placeholder="https://images.unsplash.com/..."
+                          value={programForm.image}
+                          onChange={(e) => setProgramForm({ ...programForm, image: e.target.value })}
+                        />
+                      )}
+
+                      {/* Live Image Preview Banner */}
+                      {programForm.image && (
+                        <div className="proker-image-preview-card">
+                          <img 
+                            src={programForm.image} 
+                            alt="Banner Preview" 
+                            className="proker-preview-thumb"
+                            onError={(e) => { e.currentTarget.src = '/logo.png'; }}
+                          />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-heading)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              <IconCheck size={15} style={{ color: 'var(--accent-green)' }} /> Foto Banner Terpilih
+                            </div>
+                            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: '2px' }}>
+                              {programForm.image}
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
+                              <button
+                                type="button"
+                                onClick={() => fileInputRef.current?.click()}
+                                style={{ background: 'none', border: 'none', padding: 0, fontSize: '0.78rem', color: 'var(--accent-orange)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
+                              >
+                                Ganti File
+                              </button>
+                              <span style={{ color: 'var(--border-color)' }}>•</span>
+                              <button
+                                type="button"
+                                onClick={() => setProgramForm({ ...programForm, image: '' })}
+                                style={{ background: 'none', border: 'none', padding: 0, fontSize: '0.78rem', color: '#ef4444', cursor: 'pointer', fontWeight: 600 }}
+                              >
+                                Hapus Foto
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     <div className="form-group">

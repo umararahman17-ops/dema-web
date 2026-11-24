@@ -126,19 +126,7 @@ export default function LogoPhilosophy3D({ defaultExploded = true }) {
         role="button"
         tabIndex={0}
         aria-label="Lambang 3D DEMA FST - Klik untuk memisahkan atau menyatukan lapisan"
-        title="Klik lambang untuk memisahkan atau menyatukan lapisan dimensi"
       >
-        {/* Holographic Orbit Rings */}
-        <div
-          className="philo-3d-rings"
-          style={{
-            transform: `perspective(1000px) rotateX(${rotX * 0.3}deg) rotateY(${rotY * 0.3}deg)`
-          }}
-        >
-          <div className="orbit-ring orbit-x"></div>
-          <div className="orbit-ring orbit-y"></div>
-        </div>
-
         {/* Rotatable Gimbal Stage */}
         <div
           className="philo-3d-gimbal"
@@ -146,15 +134,6 @@ export default function LogoPhilosophy3D({ defaultExploded = true }) {
             transform: `perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg)`
           }}
         >
-          {/* Ground Shadow */}
-          <div
-            className="stage-3d-shadow"
-            style={{
-              transform: `translateZ(-85px) rotateX(90deg) translate(${rotY * 0.4}px, ${rotX * 0.3}px) scale(${isExploded ? 1.05 : 0.95})`,
-              transition: 'transform 0.85s cubic-bezier(0.2, 0.8, 0.2, 1)'
-            }}
-          />
-
           {/* Unified 3D Layer Rig with Continuous Smooth Interpolation */}
           <div className="emblem-3d-exploded-rig">
             {/* Layer 1: Bingkai Segi Delapan Teranyam */}

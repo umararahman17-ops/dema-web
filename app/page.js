@@ -102,10 +102,9 @@ export default async function HomePage() {
 
         {/* Hero Content */}
         <div className="solane-hero-content">
-          {/* Top 3D Floating Emblem with Halo & Stardust Particles */}
+          {/* Top 3D Floating Emblem with Halo */}
           <div className="solane-emblem-stage">
             <div className="solane-emblem-halo" />
-            <div className="solane-stardust-ring" />
             <HeroEmblem />
           </div>
 

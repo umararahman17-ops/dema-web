@@ -50,7 +50,6 @@ export default function HeroEmblem() {
   const pointerStartRef = useRef({ x: 0, y: 0 });
   const velocityRef = useRef({ x: 0, y: 0 });
   const animFrameRef = useRef(null);
-  const canvasRef = useRef(null);
 
   // Handle 2D Preview Hover
   const handlePreviewMouseMove = (e) => {
@@ -166,51 +165,6 @@ export default function HeroEmblem() {
     };
   }, [is3D]);
 
-  // Subtle stardust background for 3D stage
-  useEffect(() => {
-    if (!is3D) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const width = (canvas.width = canvas.offsetWidth);
-    const height = (canvas.height = canvas.offsetHeight);
-
-    const particles = Array.from({ length: 24 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 2 + 1,
-      color: Math.random() > 0.5 ? '#1e6b37' : '#e0631f',
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      alpha: Math.random() * 0.6 + 0.2
-    }));
-
-    let animId;
-    const render = () => {
-      ctx.clearRect(0, 0, width, height);
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
-        if (p.y < 0) p.y = height;
-        if (p.y > height) p.y = 0;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 6;
-        ctx.shadowColor = p.color;
-        ctx.fill();
-      });
-      animId = requestAnimationFrame(render);
-    };
-
-    render();
-    return () => cancelAnimationFrame(animId);
-  }, [is3D]);
-
   // Extruded 3D slices for thickness
   const extrudeSlices = [1, 2, 3, 4, 5, 6, 7];
 
@@ -262,21 +216,6 @@ export default function HeroEmblem() {
             tabIndex={0}
             aria-label="Mode 3D Lambang DEMA FST (Klik untuk kembali)"
           >
-            {/* Canvas Particle Ambient Background */}
-            <canvas ref={canvasRef} className="hero-3d-canvas" />
-
-            {/* 3D Holographic Orbit Rings */}
-            <div
-              className="pure-3d-orbit-system"
-              style={{
-                transform: `perspective(1200px) rotateX(${rotX * 0.4}deg) rotateY(${rotY * 0.4}deg)`
-              }}
-            >
-              <div className="orbit-ring orbit-x"></div>
-              <div className="orbit-ring orbit-y"></div>
-              <div className="orbit-ring orbit-z"></div>
-            </div>
-
             {/* 3D Rotatable Core Gimbal with Auto-Orbit */}
             <div
               className="pure-3d-gimbal"
@@ -284,14 +223,6 @@ export default function HeroEmblem() {
                 transform: `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg)`
               }}
             >
-              {/* Dynamic 3D Ground Shadow */}
-              <div
-                className="stage-3d-shadow"
-                style={{
-                  transform: `translateZ(-90px) rotateX(90deg) translate(${rotY * 0.5}px, ${rotX * 0.4}px) scale(${1 - Math.abs(rotX) * 0.003})`
-                }}
-              />
-
               {/* 3D Extruded Solid Rig */}
               <div className="emblem-3d-solid-rig">
                 {extrudeSlices.map((layer) => (
