@@ -75,7 +75,11 @@ export default function KelolaPengurusPage() {
   const [alumniProdiFilter, setAlumniProdiFilter] = useState('all');
   const [selectedAlumni, setSelectedAlumni] = useState(null);
   const [modalAlumniStatus, setModalAlumniStatus] = useState('Menunggu Ditinjau');
+  const [modalAlumniAvatar, setModalAlumniAvatar] = useState('');
   const [savingAlumniStatus, setSavingAlumniStatus] = useState(false);
+  const alumniFileInputRef = useRef(null);
+  const [isDraggingAlumniFile, setIsDraggingAlumniFile] = useState(false);
+  const [isUploadingAlumniAvatar, setIsUploadingAlumniAvatar] = useState(false);
 
   const [toast, setToast] = useState(null);
 
@@ -278,6 +282,30 @@ export default function KelolaPengurusPage() {
   const handleOpenAlumniDetail = (item) => {
     setSelectedAlumni(item);
     setModalAlumniStatus(item.status || (item.verified ? 'Disetujui' : 'Menunggu Ditinjau'));
+    setModalAlumniAvatar(item.avatar || '');
+  };
+
+  const handleAlumniAvatarFile = async (file) => {
+    if (!file) return;
+    const isImage = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(file.name || '');
+    if (!isImage) {
+      showToast('File harus berupa gambar (JPG, PNG, WebP, GIF, SVG).', 'error');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('Ukuran foto maksimal 10MB.', 'error');
+      return;
+    }
+    setIsUploadingAlumniAvatar(true);
+    try {
+      const dataUrl = await compressImageToDataUrl(file);
+      setModalAlumniAvatar(dataUrl);
+      showToast(`Foto profil "${file.name}" siap disimpan!`, 'success');
+    } catch {
+      showToast('Gagal memproses file foto.', 'error');
+    } finally {
+      setIsUploadingAlumniAvatar(false);
+    }
   };
 
   const handleSaveAlumniStatus = async (e) => {
@@ -294,7 +322,8 @@ export default function KelolaPengurusPage() {
         body: JSON.stringify({
           id: selectedAlumni.id,
           status: modalAlumniStatus,
-          verified: modalAlumniStatus === 'Disetujui'
+          verified: modalAlumniStatus === 'Disetujui',
+          avatar: modalAlumniAvatar
         })
       });
       const json = await res.json();
@@ -2160,6 +2189,78 @@ export default function KelolaPengurusPage() {
                           </div>
                           <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', paddingTop: '6px', borderTop: '1px solid var(--border-color)' }}>
                             Terkirim pada: {new Date(selectedAlumni.createdAt).toLocaleString('id-ID')}
+                          </div>
+                        </div>
+
+                        {/* Foto Profil Alumni (Impor / Drag & Drop) */}
+                        <div style={{ marginBottom: '18px' }}>
+                          <label style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-heading)', display: 'block', marginBottom: '6px' }}>
+                            Foto Profil Alumni:
+                          </label>
+                          <input
+                            ref={alumniFileInputRef}
+                            type="file"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleAlumniAvatarFile(file);
+                              if (e.target) e.target.value = '';
+                            }}
+                          />
+                          <div
+                            className={`proker-upload-dropzone ${isDraggingAlumniFile ? 'dragging' : ''}`}
+                            style={{ padding: '12px 16px', flexDirection: 'row', justifyContent: 'flex-start', textAlign: 'left', gap: '14px' }}
+                            onClick={() => !isUploadingAlumniAvatar && alumniFileInputRef.current?.click()}
+                            onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingAlumniFile(true); }}
+                            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); if (!isDraggingAlumniFile) setIsDraggingAlumniFile(true); }}
+                            onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingAlumniFile(false); }}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setIsDraggingAlumniFile(false);
+                              const file = e.dataTransfer?.files?.[0];
+                              if (file) handleAlumniAvatarFile(file);
+                            }}
+                            role="button"
+                            tabIndex={0}
+                          >
+                            <img
+                              src={modalAlumniAvatar || '/default-profile.jpg'}
+                              alt={selectedAlumni.nama}
+                              style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-color)', flexShrink: 0, background: '#fff' }}
+                              onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = '/default-profile.jpg';
+                              }}
+                            />
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-heading)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <IconUpload size={15} style={{ color: 'var(--accent-orange)' }} />
+                                {isUploadingAlumniAvatar
+                                  ? 'Memproses foto...'
+                                  : isDraggingAlumniFile
+                                  ? 'Lepaskan foto di sini'
+                                  : 'Klik atau seret foto untuk mengganti'}
+                              </div>
+                              <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                                {modalAlumniAvatar
+                                  ? 'Foto kustom terpasang (klik Simpan Keputusan untuk menerapkan)'
+                                  : 'Menggunakan logo profil default'}
+                              </div>
+                            </div>
+                            {modalAlumniAvatar && (
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setModalAlumniAvatar('');
+                                }}
+                                style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}
+                              >
+                                Reset Default
+                              </button>
+                            )}
                           </div>
                         </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   IconGraduationCap, 
   IconQuote, 
@@ -12,7 +12,8 @@ import {
   IconCalendar, 
   IconUsers,
   IconRocket,
-  IconSend
+  IconSend,
+  IconUpload
 } from '@/components/Icons';
 
 export default function AlumniSection({ initialAlumni = [] }) {
@@ -23,6 +24,10 @@ export default function AlumniSection({ initialAlumni = [] }) {
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
 
+  const avatarInputRef = useRef(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isDraggingAvatar, setIsDraggingAvatar] = useState(false);
+
   const [formData, setFormData] = useState({
     nama: '',
     prodi: 'Sistem Informasi',
@@ -32,7 +37,25 @@ export default function AlumniSection({ initialAlumni = [] }) {
     instansi: '',
     kesan: '',
     pesan: '',
+    avatar: '',
   });
+
+  useEffect(() => {
+    setAlumniList(initialAlumni);
+  }, [initialAlumni]);
+
+  useEffect(() => {
+    let active = true;
+    fetch('/api/alumni', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((json) => {
+        if (active && json?.success && Array.isArray(json.data) && json.data.length > 0) {
+          setAlumniList(json.data);
+        }
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -82,6 +105,7 @@ export default function AlumniSection({ initialAlumni = [] }) {
           instansi: '',
           kesan: '',
           pesan: '',
+          avatar: '',
         });
         setModalOpen(false);
       } else {
@@ -94,13 +118,63 @@ export default function AlumniSection({ initialAlumni = [] }) {
     }
   };
 
-  // Helper for initial avatar initials
-  const getInitials = (name = '') => {
-    const parts = name.replace(/^(M\.|Moh\.|Dr\.|Ir\.)\s*/i, '').trim().split(' ');
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
+  const processAvatarFile = (file) => {
+    if (!file) return;
+    const isImage = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(file.name || '');
+    if (!isImage) {
+      showToast('File harus berupa gambar (JPG, PNG, WebP, GIF, SVG).', 'error');
+      return;
     }
-    return (parts[0] ? parts[0].slice(0, 2) : 'AL').toUpperCase();
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('Ukuran foto maksimal 10MB.', 'error');
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    const reader = new FileReader();
+    reader.onerror = () => {
+      setIsUploadingAvatar(false);
+      showToast('Gagal membaca file foto.', 'error');
+    };
+    reader.onload = () => {
+      const result = reader.result;
+      if (file.type === 'image/svg+xml') {
+        setFormData((prev) => ({ ...prev, avatar: result }));
+        setIsUploadingAvatar(false);
+        return;
+      }
+      const img = new Image();
+      img.onerror = () => {
+        setIsUploadingAvatar(false);
+        showToast('Format foto tidak dapat diproses browser.', 'error');
+      };
+      img.onload = () => {
+        const MAX_DIM = 400;
+        let { width, height } = img;
+        if (width > MAX_DIM || height > MAX_DIM) {
+          if (width > height) {
+            height = Math.round((height * MAX_DIM) / width);
+            width = MAX_DIM;
+          } else {
+            width = Math.round((width * MAX_DIM) / height);
+            height = MAX_DIM;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        let dataUrl = canvas.toDataURL('image/webp', 0.82);
+        if (!dataUrl.startsWith('data:image/webp')) {
+          dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+        }
+        setFormData((prev) => ({ ...prev, avatar: dataUrl }));
+        setIsUploadingAvatar(false);
+      };
+      img.src = result;
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -218,23 +292,15 @@ export default function AlumniSection({ initialAlumni = [] }) {
                 {/* Card Top: Profile Header */}
                 <div className="alumni-profile-header">
                   <div className="alumni-avatar-box">
-                    {item.avatar ? (
-                      <img 
-                        src={item.avatar} 
-                        alt={item.nama} 
-                        className="alumni-avatar-img"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
-                        }} 
-                      />
-                    ) : null}
-                    <div 
-                      className="alumni-avatar-fallback" 
-                      style={{ display: item.avatar ? 'none' : 'flex' }}
-                    >
-                      {getInitials(item.nama)}
-                    </div>
+                    <img 
+                      src={item.avatar || '/default-profile.jpg'} 
+                      alt={item.nama} 
+                      className="alumni-avatar-img"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/default-profile.jpg';
+                      }} 
+                    />
                   </div>
 
                   <div className="alumni-profile-meta">
@@ -467,6 +533,73 @@ export default function AlumniSection({ initialAlumni = [] }) {
 
               <div className="form-group">
                 <label className="form-label">
+                  Foto Profil (Opsional)
+                </label>
+                <input
+                  ref={avatarInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) processAvatarFile(file);
+                    if (e.target) e.target.value = '';
+                  }}
+                />
+                <div
+                  className={`proker-upload-dropzone ${isDraggingAvatar ? 'dragging' : ''}`}
+                  style={{ padding: '14px 16px', flexDirection: 'row', justifyContent: 'flex-start', textAlign: 'left', gap: '14px' }}
+                  onClick={() => !isUploadingAvatar && avatarInputRef.current?.click()}
+                  onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingAvatar(true); }}
+                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); if (!isDraggingAvatar) setIsDraggingAvatar(true); }}
+                  onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingAvatar(false); }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsDraggingAvatar(false);
+                    const file = e.dataTransfer?.files?.[0];
+                    if (file) processAvatarFile(file);
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <img
+                    src={formData.avatar || '/default-profile.jpg'}
+                    alt="Preview Foto Profil"
+                    style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-color)', flexShrink: 0, background: '#fff' }}
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-heading)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <IconUpload size={15} style={{ color: 'var(--accent-orange)' }} />
+                      {isUploadingAvatar
+                        ? 'Memproses foto...'
+                        : isDraggingAvatar
+                        ? 'Lepaskan foto di sini'
+                        : 'Klik atau seret foto profil dari penyimpanan'}
+                    </div>
+                    <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                      {formData.avatar
+                        ? 'Foto profil terpilih siap dikirim'
+                        : 'Jika kosong, otomatis menggunakan logo profil standar'}
+                    </div>
+                  </div>
+                  {formData.avatar && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFormData((prev) => ({ ...prev, avatar: '' }));
+                      }}
+                      style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: '0.78rem', fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}
+                    >
+                      Hapus
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">
                   Kesan Selama Berproses di Kampus &amp; DEMA <span className="req">*</span>
                 </label>
                 <textarea
@@ -537,23 +670,15 @@ export default function AlumniSection({ initialAlumni = [] }) {
             <div className="alumni-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                 <div className="alumni-avatar-box large">
-                  {detailModal.avatar ? (
-                    <img 
-                      src={detailModal.avatar} 
-                      alt={detailModal.nama} 
-                      className="alumni-avatar-img"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
-                      }} 
-                    />
-                  ) : null}
-                  <div 
-                    className="alumni-avatar-fallback" 
-                    style={{ display: detailModal.avatar ? 'none' : 'flex' }}
-                  >
-                    {getInitials(detailModal.nama)}
-                  </div>
+                  <img 
+                    src={detailModal.avatar || '/default-profile.jpg'} 
+                    alt={detailModal.nama} 
+                    className="alumni-avatar-img"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/default-profile.jpg';
+                    }} 
+                  />
                 </div>
 
                 <div>

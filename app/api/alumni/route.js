@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getAllAlumni, createAlumni, updateAlumni, deleteAlumni } from '@/lib/alumni';
 import { verifyAdminAuth } from '@/lib/auth';
 
@@ -76,6 +77,8 @@ export async function PATCH(request) {
     }
 
     const updated = await updateAlumni(id, { verified, status, ...rest });
+    revalidatePath('/');
+    revalidatePath('/alumni');
 
     return NextResponse.json({
       success: true,
