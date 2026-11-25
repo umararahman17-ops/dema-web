@@ -39,33 +39,49 @@ export async function POST(request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+    const isVercel = Boolean(process.env.VERCEL);
 
-    // Direktori target penyimpanan lokal: public/uploads
-    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
+    // Jika berjalan di Vercel (serverless read-only) atau gagal menulis disk, kembalikan Data URL Base64
+    if (!isVercel) {
+      try {
+        const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+
+        const rawExt = path.extname(file.name || '').toLowerCase();
+        const safeExts = ['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif'];
+        const ext = safeExts.includes(rawExt) ? rawExt : '.jpg';
+        const timestamp = Date.now();
+        const randomHex = Math.random().toString(36).substring(2, 8);
+        const filename = `proker-${timestamp}-${randomHex}${ext}`;
+        const filePath = path.join(uploadsDir, filename);
+
+        fs.writeFileSync(filePath, buffer);
+
+        return NextResponse.json({
+          success: true,
+          url: `/uploads/${filename}`,
+          filename,
+          size: file.size,
+          type: file.type,
+          message: 'Foto berhasil diimpor dan disimpan ke server!'
+        });
+      } catch (fsError) {
+        console.warn('Filesystem tidak dapat ditulis, beralih ke Data URL:', fsError.message);
+      }
     }
 
-    // Nama file unik dan aman
-    const rawExt = path.extname(file.name || '').toLowerCase();
-    const safeExts = ['.jpg', '.jpeg', '.png', '.webp', '.svg', '.gif'];
-    const ext = safeExts.includes(rawExt) ? rawExt : '.jpg';
-    const timestamp = Date.now();
-    const randomHex = Math.random().toString(36).substring(2, 8);
-    const filename = `proker-${timestamp}-${randomHex}${ext}`;
-    const filePath = path.join(uploadsDir, filename);
-
-    fs.writeFileSync(filePath, buffer);
-
-    const publicUrl = `/uploads/${filename}`;
+    const base64 = buffer.toString('base64');
+    const dataUrl = `data:${file.type};base64,${base64}`;
 
     return NextResponse.json({
       success: true,
-      url: publicUrl,
-      filename,
+      url: dataUrl,
+      filename: file.name || 'image',
       size: file.size,
       type: file.type,
-      message: 'Foto berhasil diimpor dan disimpan ke server!'
+      message: 'Foto berhasil diimpor!'
     });
   } catch (error) {
     console.error('Error saat upload file:', error);

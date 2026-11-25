@@ -5794,10 +5794,12 @@ nextjs-portal,
   justify-content: center;
   gap: 8px;
 }
-.proker-upload-dropzone:hover {
+.proker-upload-dropzone:hover,
+.proker-upload-dropzone.dragging {
   border-color: var(--accent-orange);
-  background: rgba(224, 99, 31, 0.08);
+  background: rgba(224, 99, 31, 0.1);
   transform: translateY(-1px);
+  box-shadow: 0 0 0 3px rgba(224, 99, 31, 0.15);
 }
 .proker-image-preview-card {
   display: flex;

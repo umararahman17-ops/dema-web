@@ -52,6 +52,7 @@ export default function KelolaPengurusPage() {
   // Program File Upload States
   const fileInputRef = useRef(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [imageInputMode, setImageInputMode] = useState('upload'); // 'upload' | 'url'
 
@@ -462,11 +463,57 @@ export default function KelolaPengurusPage() {
     }
   };
 
-  const handleImageFileUpload = async (e) => {
-    const file = e.target.files?.[0];
+  const compressImageToDataUrl = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error('Gagal membaca file gambar.'));
+      reader.onload = () => {
+        const result = reader.result;
+        // SVG & GIF kecil dipertahankan langsung agar tidak kehilangan animasi/vektor
+        if (file.type === 'image/svg+xml' || (file.type === 'image/gif' && file.size <= 1024 * 1024)) {
+          resolve(result);
+          return;
+        }
+
+        const img = new Image();
+        img.onerror = () => reject(new Error('Format gambar tidak dapat diproses browser.'));
+        img.onload = () => {
+          const MAX_DIM = 1200;
+          let { width, height } = img;
+          if (width > MAX_DIM || height > MAX_DIM) {
+            if (width > height) {
+              height = Math.round((height * MAX_DIM) / width);
+              width = MAX_DIM;
+            } else {
+              width = Math.round((width * MAX_DIM) / height);
+              height = MAX_DIM;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Gunakan WebP jika didukung, fallback ke JPEG
+          let dataUrl = canvas.toDataURL('image/webp', 0.82);
+          if (!dataUrl.startsWith('data:image/webp')) {
+            dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          }
+          resolve(dataUrl);
+        };
+        img.src = result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const processImageFile = async (file) => {
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
+    const isImageType = file.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(file.name || '');
+    if (!isImageType) {
       setUploadError('File harus berupa format gambar (JPG, PNG, WebP, SVG, GIF)');
       showToast('File bukan gambar yang valid', 'error');
       return;
@@ -482,31 +529,55 @@ export default function KelolaPengurusPage() {
     setIsUploadingImage(true);
 
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: {
-          'x-admin-key': adminKey
-        },
-        body: formData
-      });
-
-      const data = await res.json();
-      if (data.success && data.url) {
-        setProgramForm((prev) => ({ ...prev, image: data.url }));
-        showToast('Foto berhasil diimpor dari file dan tersimpan!', 'success');
-      } else {
-        setUploadError(data.message || 'Gagal mengunggah foto.');
-        showToast(data.message || 'Gagal mengunggah gambar', 'error');
-      }
+      const dataUrl = await compressImageToDataUrl(file);
+      setProgramForm((prev) => ({ ...prev, image: dataUrl }));
+      showToast(`Foto "${file.name}" berhasil dimuat & siap disimpan!`, 'success');
     } catch {
-      setUploadError('Terjadi kesalahan koneksi saat mengunggah.');
-      showToast('Gagal mengunggah foto', 'error');
+      // Fallback ke /api/upload jika pemrosesan kanvas gagal
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'x-admin-key': adminKey },
+          body: formData
+        });
+
+        const data = await res.json();
+        if (data.success && data.url) {
+          setProgramForm((prev) => ({ ...prev, image: data.url }));
+          showToast('Foto berhasil diimpor dari file dan tersimpan!', 'success');
+        } else {
+          setUploadError(data.message || 'Gagal mengimpor foto.');
+          showToast(data.message || 'Gagal mengimpor gambar', 'error');
+        }
+      } catch {
+        setUploadError('Terjadi kesalahan saat memproses file foto.');
+        showToast('Gagal mengimpor foto', 'error');
+      }
     } finally {
       setIsUploadingImage(false);
-      if (e.target) e.target.value = '';
+    }
+  };
+
+  const handleImageFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      await processImageFile(file);
+    }
+    if (e.target) e.target.value = '';
+  };
+
+  const handleImageDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDraggingFile(false);
+    if (isUploadingImage) return;
+
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      await processImageFile(file);
     }
   };
 
@@ -1466,15 +1537,31 @@ export default function KelolaPengurusPage() {
                             onChange={handleImageFileUpload}
                           />
                           <div
-                            className="proker-upload-dropzone"
+                            className={`proker-upload-dropzone ${isDraggingFile ? 'dragging' : ''}`}
                             onClick={() => !isUploadingImage && fileInputRef.current?.click()}
+                            onDragEnter={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setIsDraggingFile(true);
+                            }}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (!isDraggingFile) setIsDraggingFile(true);
+                            }}
+                            onDragLeave={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setIsDraggingFile(false);
+                            }}
+                            onDrop={handleImageDrop}
                             role="button"
                             tabIndex={0}
                           >
                             {isUploadingImage ? (
                               <div style={{ padding: '10px', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--accent-orange)' }}>
                                 <IconRefresh size={22} className="spin-animation" />
-                                <span style={{ fontWeight: 600 }}>Sedang mengunggah dan menyimpan foto...</span>
+                                <span style={{ fontWeight: 600 }}>Sedang memproses &amp; mengompres foto...</span>
                               </div>
                             ) : (
                               <>
@@ -1482,10 +1569,12 @@ export default function KelolaPengurusPage() {
                                   <IconUpload size={22} />
                                 </div>
                                 <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-heading)' }}>
-                                  Klik untuk Memilih / Mengimpor Foto dari File
+                                  {isDraggingFile
+                                    ? 'Lepaskan Foto di Sini untuk Mengimpor'
+                                    : 'Klik atau Seret (Drag & Drop) Foto dari Penyimpanan ke Sini'}
                                 </div>
                                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                  Format JPG, PNG, WebP, GIF, SVG • Otomatis tersimpan ke server
+                                  Format JPG, PNG, WebP, GIF, SVG • Maksimal 10MB
                                 </div>
                               </>
                             )}
@@ -1520,7 +1609,9 @@ export default function KelolaPengurusPage() {
                               <IconCheck size={15} style={{ color: 'var(--accent-green)' }} /> Foto Banner Terpilih
                             </div>
                             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: '2px' }}>
-                              {programForm.image}
+                              {programForm.image.startsWith('data:image/')
+                                ? 'Foto dari file lokal (terkompresi & siap disimpan ke database)'
+                                : programForm.image}
                             </div>
                             <div style={{ display: 'flex', gap: '10px', marginTop: '6px' }}>
                               <button
