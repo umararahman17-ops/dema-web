@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getAllPrograms, saveProgram, deleteProgram } from '@/lib/db';
 import { verifyAdminAuth } from '@/lib/auth';
 
@@ -20,6 +21,8 @@ export async function POST(request) {
       return NextResponse.json({ success: false, message: 'Judul program kerja wajib diisi!' }, { status: 400 });
     }
     const saved = await saveProgram(body);
+    revalidatePath('/');
+    revalidatePath('/portofolio');
     return NextResponse.json({ success: true, data: saved, message: 'Program kerja berhasil disimpan ke database!' });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -38,6 +41,8 @@ export async function DELETE(request) {
       return NextResponse.json({ success: false, message: 'ID tidak disediakan' }, { status: 400 });
     }
     await deleteProgram(id);
+    revalidatePath('/');
+    revalidatePath('/portofolio');
     return NextResponse.json({ success: true, message: 'Program kerja berhasil dihapus dari database!' });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });

@@ -19,6 +19,7 @@ import {
   IconCheck
 } from '@/components/Icons';
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 0; // Dynamic data for real-time updates
 
 const prodiList = [

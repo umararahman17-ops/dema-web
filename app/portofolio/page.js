@@ -7,6 +7,7 @@ export const metadata = {
   description: 'Katalog program kerja unggulan, expo riset teknologi, aksi pengabdian desa, dan inisiatif advokasi mahasiswa DEMA.',
 };
 
+export const dynamic = 'force-dynamic';
 export const revalidate = 0; // Dynamic data
 
 export default async function PortofolioPage() {

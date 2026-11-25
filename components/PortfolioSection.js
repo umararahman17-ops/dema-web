@@ -1,13 +1,31 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import PortfolioModal from './PortfolioModal';
 import { IconCalendar } from './Icons';
 
 export default function PortfolioSection({ initialPrograms, showAllButton = true }) {
+  const [programs, setPrograms] = useState(initialPrograms);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [activeModalProgram, setActiveModalProgram] = useState(null);
+
+  useEffect(() => {
+    setPrograms(initialPrograms);
+  }, [initialPrograms]);
+
+  useEffect(() => {
+    let active = true;
+    fetch('/api/program-kerja', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((json) => {
+        if (active && json?.success && Array.isArray(json.data) && json.data.length > 0) {
+          setPrograms(json.data);
+        }
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
 
   const categories = [
     { key: 'all', label: 'Semua Kategori' },
@@ -19,8 +37,8 @@ export default function PortfolioSection({ initialPrograms, showAllButton = true
   ];
 
   const filtered = selectedCategory === 'all'
-    ? initialPrograms
-    : initialPrograms.filter((p) => p.category === selectedCategory);
+    ? programs
+    : programs.filter((p) => p.category === selectedCategory);
 
   return (
     <>
