@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import {
   IconHome,
   IconBook,
+  IconUsers,
   IconRocket,
   IconChat
 } from '@/components/Icons';
@@ -19,70 +20,68 @@ export default function MobileTaskbar() {
   };
 
   return (
-    <div className="mobile-taskbar" role="navigation" aria-label="Taskbar Mobile">
+    <nav className="mobile-taskbar" aria-label="Navigasi Mobile">
       <div className="taskbar-container">
-        {/* 1. Beranda */}
         <Link
           href="/"
           className={`taskbar-item ${pathname === '/' ? 'active' : ''}`}
+          aria-current={pathname === '/' ? 'page' : undefined}
           aria-label="Beranda"
         >
-          <div className="taskbar-icon-wrap">
-            <IconHome size={20} />
-          </div>
+          <span className="taskbar-icon-wrap" aria-hidden="true">
+            <IconHome size={19} />
+          </span>
           <span className="taskbar-label">Beranda</span>
         </Link>
 
-        {/* 2. Profil & Filosofi */}
         <Link
           href="/profil"
           className={`taskbar-item ${pathname.startsWith('/profil') ? 'active' : ''}`}
+          aria-current={pathname.startsWith('/profil') ? 'page' : undefined}
           aria-label="Profil & Filosofi"
         >
-          <div className="taskbar-icon-wrap">
-            <IconBook size={20} />
-          </div>
+          <span className="taskbar-icon-wrap" aria-hidden="true">
+            <IconBook size={19} />
+          </span>
           <span className="taskbar-label">Profil</span>
         </Link>
 
-        {/* 3. CENTER HERO: KABINET (TRIGGER MODAL) */}
         <button
           type="button"
-          className="taskbar-hero-btn"
+          className="taskbar-item taskbar-kabinet-btn"
           onClick={openCabinetModal}
-          aria-label="Lihat Profil Kabinet Wigyamerta Antasena"
+          aria-label="Profil Kabinet Wigyamerta Antasena"
         >
-          <div className="taskbar-hero-emblem-wrap">
-            <img src="/logo-kabinet.png" alt="Logo Kabinet Wigyamerta Antasena" className="taskbar-hero-img" />
-            <span className="taskbar-hero-live-badge">26/27</span>
-          </div>
-          <span className="taskbar-hero-label">Kabinet</span>
+          <span className="taskbar-icon-wrap" aria-hidden="true">
+            <IconUsers size={19} />
+          </span>
+          <span className="taskbar-label">Kabinet</span>
         </button>
 
-        {/* 4. Portofolio & Proker */}
         <Link
           href="/portofolio"
           className={`taskbar-item ${pathname.startsWith('/portofolio') ? 'active' : ''}`}
+          aria-current={pathname.startsWith('/portofolio') ? 'page' : undefined}
           aria-label="Portofolio & Program Kerja"
         >
-          <div className="taskbar-icon-wrap">
-            <IconRocket size={20} />
-          </div>
+          <span className="taskbar-icon-wrap" aria-hidden="true">
+            <IconRocket size={19} />
+          </span>
           <span className="taskbar-label">Proker</span>
         </Link>
 
-        {/* 5. Kontak & Aspirasi */}
         <Link
           href="/kontak#aspirasi"
           className={`taskbar-item ${pathname.startsWith('/kontak') ? 'active' : ''}`}
+          aria-current={pathname.startsWith('/kontak') ? 'page' : undefined}
           aria-label="Kirim Aspirasi Mahasiswa"
         >
-          <div className="taskbar-icon-wrap">
-            <IconChat size={20} />
-          </div>
+          <span className="taskbar-icon-wrap" aria-hidden="true">
+            <IconChat size={19} />
+          </span>
           <span className="taskbar-label">Aspirasi</span>
         </Link>
       </div>
-    </div>
+    </nav>
   );
 }
