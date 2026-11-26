@@ -3,6 +3,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MobileTaskbar from '@/components/MobileTaskbar';
 import ParallaxController from '@/components/ParallaxController';
+import SwarmCursor from '@/components/SwarmCursor';
 import { AttributionGuardian } from '@/components/ImmutableFooterCredit';
 
 export const metadata = {
@@ -48,6 +49,7 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <ParallaxController />
+        <SwarmCursor />
         <Navbar />
         <main>{children}</main>
         <Footer />

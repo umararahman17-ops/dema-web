@@ -6061,4 +6061,23 @@ nextjs-portal,
   }
 }
 
+/* =========================================================================
+   SWARM CURSOR OVERLAY (FINE-POINTER DESKTOP ONLY)
+   ========================================================================= */
+.swarm-cursor-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10070;
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .swarm-cursor-canvas {
+    display: none !important;
+  }
+}
+
+
 
