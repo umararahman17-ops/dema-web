@@ -6061,20 +6061,86 @@ nextjs-portal,
   }
 }
 
-/* =========================================================================
-   SWARM CURSOR OVERLAY (FINE-POINTER DESKTOP ONLY)
-   ========================================================================= */
-.swarm-cursor-canvas {
+/* Multiplayer UI-builder swarm cursor overlay */
+.swarm-ui-layer {
   position: fixed;
   inset: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   pointer-events: none;
-  z-index: 10070;
+  z-index: 9996;
 }
 
-@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .swarm-cursor-canvas {
+.swarm-inspect-box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border: 1.5px dashed rgba(56, 189, 248, 0.72);
+  border-radius: 6px;
+  pointer-events: none;
+  will-change: transform, width, height, opacity;
+}
+
+[data-theme="light"] .swarm-inspect-box {
+  border-color: rgba(37, 99, 235, 0.75);
+}
+
+.swarm-inspect-handle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: #ffffff;
+  border: 1.5px solid #38bdf8;
+  border-radius: 1px;
+}
+
+[data-theme="light"] .swarm-inspect-handle {
+  border-color: #2563eb;
+}
+
+.swarm-inspect-handle.tl { top: -3px; left: -3px; }
+.swarm-inspect-handle.tr { top: -3px; right: -3px; }
+.swarm-inspect-handle.bl { bottom: -3px; left: -3px; }
+.swarm-inspect-handle.br { bottom: -3px; right: -3px; }
+
+.swarm-inspect-badge {
+  position: absolute;
+  left: 50%;
+  bottom: -20px;
+  transform: translateX(-50%);
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+.swarm-inspect-badge.is-top {
+  bottom: auto;
+  top: -20px;
+}
+
+.swarm-cursor-actor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.swarm-cursor-svg {
+  display: block;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swarm-ui-layer {
     display: none !important;
   }
 }

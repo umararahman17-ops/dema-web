@@ -2,329 +2,413 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const SWARM_COUNT = 20;
-const IDLE_FADE_MS = 2200;
-const LINK_DISTANCE = 48;
+const DESKTOP_CURSOR_COUNT = 8;
+const MOBILE_CURSOR_COUNT = 4;
+const DESKTOP_BOX_COUNT = 4;
+const MOBILE_BOX_COUNT = 2;
 
-const THEME_PALETTES = {
-  dark: {
-    primary: [
-      '52, 211, 153',  // #34d399
-      '34, 197, 94',   // #22c55e
-      '16, 185, 129',  // #10b981
-    ],
-    accent: '245, 126, 61', // #f57e3d
-    coreAlpha: 0.78,
-    trailAlpha: 0.36,
-    linkAlpha: 0.14,
-  },
-  light: {
-    primary: [
-      '21, 128, 61',   // #15803d
-      '30, 107, 55',   // #1e6b37
-      '5, 150, 105',   // #059669
-    ],
-    accent: '224, 99, 31', // #e0631f
-    coreAlpha: 0.72,
-    trailAlpha: 0.34,
-    linkAlpha: 0.14,
-  },
-};
+// Vibrant multiplayer cursor accents with white stroke legibility across themes.
+const CURSOR_COLORS = [
+  '#38bdf8',
+  '#34d399',
+  '#f59e0b',
+  '#fb7185',
+  '#a78bfa',
+  '#22c55e',
+  '#e0631f',
+  '#60a5fa',
+];
 
-const INTERACTIVE_SELECTOR =
-  'a[href], button, input, select, textarea, [role="button"], [role="tab"], label[for]';
+const TARGET_SELECTOR = [
+  '.solane-headline',
+  '.solane-subtitle',
+  '.btn-solane-green',
+  '.btn-solane-ghost',
+  '.solane-emblem-stage',
+  '.solane-partner-item',
+  '.solane-section-tag',
+  '.solane-pillar-card',
+  '.solane-bento-card',
+  '.portfolio-card',
+  '.alumni-highlight-item',
+  '.alumni-card',
+  '.cta-card-form',
+  '.solane-nav-link',
+].join(', ');
+
+const OPEN_MODAL_SELECTOR =
+  '.alumni-modal-overlay, .cabinet-modal-overlay, .portfolio-modal-overlay, .mobile-drawer.open';
 
 /**
- * Ambient canvas-based swarm cursor overlay for fine-pointer devices.
- * Uses damped orbital flocking, idles to sleep cleanly to save battery,
- * and disables itself on touch screens or prefers-reduced-motion: reduce.
+ * Renders animated multiplayer design-tool cursors that glide across visible UI
+ * blocks with dashed wireframe outlines and live WxH dimension tags.
  */
 export default function SwarmCursor() {
-  const [enabled, setEnabled] = useState(false);
-  const canvasRef = useRef(null);
+  const [active, setActive] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const cursorRefs = useRef([]);
+  const boxRefs = useRef([]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
 
-    const pointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mobileQuery = window.matchMedia('(max-width: 768px)');
 
-    const evaluateEligibility = () => {
-      setEnabled(pointerQuery.matches && !motionQuery.matches);
+    const syncState = () => {
+      if (motionQuery.matches) {
+        setActive(false);
+        return;
+      }
+      setIsMobile(mobileQuery.matches);
+      setActive(true);
     };
 
-    evaluateEligibility();
-
-    pointerQuery.addEventListener?.('change', evaluateEligibility);
-    motionQuery.addEventListener?.('change', evaluateEligibility);
+    syncState();
+    motionQuery.addEventListener?.('change', syncState);
+    mobileQuery.addEventListener?.('change', syncState);
+    window.addEventListener('resize', syncState, { passive: true });
 
     return () => {
-      pointerQuery.removeEventListener?.('change', evaluateEligibility);
-      motionQuery.removeEventListener?.('change', evaluateEligibility);
+      motionQuery.removeEventListener?.('change', syncState);
+      mobileQuery.removeEventListener?.('change', syncState);
+      window.removeEventListener('resize', syncState);
     };
   }, []);
 
-  useEffect(() => {
-    if (!enabled) return undefined;
-    const canvas = canvasRef.current;
-    if (!canvas) return undefined;
+  const cursorCount = isMobile ? MOBILE_CURSOR_COUNT : DESKTOP_CURSOR_COUNT;
+  const inspectBoxCount = isMobile ? MOBILE_BOX_COUNT : DESKTOP_BOX_COUNT;
 
-    const ctx = canvas.getContext('2d', { alpha: true });
-    if (!ctx) return undefined;
+  useEffect(() => {
+    if (!active) return undefined;
 
     let viewportW = window.innerWidth;
     let viewportH = window.innerHeight;
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-    const resizeCanvas = () => {
-      viewportW = window.innerWidth;
-      viewportH = window.innerHeight;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.max(1, Math.floor(viewportW * dpr));
-      canvas.height = Math.max(1, Math.floor(viewportH * dpr));
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-
-    resizeCanvas();
-
-    let currentTheme =
-      document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-
-    const themeObserver = new MutationObserver(() => {
-      currentTheme =
-        document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    });
-    themeObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['data-theme'],
-    });
-
-    const boids = Array.from({ length: SWARM_COUNT }, (_, i) => {
-      const isAccent = i % 5 === 0;
-      const tier = i % 3;
-      return {
-        x: viewportW * 0.5,
-        y: viewportH * 0.5,
-        prevX: viewportW * 0.5,
-        prevY: viewportH * 0.5,
-        vx: 0,
-        vy: 0,
-        angle: (Math.PI * 2 * i) / SWARM_COUNT,
-        orbitSpeed: (0.018 + (i % 4) * 0.006) * (i % 2 === 0 ? 1 : -1),
-        orbitRadius: 11 + tier * 10 + (i % 5) * 3.5,
-        stiffness: 0.055 + (i % 4) * 0.015,
-        damping: 0.78 + (i % 3) * 0.025,
-        radius: 1.55 + (tier === 0 ? 1.15 : tier === 1 ? 0.55 : 0),
-        isAccent,
-        colorIndex: i % 3,
-      };
-    });
-
-    const pointer = {
-      x: viewportW * 0.5,
-      y: viewportH * 0.5,
-      initialized: false,
-      inside: false,
-      hoveringInteractive: false,
-      lastActiveAt: 0,
-    };
-
-    let masterOpacity = 0;
-    let burstScale = 1;
+    let visibleTargets = [];
     let rafId = null;
+    let pointerInfluence = null;
+    let pointerInfluenceUntil = 0;
 
-    const startLoop = () => {
-      if (rafId !== null) return;
-      rafId = window.requestAnimationFrame(tick);
-    };
+    const isRectVisible = (rect) =>
+      rect.width >= 36 &&
+      rect.height >= 16 &&
+      rect.bottom >= 72 &&
+      rect.top <= viewportH - 28 &&
+      rect.right >= 12 &&
+      rect.left <= viewportW - 12;
 
-    const tick = (now) => {
-      rafId = null;
+    const toClampedRect = (rect) => ({
+      left: rect.left,
+      top: rect.top,
+      width: Math.min(rect.width, viewportW - 24),
+      height: rect.height,
+    });
 
-      const idleElapsed = now - pointer.lastActiveAt;
-      const shouldBeVisible = pointer.initialized && pointer.inside && idleElapsed < IDLE_FADE_MS;
-      const targetOpacity = shouldBeVisible ? 1 : 0;
-
-      masterOpacity += (targetOpacity - masterOpacity) * (shouldBeVisible ? 0.18 : 0.07);
-      burstScale += (1 - burstScale) * 0.1;
-
-      ctx.clearRect(0, 0, viewportW, viewportH);
-
-      if (!shouldBeVisible && masterOpacity < 0.008) {
-        masterOpacity = 0;
+    const collectVisibleTargets = () => {
+      if (document.querySelector(OPEN_MODAL_SELECTOR)) {
+        visibleTargets = [];
         return;
       }
 
-      const palette = THEME_PALETTES[currentTheme];
-      const orbitMultiplier = (pointer.hoveringInteractive ? 0.68 : 1) * burstScale;
-      const maxLinkSq = LINK_DISTANCE * LINK_DISTANCE;
-
-      // Update positions & orbital spring forces
-      for (let i = 0; i < boids.length; i++) {
-        const b = boids[i];
-        b.prevX = b.x;
-        b.prevY = b.y;
-        b.angle += b.orbitSpeed;
-
-        const targetX = pointer.x + Math.cos(b.angle) * b.orbitRadius * orbitMultiplier;
-        const targetY = pointer.y + Math.sin(b.angle) * b.orbitRadius * orbitMultiplier;
-
-        b.vx += (targetX - b.x) * b.stiffness;
-        b.vy += (targetY - b.y) * b.stiffness;
-
-        // Gentle pairwise separation so swarm stays distinct
-        for (let j = i + 1; j < boids.length; j++) {
-          const other = boids[j];
-          const dx = b.x - other.x;
-          const dy = b.y - other.y;
-          const distSq = dx * dx + dy * dy;
-          if (distSq > 0.01 && distSq < 256) {
-            const dist = Math.sqrt(distSq);
-            const push = ((16 - dist) / 16) * 0.24;
-            const nx = dx / dist;
-            const ny = dy / dist;
-            b.vx += nx * push;
-            b.vy += ny * push;
-            other.vx -= nx * push;
-            other.vy -= ny * push;
-          }
-        }
-
-        b.vx *= b.damping;
-        b.vy *= b.damping;
-        b.x += b.vx;
-        b.y += b.vy;
-      }
-
-      // Draw fine synaptic connections between adjacent swarm particles
-      ctx.lineWidth = 0.85;
-      for (let i = 0; i < boids.length; i++) {
-        const a = boids[i];
-        const rgbA = a.isAccent ? palette.accent : palette.primary[a.colorIndex];
-        for (let j = i + 1; j < boids.length; j++) {
-          const b = boids[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const distSq = dx * dx + dy * dy;
-          if (distSq < maxLinkSq) {
-            const strength = 1 - Math.sqrt(distSq) / LINK_DISTANCE;
-            ctx.strokeStyle = `rgba(${rgbA}, ${(strength * palette.linkAlpha * masterOpacity).toFixed(3)})`;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
+      const nodes = document.querySelectorAll(TARGET_SELECTOR);
+      const next = [];
+      for (let i = 0; i < nodes.length; i++) {
+        const el = nodes[i];
+        const rect = el.getBoundingClientRect();
+        if (isRectVisible(rect)) {
+          next.push({ el, rect: toClampedRect(rect) });
         }
       }
+      visibleTargets = next;
+    };
 
-      // Draw motion wakes & glowing micro-particles
-      ctx.lineCap = 'round';
-      for (let i = 0; i < boids.length; i++) {
-        const b = boids[i];
-        const rgb = b.isAccent ? palette.accent : palette.primary[b.colorIndex];
+    collectVisibleTargets();
 
-        ctx.strokeStyle = `rgba(${rgb}, ${(palette.trailAlpha * masterOpacity).toFixed(3)})`;
-        ctx.lineWidth = b.radius * 1.1;
-        ctx.beginPath();
-        ctx.moveTo(b.prevX, b.prevY);
-        ctx.lineTo(b.x, b.y);
-        ctx.stroke();
-
-        ctx.fillStyle = `rgba(${rgb}, ${(palette.coreAlpha * masterOpacity).toFixed(3)})`;
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-        ctx.fill();
+    const pickTarget = (actorIndex, stepOffset = 0, excludeEls = null) => {
+      if (visibleTargets.length === 0) {
+        const padX = Math.max(24, viewportW * 0.1);
+        const w = Math.min(240, viewportW * 0.44);
+        const h = 36 + (actorIndex % 3) * 16;
+        return {
+          el: null,
+          rect: {
+            left: padX + ((actorIndex * 137) % Math.max(40, viewportW - padX * 2 - w)),
+            top: 120 + ((actorIndex * 113) % Math.max(80, viewportH - 220)),
+            width: w,
+            height: h,
+          },
+        };
       }
 
-      rafId = window.requestAnimationFrame(tick);
+      const len = visibleTargets.length;
+      const start = (actorIndex + stepOffset) % len;
+      for (let offset = 0; offset < len; offset++) {
+        const candidate = visibleTargets[(start + offset) % len];
+        if (!excludeEls || !excludeEls.has(candidate.el)) {
+          return candidate;
+        }
+      }
+      return visibleTargets[start];
+    };
+
+    const pickCursorAnchorOnRect = (rect, index) => {
+      const mode = index % 4;
+      if (mode === 0) return { x: rect.left + rect.width - 10, y: rect.top + rect.height - 6 };
+      if (mode === 1) return { x: rect.left + rect.width * 0.62, y: rect.top + rect.height * 0.55 };
+      if (mode === 2) return { x: rect.left + 14, y: rect.top + 10 };
+      return { x: rect.left + rect.width * 0.84, y: rect.top + 8 };
+    };
+
+    const initialUsed = new Set();
+    const actors = Array.from({ length: cursorCount }, (_, i) => {
+      const picked = pickTarget(i, 0, initialUsed);
+      if (picked.el) initialUsed.add(picked.el);
+      const anchor = pickCursorAnchorOnRect(picked.rect, i);
+      return {
+        x: Math.max(20, Math.min(viewportW - 20, anchor.x + (i % 2 === 0 ? -42 : 42))),
+        y: Math.max(80, Math.min(viewportH - 30, anchor.y + (i % 3 === 0 ? -32 : 32))),
+        vx: 0,
+        vy: 0,
+        targetX: Math.max(18, Math.min(viewportW - 24, anchor.x)),
+        targetY: Math.max(76, Math.min(viewportH - 28, anchor.y)),
+        targetEl: picked.el,
+        anchorMode: i,
+        rect: picked.rect,
+        switchCount: 1,
+        nextSwitchAt: performance.now() + 1800 + i * 240,
+        boxSlot: i < inspectBoxCount ? i : -1,
+        inspectOpacity: 0.75,
+        wobblePhase: i * 1.1,
+        stiffness: 0.024 + (i % 3) * 0.006,
+        damping: 0.8,
+      };
+    });
+
+    const syncActorRectsAfterScroll = () => {
+      const now = performance.now();
+      for (let i = 0; i < actors.length; i++) {
+        const a = actors[i];
+        a.x = Math.max(20, Math.min(viewportW - 20, a.x));
+        a.y = Math.max(76, Math.min(viewportH - 28, a.y));
+        if (!a.targetEl || !a.targetEl.isConnected) continue;
+        const liveRect = a.targetEl.getBoundingClientRect();
+        if (!isRectVisible(liveRect)) {
+          a.inspectOpacity = 0;
+          a.targetEl = null;
+          a.nextSwitchAt = now;
+        } else {
+          a.rect = toClampedRect(liveRect);
+          const anchor = pickCursorAnchorOnRect(a.rect, a.anchorMode);
+          a.targetX = Math.max(18, Math.min(viewportW - 24, anchor.x));
+          a.targetY = Math.max(76, Math.min(viewportH - 28, anchor.y));
+        }
+      }
+    };
+
+    const handleResizeOrScroll = () => {
+      viewportW = window.innerWidth;
+      viewportH = window.innerHeight;
+      collectVisibleTargets();
+      syncActorRectsAfterScroll();
     };
 
     const handlePointerMove = (e) => {
       if (e.pointerType === 'touch') return;
-
-      pointer.x = e.clientX;
-      pointer.y = e.clientY;
-      pointer.inside = true;
-      pointer.lastActiveAt = performance.now();
-
-      const targetEl = e.target;
-      pointer.hoveringInteractive = Boolean(
-        targetEl && typeof targetEl.closest === 'function' && targetEl.closest(INTERACTIVE_SELECTOR)
-      );
-
-      if (!pointer.initialized) {
-        pointer.initialized = true;
-        for (let i = 0; i < boids.length; i++) {
-          const b = boids[i];
-          const sx = pointer.x + Math.cos(b.angle) * b.orbitRadius;
-          const sy = pointer.y + Math.sin(b.angle) * b.orbitRadius;
-          b.x = sx;
-          b.y = sy;
-          b.prevX = sx;
-          b.prevY = sy;
-        }
-      }
-
-      startLoop();
+      pointerInfluence = { x: e.clientX, y: e.clientY };
+      pointerInfluenceUntil = performance.now() + 1800;
     };
 
     const handlePointerDown = (e) => {
-      if (e.pointerType === 'touch' || !pointer.initialized) return;
-
-      pointer.x = e.clientX;
-      pointer.y = e.clientY;
-      pointer.inside = true;
-      pointer.lastActiveAt = performance.now();
-      burstScale = 1.48;
-
-      for (let i = 0; i < boids.length; i++) {
-        const b = boids[i];
-        const dx = b.x - pointer.x;
-        const dy = b.y - pointer.y;
+      if (e.pointerType === 'touch') return;
+      const now = performance.now();
+      for (let i = 0; i < actors.length; i++) {
+        const a = actors[i];
+        const dx = a.x - e.clientX;
+        const dy = a.y - e.clientY;
         const dist = Math.hypot(dx, dy) || 1;
-        b.vx += (dx / dist) * 3.4;
-        b.vy += (dy / dist) * 3.4;
-      }
-
-      startLoop();
-    };
-
-    const handleLeaveOrHide = () => {
-      pointer.inside = false;
-      startLoop();
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        pointer.inside = false;
-        if (rafId !== null) {
-          window.cancelAnimationFrame(rafId);
-          rafId = null;
+        if (dist < 220) {
+          a.vx += (dx / dist) * 5.2;
+          a.vy += (dy / dist) * 5.2;
+          a.nextSwitchAt = now + 400 + i * 120;
         }
-        ctx.clearRect(0, 0, viewportW, viewportH);
       }
     };
 
+    const targetRefreshTimer = window.setInterval(collectVisibleTargets, 1100);
+
+    const tick = (now) => {
+      if (document.hidden || document.querySelector(OPEN_MODAL_SELECTOR)) {
+        for (let s = 0; s < inspectBoxCount; s++) {
+          const boxEl = boxRefs.current[s];
+          if (boxEl) boxEl.style.opacity = '0';
+        }
+        rafId = window.requestAnimationFrame(tick);
+        return;
+      }
+
+      const pointerActive = pointerInfluence && now < pointerInfluenceUntil;
+
+      for (let i = 0; i < actors.length; i++) {
+        const a = actors[i];
+
+        if (now >= a.nextSwitchAt) {
+          a.switchCount += 1;
+          const activeBoxEls = new Set();
+          for (let k = 0; k < actors.length; k++) {
+            if (k !== i && actors[k].boxSlot >= 0 && actors[k].targetEl) {
+              activeBoxEls.add(actors[k].targetEl);
+            }
+          }
+
+          let chosen = pickTarget(
+            i,
+            a.switchCount * 2 + Math.floor(Math.random() * 3),
+            a.boxSlot >= 0 ? activeBoxEls : null
+          );
+
+          // Attract two cursors gently toward elements near the user's pointer.
+          if (pointerActive && i % 4 === 0 && visibleTargets.length > 0) {
+            let bestTarget = chosen;
+            let bestDist = Infinity;
+            for (let r = 0; r < visibleTargets.length; r++) {
+              const cand = visibleTargets[r];
+              if (a.boxSlot >= 0 && activeBoxEls.has(cand.el)) continue;
+              const cx = cand.rect.left + cand.rect.width * 0.5;
+              const cy = cand.rect.top + cand.rect.height * 0.5;
+              const d = Math.hypot(cx - pointerInfluence.x, cy - pointerInfluence.y);
+              if (d < bestDist) {
+                bestDist = d;
+                bestTarget = cand;
+              }
+            }
+            chosen = bestTarget;
+          }
+
+          a.targetEl = chosen.el;
+          a.rect = chosen.rect;
+          a.anchorMode = i + a.switchCount;
+          const anchor = pickCursorAnchorOnRect(a.rect, a.anchorMode);
+          a.targetX = Math.max(18, Math.min(viewportW - 24, anchor.x));
+          a.targetY = Math.max(76, Math.min(viewportH - 28, anchor.y));
+          a.nextSwitchAt = now + 1700 + Math.random() * 1400;
+        }
+
+        a.wobblePhase += 0.035;
+        const microDriftX = Math.cos(a.wobblePhase) * 3.5;
+        const microDriftY = Math.sin(a.wobblePhase * 0.9) * 3.5;
+
+        const destX = a.targetX + microDriftX;
+        const destY = a.targetY + microDriftY;
+
+        a.vx += (destX - a.x) * a.stiffness;
+        a.vy += (destY - a.y) * a.stiffness;
+        a.vx *= a.damping;
+        a.vy *= a.damping;
+        a.x += a.vx;
+        a.y += a.vy;
+
+        const cursorEl = cursorRefs.current[i];
+        if (cursorEl) {
+          cursorEl.style.transform = `translate3d(${a.x.toFixed(1)}px, ${a.y.toFixed(1)}px, 0)`;
+        }
+
+        if (a.boxSlot >= 0) {
+          const boxEl = boxRefs.current[a.boxSlot];
+          if (boxEl) {
+            if (a.targetEl && a.targetEl.isConnected) {
+              const liveRect = a.targetEl.getBoundingClientRect();
+              if (isRectVisible(liveRect)) {
+                a.rect = toClampedRect(liveRect);
+                const anchor = pickCursorAnchorOnRect(a.rect, a.anchorMode);
+                a.targetX = Math.max(18, Math.min(viewportW - 24, anchor.x));
+                a.targetY = Math.max(76, Math.min(viewportH - 28, anchor.y));
+              }
+            }
+            const distToTarget = Math.hypot(a.targetX - a.x, a.targetY - a.y);
+            const targetInspectAlpha = distToTarget < 110 && visibleTargets.length > 0 ? 1 : 0;
+            a.inspectOpacity += (targetInspectAlpha - a.inspectOpacity) * 0.16;
+
+            if (a.inspectOpacity < 0.02) {
+              boxEl.style.opacity = '0';
+            } else {
+              boxEl.style.opacity = a.inspectOpacity.toFixed(3);
+              boxEl.style.transform = `translate3d(${Math.round(a.rect.left)}px, ${Math.round(a.rect.top)}px, 0)`;
+              boxEl.style.width = `${Math.round(a.rect.width)}px`;
+              boxEl.style.height = `${Math.round(a.rect.height)}px`;
+
+              const badgeEl = boxEl.querySelector('.swarm-inspect-badge');
+              if (badgeEl) {
+                badgeEl.textContent = `${Math.round(a.rect.width)} x ${Math.round(a.rect.height)}`;
+                const flipTop = a.rect.top + a.rect.height + 24 > viewportH;
+                badgeEl.classList.toggle('is-top', flipTop);
+              }
+            }
+          }
+        }
+      }
+
+      rafId = window.requestAnimationFrame(tick);
+    };
+
+    rafId = window.requestAnimationFrame(tick);
+
+    window.addEventListener('scroll', handleResizeOrScroll, { passive: true });
+    window.addEventListener('resize', handleResizeOrScroll, { passive: true });
     window.addEventListener('pointermove', handlePointerMove, { passive: true });
     window.addEventListener('pointerdown', handlePointerDown, { passive: true });
-    window.addEventListener('resize', resizeCanvas, { passive: true });
-    window.addEventListener('blur', handleLeaveOrHide);
-    document.addEventListener('mouseleave', handleLeaveOrHide);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       if (rafId !== null) window.cancelAnimationFrame(rafId);
-      themeObserver.disconnect();
+      window.clearInterval(targetRefreshTimer);
+      window.removeEventListener('scroll', handleResizeOrScroll);
+      window.removeEventListener('resize', handleResizeOrScroll);
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerdown', handlePointerDown);
-      window.removeEventListener('resize', resizeCanvas);
-      window.removeEventListener('blur', handleLeaveOrHide);
-      document.removeEventListener('mouseleave', handleLeaveOrHide);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [enabled]);
+  }, [active, cursorCount, inspectBoxCount]);
 
-  if (!enabled) return null;
+  if (!active) return null;
 
-  return <canvas ref={canvasRef} className="swarm-cursor-canvas" aria-hidden="true" />;
+  return (
+    <div className="swarm-ui-layer" aria-hidden="true">
+      {Array.from({ length: inspectBoxCount }, (_, slot) => (
+        <div
+          key={`box-${slot}`}
+          ref={(el) => { boxRefs.current[slot] = el; }}
+          className="swarm-inspect-box"
+          style={{ opacity: 0 }}
+        >
+          <span className="swarm-inspect-handle tl" />
+          <span className="swarm-inspect-handle tr" />
+          <span className="swarm-inspect-handle bl" />
+          <span className="swarm-inspect-handle br" />
+          <span className="swarm-inspect-badge">0 x 0</span>
+        </div>
+      ))}
+
+      {Array.from({ length: cursorCount }, (_, i) => (
+        <div
+          key={`cursor-${i}`}
+          ref={(el) => { cursorRefs.current[i] = el; }}
+          className="swarm-cursor-actor"
+        >
+          <svg
+            width="20"
+            height="22"
+            viewBox="0 0 20 22"
+            fill="none"
+            className="swarm-cursor-svg"
+          >
+            <path
+              d="M3 2.2L16.6 10.7L10.3 12.1L7.1 18.4L3 2.2Z"
+              fill={CURSOR_COLORS[i % CURSOR_COLORS.length]}
+              stroke="#ffffff"
+              strokeWidth="1.45"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+      ))}
+    </div>
+  );
 }
