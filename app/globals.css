@@ -6064,13 +6064,17 @@ nextjs-portal,
 /* One-time UI-builder swarm cursor entrance for boxes below #portofolio */
 [data-swarm-box="pending"] {
   opacity: 0;
-  transform: translate3d(0, 14px, 0) scale(0.975);
+  transform: translate3d(0, 26px, 0) scale(0.965);
+  will-change: opacity, transform;
 }
 
 [data-swarm-box="building"] {
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
-  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.78s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
 }
 
 .swarm-ui-layer {
@@ -6081,34 +6085,52 @@ nextjs-portal,
   overflow: hidden;
   pointer-events: none;
   z-index: 9996;
-  transition: opacity 0.2s ease;
 }
 
 .swarm-inspect-box {
   position: fixed;
   top: 0;
   left: 0;
-  border: 1.5px dashed rgba(56, 189, 248, 0.72);
-  border-radius: 6px;
+  border: 1.5px dashed rgba(52, 211, 153, 0.62);
+  border-radius: 10px;
   pointer-events: none;
+  box-shadow: inset 0 0 22px rgba(16, 185, 129, 0.04);
   will-change: transform, width, height, opacity;
 }
 
 [data-theme="light"] .swarm-inspect-box {
-  border-color: rgba(37, 99, 235, 0.75);
+  border-color: rgba(21, 128, 61, 0.62);
+}
+
+.swarm-inspect-box.is-accent {
+  border-color: rgba(245, 126, 61, 0.62);
+  box-shadow: inset 0 0 22px rgba(224, 99, 31, 0.04);
+}
+
+[data-theme="light"] .swarm-inspect-box.is-accent {
+  border-color: rgba(224, 99, 31, 0.68);
 }
 
 .swarm-inspect-handle {
   position: absolute;
   width: 5px;
   height: 5px;
-  background: #ffffff;
-  border: 1.5px solid #38bdf8;
-  border-radius: 1px;
+  background: #060e08;
+  border: 1.5px solid #34d399;
+  border-radius: 1.5px;
 }
 
 [data-theme="light"] .swarm-inspect-handle {
-  border-color: #2563eb;
+  background: #ffffff;
+  border-color: #15803d;
+}
+
+.swarm-inspect-box.is-accent .swarm-inspect-handle {
+  border-color: #f57e3d;
+}
+
+[data-theme="light"] .swarm-inspect-box.is-accent .swarm-inspect-handle {
+  border-color: #e0631f;
 }
 
 .swarm-inspect-handle.tl { top: -3px; left: -3px; }
@@ -6119,23 +6141,29 @@ nextjs-portal,
 .swarm-inspect-badge {
   position: absolute;
   left: 50%;
-  bottom: -20px;
+  bottom: -21px;
   transform: translateX(-50%);
-  background: #2563eb;
-  color: #ffffff;
+  background: var(--solane-btn-green-bg);
+  color: var(--solane-btn-green-text);
   font-size: 10px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   line-height: 1;
-  padding: 3px 6px;
-  border-radius: 4px;
+  padding: 3px 7px;
+  border-radius: 5px;
   white-space: nowrap;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.28);
+}
+
+.swarm-inspect-box.is-accent .swarm-inspect-badge {
+  background: #e0631f;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(224, 99, 31, 0.28);
 }
 
 .swarm-inspect-badge.is-top {
   bottom: auto;
-  top: -20px;
+  top: -21px;
 }
 
 .swarm-cursor-actor {
@@ -6143,17 +6171,24 @@ nextjs-portal,
   top: 0;
   left: 0;
   pointer-events: none;
+  transform-origin: 4px 4px;
   will-change: transform;
 }
 
 .swarm-cursor-svg {
   display: block;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 3px 8px rgba(4, 17, 8, 0.34));
 }
 
 @media (prefers-reduced-motion: reduce) {
   .swarm-ui-layer {
     display: none !important;
+  }
+  [data-swarm-box="pending"],
+  [data-swarm-box="building"] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
   }
 }
 

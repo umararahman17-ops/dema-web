@@ -7,18 +7,15 @@ const DESKTOP_CURSOR_COUNT = 6;
 const MOBILE_CURSOR_COUNT = 3;
 const DESKTOP_BOX_COUNT = 4;
 const MOBILE_BOX_COUNT = 2;
-const BUILD_DURATION_MS = 1350;
-const FADE_OUT_MS = 280;
+const BUILD_DURATION_MS = 1850;
+const FADE_IN_MS = 320;
+const FADE_OUT_MS = 480;
 
-// Vibrant multiplayer cursor accents with white stroke legibility across themes.
-const CURSOR_COLORS = [
-  '#38bdf8',
-  '#34d399',
-  '#f59e0b',
-  '#fb7185',
-  '#a78bfa',
-  '#e0631f',
-];
+// Theme-synchronized DEMA FST emerald & kabinet amber-orange cursor fills.
+const THEME_CURSORS = {
+  dark: ['#34d399', '#22c55e', '#f57e3d', '#10b981', '#86efac', '#e0631f'],
+  light: ['#15803d', '#059669', '#e0631f', '#1e6b37', '#10b981', '#c2410c'],
+};
 
 const REVEAL_BOX_SELECTOR = [
   '#portofolio .solane-features-header .solane-section-tag',
@@ -41,14 +38,18 @@ const REVEAL_BOX_SELECTOR = [
 const OPEN_MODAL_SELECTOR =
   '.alumni-modal-overlay, .cabinet-modal-overlay, .portfolio-modal-overlay, .mobile-drawer.open';
 
+const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+const easeInOutSine = (t) => -(Math.cos(Math.PI * t) - 1) / 2;
+
 /**
- * Plays a one-time UI-builder cursor swarm animation as content boxes from
- * #portofolio downward scroll into view, then removes all cursors cleanly.
+ * Plays a smooth, one-time UI-builder cursor reveal synced to the DEMA FST
+ * emerald and orange theme palette for boxes below #portofolio, then exits cleanly.
  */
 export default function SwarmCursor() {
   const pathname = usePathname();
   const [eligible, setEligible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [themeMode, setThemeMode] = useState('dark');
   const layerRef = useRef(null);
   const cursorRefs = useRef([]);
   const boxRefs = useRef([]);
@@ -58,6 +59,11 @@ export default function SwarmCursor() {
 
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const mobileQuery = window.matchMedia('(max-width: 768px)');
+
+    const syncTheme = () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      setThemeMode(next);
+    };
 
     const syncEligibility = () => {
       const isAdminRoute = pathname?.startsWith('/program-kerja/kelola');
@@ -69,12 +75,21 @@ export default function SwarmCursor() {
       setEligible(true);
     };
 
+    syncTheme();
     syncEligibility();
+
+    const themeObserver = new MutationObserver(syncTheme);
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+
     motionQuery.addEventListener?.('change', syncEligibility);
     mobileQuery.addEventListener?.('change', syncEligibility);
     window.addEventListener('resize', syncEligibility, { passive: true });
 
     return () => {
+      themeObserver.disconnect();
       motionQuery.removeEventListener?.('change', syncEligibility);
       mobileQuery.removeEventListener?.('change', syncEligibility);
       window.removeEventListener('resize', syncEligibility);
@@ -83,11 +98,12 @@ export default function SwarmCursor() {
 
   const cursorCount = isMobile ? MOBILE_CURSOR_COUNT : DESKTOP_CURSOR_COUNT;
   const boxSlotCount = isMobile ? MOBILE_BOX_COUNT : DESKTOP_BOX_COUNT;
+  const activePalette = THEME_CURSORS[themeMode];
 
   useEffect(() => {
-    // Ensure all cards return to normal visibility if disabled or navigating.
     const cleanupAttributes = () => {
       document.querySelectorAll('[data-swarm-box]').forEach((el) => {
+        el.style.transitionDelay = '';
         el.removeAttribute('data-swarm-box');
       });
     };
@@ -128,6 +144,7 @@ export default function SwarmCursor() {
 
     const builtSet = new WeakSet();
     let rafId = null;
+    let buildStartAt = 0;
     let buildEndAt = 0;
     let activeSwarm = false;
     let currentBatch = [];
@@ -135,26 +152,27 @@ export default function SwarmCursor() {
     const actors = Array.from({ length: cursorCount }, (_, i) => ({
       x: 0,
       y: 0,
-      vx: 0,
-      vy: 0,
+      startX: 0,
+      startY: 0,
+      ctrlX: 0,
+      ctrlY: 0,
       targetX: 0,
       targetY: 0,
+      flightStartAt: 0,
+      flightDurationMs: 640 + (i % 3) * 110,
       targetEl: null,
       anchorMode: i,
       rect: { left: 0, top: 0, width: 100, height: 40 },
       boxSlot: i < boxSlotCount ? i : -1,
-      inspectOpacity: 0,
       wobblePhase: i * 1.15,
-      stiffness: 0.032 + (i % 3) * 0.008,
-      damping: 0.78,
     }));
 
     const pickAnchor = (rect, mode) => {
       const m = mode % 4;
-      if (m === 0) return { x: rect.left + rect.width - 10, y: rect.top + rect.height - 6 };
-      if (m === 1) return { x: rect.left + rect.width * 0.65, y: rect.top + rect.height * 0.5 };
-      if (m === 2) return { x: rect.left + 12, y: rect.top + 8 };
-      return { x: rect.left + rect.width * 0.84, y: rect.top + 8 };
+      if (m === 0) return { x: rect.left + rect.width - 14, y: rect.top + rect.height - 8 };
+      if (m === 1) return { x: rect.left + rect.width * 0.68, y: rect.top + rect.height * 0.45 };
+      if (m === 2) return { x: rect.left + 16, y: rect.top + 12 };
+      return { x: rect.left + rect.width * 0.85, y: rect.top + 10 };
     };
 
     const hideLayerImmediately = () => {
@@ -178,6 +196,7 @@ export default function SwarmCursor() {
       for (let i = 0; i < currentBatch.length; i++) {
         const el = currentBatch[i];
         if (el.isConnected) {
+          el.style.transitionDelay = '';
           el.removeAttribute('data-swarm-box');
         }
       }
@@ -195,23 +214,27 @@ export default function SwarmCursor() {
       for (let i = 0; i < newlyVisible.length; i++) {
         const el = newlyVisible[i];
         builtSet.add(el);
+        // Stagger entrance smoothly per card so batches reveal fluidly instead of popping together.
+        el.style.transitionDelay = `${Math.min(i * 75, 280)}ms`;
         el.setAttribute('data-swarm-box', 'building');
         currentBatch.push(el);
       }
 
       if (document.querySelector(OPEN_MODAL_SELECTOR)) {
         for (let i = 0; i < newlyVisible.length; i++) {
+          newlyVisible[i].style.transitionDelay = '';
           newlyVisible[i].removeAttribute('data-swarm-box');
         }
         return;
       }
 
       activeSwarm = true;
+      if (wasIdle) buildStartAt = now;
       buildEndAt = Math.max(buildEndAt, now + BUILD_DURATION_MS);
 
       if (layerRef.current) {
         layerRef.current.style.display = 'block';
-        layerRef.current.style.opacity = '1';
+        if (wasIdle) layerRef.current.style.opacity = '0';
       }
 
       for (let i = 0; i < actors.length; i++) {
@@ -232,14 +255,24 @@ export default function SwarmCursor() {
         a.targetY = Math.max(76, Math.min(vh - 28, anchor.y));
 
         if (wasIdle) {
-          const offsetSide = i % 2 === 0 ? -56 : 56;
-          const offsetVert = i % 3 === 0 ? -40 : 40;
-          a.x = Math.max(20, Math.min(vw - 20, a.targetX + offsetSide));
-          a.y = Math.max(76, Math.min(vh - 24, a.targetY + offsetVert));
-          a.vx = 0;
-          a.vy = 0;
-          a.inspectOpacity = 0.8;
+          const offsetSide = (i % 2 === 0 ? -1 : 1) * (88 + (i % 3) * 28);
+          const offsetVert = (i % 3 === 0 ? -1 : 1) * (54 + (i % 2) * 26);
+          a.startX = Math.max(20, Math.min(vw - 20, a.targetX + offsetSide));
+          a.startY = Math.max(76, Math.min(vh - 24, a.targetY + offsetVert));
+          a.x = a.startX;
+          a.y = a.startY;
+        } else {
+          a.startX = a.x;
+          a.startY = a.y;
         }
+
+        // Arc control point creates natural sweeping wrist curvature into the target.
+        const midX = (a.startX + a.targetX) * 0.5;
+        const midY = (a.startY + a.targetY) * 0.5;
+        const curveSign = i % 2 === 0 ? -1 : 1;
+        a.ctrlX = midX + curveSign * 26;
+        a.ctrlY = midY - 34;
+        a.flightStartAt = now + (i % 4) * 55;
       }
 
       if (rafId === null) {
@@ -255,6 +288,7 @@ export default function SwarmCursor() {
         return;
       }
 
+      const elapsed = Math.max(0, now - buildStartAt);
       const remaining = buildEndAt - now;
       if (remaining <= 0) {
         finalizeBuiltElements();
@@ -263,10 +297,14 @@ export default function SwarmCursor() {
 
       const vw = viewportW();
       const vh = viewportH();
-      const layerOpacity = remaining < FADE_OUT_MS ? Math.max(0, remaining / FADE_OUT_MS) : 1;
+
+      const fadeInAlpha = elapsed < FADE_IN_MS ? easeInOutSine(elapsed / FADE_IN_MS) : 1;
+      const fadeOutProgress = remaining < FADE_OUT_MS ? 1 - remaining / FADE_OUT_MS : 0;
+      const fadeOutAlpha = fadeOutProgress > 0 ? 1 - easeInOutSine(fadeOutProgress) : 1;
+      const masterAlpha = Math.min(fadeInAlpha, fadeOutAlpha);
 
       if (layerRef.current) {
-        layerRef.current.style.opacity = layerOpacity.toFixed(3);
+        layerRef.current.style.opacity = masterAlpha.toFixed(3);
       }
 
       for (let i = 0; i < actors.length; i++) {
@@ -274,44 +312,60 @@ export default function SwarmCursor() {
 
         if (a.targetEl && a.targetEl.isConnected) {
           const liveRect = a.targetEl.getBoundingClientRect();
-          a.rect = {
-            left: liveRect.left,
-            top: liveRect.top,
-            width: Math.min(liveRect.width, vw - 24),
-            height: liveRect.height,
-          };
-          const anchor = pickAnchor(a.rect, a.anchorMode);
-          a.targetX = Math.max(18, Math.min(vw - 24, anchor.x));
-          a.targetY = Math.max(76, Math.min(vh - 28, anchor.y));
+          if (liveRect.top < 76 || liveRect.top > vh - 20) {
+            a.targetEl = null;
+          } else {
+            a.rect = {
+              left: liveRect.left,
+              top: liveRect.top,
+              width: Math.min(liveRect.width, vw - 24),
+              height: liveRect.height,
+            };
+            const anchor = pickAnchor(a.rect, a.anchorMode);
+            a.targetX = Math.max(18, Math.min(vw - 24, anchor.x));
+            a.targetY = Math.max(76, Math.min(vh - 28, anchor.y));
+          }
         }
 
-        a.wobblePhase += 0.055;
-        const driftX = Math.cos(a.wobblePhase) * 3;
-        const driftY = Math.sin(a.wobblePhase * 0.9) * 3;
+        const flightRaw = Math.max(0, Math.min(1, (now - a.flightStartAt) / a.flightDurationMs));
+        const u = easeOutQuart(flightRaw);
+        const inv = 1 - u;
 
-        a.vx += (a.targetX + driftX - a.x) * a.stiffness;
-        a.vy += (a.targetY + driftY - a.y) * a.stiffness;
-        a.vx *= a.damping;
-        a.vy *= a.damping;
-        a.x += a.vx;
-        a.y += a.vy;
+        // Quadratic Bezier glide with gentle hover breathing and smooth exit drift.
+        const curveX = inv * inv * a.startX + 2 * inv * u * a.ctrlX + u * u * a.targetX;
+        const curveY = inv * inv * a.startY + 2 * inv * u * a.ctrlY + u * u * a.targetY;
+
+        a.wobblePhase += 0.032;
+        const settleAmp = u * 1.4;
+        const driftX = Math.cos(a.wobblePhase) * settleAmp;
+        const driftY = Math.sin(a.wobblePhase * 0.85) * settleAmp - fadeOutProgress * 10;
+
+        a.x = curveX + driftX;
+        a.y = curveY + driftY;
+
+        const tangentX = (a.targetX - a.startX) * (1 - u);
+        const tiltDeg = Math.max(-9, Math.min(9, tangentX * 0.06));
+        const cursorScale = 0.88 + 0.12 * u - fadeOutProgress * 0.08;
 
         const cursorEl = cursorRefs.current[i];
         if (cursorEl) {
-          cursorEl.style.transform = `translate3d(${a.x.toFixed(1)}px, ${a.y.toFixed(1)}px, 0)`;
+          cursorEl.style.transform = `translate3d(${a.x.toFixed(1)}px, ${a.y.toFixed(1)}px, 0) rotate(${tiltDeg.toFixed(1)}deg) scale(${cursorScale.toFixed(3)})`;
         }
 
         if (a.boxSlot >= 0) {
           const boxEl = boxRefs.current[a.boxSlot];
           if (boxEl) {
-            const boxFade = remaining < FADE_OUT_MS + 140 ? Math.max(0, (remaining - 100) / FADE_OUT_MS) : 1;
-            const targetAlpha = a.targetEl ? Math.min(1, boxFade) : 0;
-            a.inspectOpacity += (targetAlpha - a.inspectOpacity) * 0.25;
+            // Wireframe fades in cleanly as its cursor lands on the card, then exits seamlessly.
+            const arrivalAlpha = flightRaw > 0.25 ? easeInOutSine(Math.min(1, (flightRaw - 0.25) / 0.6)) : 0;
+            const boxFadeOut = remaining < FADE_OUT_MS + 160
+              ? 1 - easeInOutSine(Math.min(1, 1 - (remaining - 60) / (FADE_OUT_MS + 100)))
+              : 1;
+            const boxAlpha = a.targetEl ? Math.max(0, Math.min(arrivalAlpha, boxFadeOut)) : 0;
 
-            if (a.inspectOpacity < 0.02) {
+            if (boxAlpha < 0.015) {
               boxEl.style.opacity = '0';
             } else {
-              boxEl.style.opacity = a.inspectOpacity.toFixed(3);
+              boxEl.style.opacity = boxAlpha.toFixed(3);
               boxEl.style.transform = `translate3d(${Math.round(a.rect.left)}px, ${Math.round(a.rect.top)}px, 0)`;
               boxEl.style.width = `${Math.round(a.rect.width)}px`;
               boxEl.style.height = `${Math.round(a.rect.height)}px`;
@@ -338,7 +392,6 @@ export default function SwarmCursor() {
       const el = allCandidates[i];
       const rect = el.getBoundingClientRect();
       if (rect.bottom < 0) {
-        // Already scrolled past above viewport; keep permanently visible without animating.
         builtSet.add(el);
       } else if (rect.top < currentVh * 0.94) {
         el.setAttribute('data-swarm-box', 'pending');
@@ -363,8 +416,8 @@ export default function SwarmCursor() {
             observer.unobserve(el);
             entered.push(el);
           } else if (entry.boundingClientRect.bottom < 0) {
-            // Skipped past during fast scroll: reveal silently so nothing stays blank.
             builtSet.add(el);
+            el.style.transitionDelay = '';
             el.removeAttribute('data-swarm-box');
             observer.unobserve(el);
           }
@@ -383,7 +436,6 @@ export default function SwarmCursor() {
       observer.observe(pendingList[i]);
     }
 
-    // Small delay allows layout paints to settle before building currently visible deep-linked targets.
     let initialTimer = null;
     if (initialVisible.length > 0) {
       initialTimer = window.setTimeout(() => {
@@ -398,6 +450,7 @@ export default function SwarmCursor() {
         const rect = el.getBoundingClientRect();
         if (rect.bottom < 0) {
           builtSet.add(el);
+          el.style.transitionDelay = '';
           el.removeAttribute('data-swarm-box');
           observer.unobserve(el);
         }
@@ -428,7 +481,7 @@ export default function SwarmCursor() {
         <div
           key={`box-${slot}`}
           ref={(el) => { boxRefs.current[slot] = el; }}
-          className="swarm-inspect-box"
+          className={`swarm-inspect-box ${slot === 2 ? 'is-accent' : ''}`}
           style={{ opacity: 0 }}
         >
           <span className="swarm-inspect-handle tl" />
@@ -454,7 +507,7 @@ export default function SwarmCursor() {
           >
             <path
               d="M3 2.2L16.6 10.7L10.3 12.1L7.1 18.4L3 2.2Z"
-              fill={CURSOR_COLORS[i % CURSOR_COLORS.length]}
+              fill={activePalette[i % activePalette.length]}
               stroke="#ffffff"
               strokeWidth="1.45"
               strokeLinejoin="round"
