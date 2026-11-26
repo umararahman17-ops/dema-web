@@ -6061,10 +6061,10 @@ nextjs-portal,
   }
 }
 
-/* One-time UI-builder swarm cursor entrance for boxes below #portofolio */
+/* One-time Swarm Rebuild entrance for boxes below #portofolio */
 [data-swarm-box="pending"] {
   opacity: 0;
-  transform: translate3d(0, 26px, 0) scale(0.965);
+  transform: translate3d(0, 22px, 0) scale(0.972);
   will-change: opacity, transform;
 }
 
@@ -6072,8 +6072,8 @@ nextjs-portal,
   opacity: 1;
   transform: translate3d(0, 0, 0) scale(1);
   transition:
-    opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.78s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.74s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: opacity, transform;
 }
 
@@ -6087,83 +6087,56 @@ nextjs-portal,
   z-index: 9996;
 }
 
-.swarm-inspect-box {
-  position: fixed;
+.swarm-placeholders,
+.swarm-badges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.swarm-ov-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.swarm-ph-rect {
+  position: absolute;
   top: 0;
   left: 0;
-  border: 1.5px dashed rgba(52, 211, 153, 0.62);
   border-radius: 10px;
+  background: rgba(52, 211, 153, 0.08);
   pointer-events: none;
-  box-shadow: inset 0 0 22px rgba(16, 185, 129, 0.04);
   will-change: transform, width, height, opacity;
 }
 
-[data-theme="light"] .swarm-inspect-box {
-  border-color: rgba(21, 128, 61, 0.62);
+[data-theme="light"] .swarm-ph-rect {
+  background: rgba(21, 128, 61, 0.08);
 }
 
-.swarm-inspect-box.is-accent {
-  border-color: rgba(245, 126, 61, 0.62);
-  box-shadow: inset 0 0 22px rgba(224, 99, 31, 0.04);
+.swarm-ph-rect.is-dup {
+  background: rgba(245, 126, 61, 0.08);
 }
 
-[data-theme="light"] .swarm-inspect-box.is-accent {
-  border-color: rgba(224, 99, 31, 0.68);
+[data-theme="light"] .swarm-ph-rect.is-dup {
+  background: rgba(224, 99, 31, 0.08);
 }
 
-.swarm-inspect-handle {
+.swarm-badge {
   position: absolute;
-  width: 5px;
-  height: 5px;
-  background: #060e08;
-  border: 1.5px solid #34d399;
-  border-radius: 1.5px;
-}
-
-[data-theme="light"] .swarm-inspect-handle {
-  background: #ffffff;
-  border-color: #15803d;
-}
-
-.swarm-inspect-box.is-accent .swarm-inspect-handle {
-  border-color: #f57e3d;
-}
-
-[data-theme="light"] .swarm-inspect-box.is-accent .swarm-inspect-handle {
-  border-color: #e0631f;
-}
-
-.swarm-inspect-handle.tl { top: -3px; left: -3px; }
-.swarm-inspect-handle.tr { top: -3px; right: -3px; }
-.swarm-inspect-handle.bl { bottom: -3px; left: -3px; }
-.swarm-inspect-handle.br { bottom: -3px; right: -3px; }
-
-.swarm-inspect-badge {
-  position: absolute;
-  left: 50%;
-  bottom: -21px;
   transform: translateX(-50%);
-  background: var(--solane-btn-green-bg);
-  color: var(--solane-btn-green-text);
-  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10.5px;
   font-weight: 700;
+  line-height: 15px;
   font-variant-numeric: tabular-nums;
-  line-height: 1;
-  padding: 3px 7px;
-  border-radius: 5px;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.28);
-}
-
-.swarm-inspect-box.is-accent .swarm-inspect-badge {
-  background: #e0631f;
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(224, 99, 31, 0.28);
-}
-
-.swarm-inspect-badge.is-top {
-  bottom: auto;
-  top: -21px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
 }
 
 .swarm-cursor-actor {
@@ -6171,13 +6144,13 @@ nextjs-portal,
   top: 0;
   left: 0;
   pointer-events: none;
-  transform-origin: 4px 4px;
   will-change: transform;
 }
 
 .swarm-cursor-svg {
   display: block;
-  filter: drop-shadow(0 3px 8px rgba(4, 17, 8, 0.34));
+  overflow: visible;
+  filter: drop-shadow(0 1.5px 2.5px rgba(0, 0, 0, 0.34));
 }
 
 @media (prefers-reduced-motion: reduce) {
