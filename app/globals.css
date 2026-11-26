@@ -6061,7 +6061,18 @@ nextjs-portal,
   }
 }
 
-/* Multiplayer UI-builder swarm cursor overlay */
+/* One-time UI-builder swarm cursor entrance for boxes below #portofolio */
+[data-swarm-box="pending"] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0) scale(0.975);
+}
+
+[data-swarm-box="building"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), transform 0.48s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .swarm-ui-layer {
   position: fixed;
   inset: 0;
@@ -6070,6 +6081,7 @@ nextjs-portal,
   overflow: hidden;
   pointer-events: none;
   z-index: 9996;
+  transition: opacity 0.2s ease;
 }
 
 .swarm-inspect-box {
