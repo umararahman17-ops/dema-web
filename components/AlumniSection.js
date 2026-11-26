@@ -1,21 +1,54 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import BgDemaWatermark from '@/components/BgDemaWatermark';
-import { 
-  IconGraduationCap, 
-  IconQuote, 
-  IconStar, 
-  IconCheck, 
-  IconPlus, 
-  IconClose, 
-  IconBriefcase, 
-  IconCalendar, 
+import {
+  IconGraduationCap,
+  IconCheck,
+  IconPlus,
+  IconClose,
+  IconBriefcase,
+  IconCalendar,
   IconUsers,
   IconRocket,
   IconSend,
-  IconUpload
+  IconUpload,
+  IconInfo
 } from '@/components/Icons';
+
+/** Render alumni portrait with reliable SSR and post-hydration fallback to /default-profile.jpg. */
+function AlumniAvatar({ src, alt, size }) {
+  const [imgSrc, setImgSrc] = useState(src || '/default-profile.jpg');
+  const imgRef = useRef(null);
+
+  useEffect(() => {
+    setImgSrc(src || '/default-profile.jpg');
+  }, [src]);
+
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img && img.complete && img.naturalWidth === 0 && imgSrc !== '/default-profile.jpg') {
+      setImgSrc('/default-profile.jpg');
+    }
+  }, [imgSrc]);
+
+  return (
+    <img
+      ref={imgRef}
+      src={imgSrc}
+      alt={alt}
+      width={size}
+      height={size}
+      className="alumni-avatar-img"
+      onError={() => {
+        if (imgSrc !== '/default-profile.jpg') {
+          setImgSrc('/default-profile.jpg');
+        }
+      }}
+    />
+  );
+}
 
 export default function AlumniSection({ initialAlumni = [] }) {
   const [alumniList, setAlumniList] = useState(initialAlumni);
@@ -57,6 +90,25 @@ export default function AlumniSection({ initialAlumni = [] }) {
       .catch(() => {});
     return () => { active = false; };
   }, []);
+
+  // Lock background scroll & close active modals with Escape
+  useEffect(() => {
+    const anyModalOpen = modalOpen || Boolean(detailModal);
+    if (!anyModalOpen) return;
+
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (detailModal) setDetailModal(null);
+        else if (modalOpen) setModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [modalOpen, detailModal]);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -182,10 +234,11 @@ export default function AlumniSection({ initialAlumni = [] }) {
     <section className="section-alumni" id="kesan-pesan-alumni" style={{ position: 'relative', overflow: 'clip' }}>
       <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="65" aria-hidden="true" />
       <BgDemaWatermark variant="left" speed={0.15} maxShift={80} />
+
       {/* Toast Notification */}
       {toast && (
         <div className={`alumni-toast ${toast.type}`}>
-          <div className="alumni-toast-icon">
+          <div className="alumni-toast-icon" aria-hidden="true">
             {toast.type === 'success' ? <IconCheck size={18} /> : '!'}
           </div>
           <span>{toast.message}</span>
@@ -193,22 +246,34 @@ export default function AlumniSection({ initialAlumni = [] }) {
       )}
 
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-        {/* Section Header */}
-        <div className="section-header" style={{ textAlign: 'center', marginBottom: '40px' }} data-reveal="up">
-          <div className="section-tag">
-            <IconGraduationCap size={15} /> Jejak Langkah &amp; Inspirasi Alumni
+        {/* Section Header aligned with Solane site rhythm */}
+        <div className="solane-features-header" data-reveal="up" style={{ marginBottom: '36px' }}>
+          <div className="solane-features-title-block">
+            <div className="solane-section-tag" style={{ textAlign: 'left' }}>
+              JEJAK LANGKAH &amp; INSPIRASI ALUMNI
+            </div>
+            <h2>Kesan &amp; Pesan Alumni FST UINSA.</h2>
+            <p className="alumni-section-lead">
+              Refleksi kepemimpinan, pengalaman berorganisasi, serta wejangan alumni yang kini berkiprah di industri teknologi, rancang bangun, dan riset nasional.
+            </p>
           </div>
-          <h2 className="section-title">Kesan &amp; Pesan Alumni FST UINSA</h2>
-          <p className="section-subtitle">
-            Untaian refleksi kepemimpinan, pengalaman berorganisasi, dan pesan inspiratif dari para alumni yang kini berkiprah di sektor industri teknologi, rancang bangun, riset lingkungan hidup, hingga korporasi nasional.
-          </p>
+          <div>
+            <button
+              type="button"
+              className="btn-solane-green"
+              onClick={() => setModalOpen(true)}
+            >
+              <IconPlus size={16} aria-hidden="true" />
+              <span>Tulis Kesan Alumni</span>
+            </button>
+          </div>
         </div>
 
-        {/* Quick Highlights Strip */}
+        {/* Highlights Strip aligned with theme cards */}
         <div className="alumni-highlights-grid" data-reveal="up" data-reveal-delay="80">
           <div className="alumni-highlight-item">
-            <div className="highlight-icon-wrap green">
-              <IconGraduationCap size={22} />
+            <div className="highlight-icon-wrap green" aria-hidden="true">
+              <IconGraduationCap size={20} />
             </div>
             <div className="highlight-content">
               <div className="highlight-number">7</div>
@@ -217,8 +282,8 @@ export default function AlumniSection({ initialAlumni = [] }) {
           </div>
 
           <div className="alumni-highlight-item">
-            <div className="highlight-icon-wrap orange">
-              <IconUsers size={22} />
+            <div className="highlight-icon-wrap orange" aria-hidden="true">
+              <IconUsers size={20} />
             </div>
             <div className="highlight-content">
               <div className="highlight-number">1.200+</div>
@@ -227,8 +292,8 @@ export default function AlumniSection({ initialAlumni = [] }) {
           </div>
 
           <div className="alumni-highlight-item">
-            <div className="highlight-icon-wrap green">
-              <IconRocket size={22} />
+            <div className="highlight-icon-wrap green" aria-hidden="true">
+              <IconRocket size={20} />
             </div>
             <div className="highlight-content">
               <div className="highlight-number">98%</div>
@@ -237,8 +302,8 @@ export default function AlumniSection({ initialAlumni = [] }) {
           </div>
 
           <div className="alumni-highlight-item">
-            <div className="highlight-icon-wrap orange">
-              <IconBriefcase size={22} />
+            <div className="highlight-icon-wrap orange" aria-hidden="true">
+              <IconBriefcase size={20} />
             </div>
             <div className="highlight-content">
               <div className="highlight-number">100%</div>
@@ -247,17 +312,19 @@ export default function AlumniSection({ initialAlumni = [] }) {
           </div>
         </div>
 
-        {/* Action Bar: Filter Tabs & Add Alumni Button */}
+        {/* Prodi Filter Tabs */}
         <div className="alumni-action-bar">
-          <div className="alumni-filter-scroll">
+          <div className="alumni-filter-scroll" role="tablist" aria-label="Filter Program Studi Alumni">
             {filterTabs.map(tab => {
-              const count = tab.key === 'all' 
-                ? alumniList.length 
+              const count = tab.key === 'all'
+                ? alumniList.length
                 : alumniList.filter(a => a.kategoriProdi === tab.key).length;
               return (
                 <button
                   key={tab.key}
                   type="button"
+                  role="tab"
+                  aria-selected={selectedFilter === tab.key}
                   onClick={() => setSelectedFilter(tab.key)}
                   className={`alumni-tab-btn ${selectedFilter === tab.key ? 'active' : ''}`}
                 >
@@ -267,195 +334,152 @@ export default function AlumniSection({ initialAlumni = [] }) {
               );
             })}
           </div>
-
-          <button
-            type="button"
-            className="btn btn-orange alumni-add-btn"
-            onClick={() => setModalOpen(true)}
-          >
-            <IconPlus size={16} />
-            <span>Tulis Kesan Alumni</span>
-          </button>
         </div>
 
         {/* Alumni Testimonials Grid */}
         <div className="alumni-grid">
-          {filteredAlumni.map((item, index) => {
-            const isGreenAccent = index % 2 === 0;
-            return (
-              <div 
-                key={item.id || index} 
-                className={`alumni-card ${isGreenAccent ? 'accent-green' : 'accent-orange'}`}
-              >
-                {/* Background Watermark Quote */}
-                <div className="alumni-card-watermark" aria-hidden="true">
-                  <IconQuote size={90} />
+          {filteredAlumni.map((item, index) => (
+            <article
+              key={item.id || index}
+              className="alumni-card"
+            >
+              {/* Card Top: Profile Header */}
+              <div className="alumni-profile-header">
+                <div className="alumni-avatar-box">
+                  <AlumniAvatar src={item.avatar} alt={item.nama} size={54} />
                 </div>
 
-                {/* Card Top: Profile Header */}
-                <div className="alumni-profile-header">
-                  <div className="alumni-avatar-box">
-                    <img 
-                      src={item.avatar || '/default-profile.jpg'} 
-                      alt={item.nama} 
-                      className="alumni-avatar-img"
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/default-profile.jpg';
-                      }} 
-                    />
-                  </div>
-
-                  <div className="alumni-profile-meta">
-                    <div className="alumni-name-row">
-                      <h4 className="alumni-name">{item.nama}</h4>
-                      {item.verified && (
-                        <span className="alumni-verified-badge" title="Alumni Terverifikasi FST UINSA">
-                          <IconCheck size={11} /> Terverifikasi
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="alumni-prodi-badge">
-                      <IconGraduationCap size={13} />
-                      <span>{item.prodi}</span>
-                      {item.angkatan && <span className="alumni-dot-sep">&bull;</span>}
-                      {item.angkatan && <span>Angkatan {item.angkatan}</span>}
-                    </div>
-
-                    {(item.jabatan || item.instansi) && (
-                      <div className="alumni-career-badge">
-                        <IconBriefcase size={12} />
-                        <span>
-                          {item.jabatan}{item.instansi && item.instansi !== '-' ? ` • ${item.instansi}` : ''}
-                        </span>
-                      </div>
+                <div className="alumni-profile-meta">
+                  <div className="alumni-name-row">
+                    <h4 className="alumni-name">{item.nama}</h4>
+                    {item.verified && (
+                      <span className="alumni-verified-badge" title="Alumni Terverifikasi FST UINSA">
+                        <IconCheck size={11} aria-hidden="true" /> Terverifikasi
+                      </span>
                     )}
                   </div>
-                </div>
 
-                {/* Star Rating */}
-                <div className="alumni-stars-row">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="alumni-star-active">
-                      <IconStar size={14} />
-                    </span>
-                  ))}
-                  <span className="alumni-rating-text">5.0 &bull; Pengalaman Berorganisasi</span>
-                </div>
-
-                {/* Kesan Quote Block */}
-                <div className="alumni-quote-block kesan-block">
-                  <div className="quote-label">
-                    <span className="quote-label-dot dot-green"></span>
-                    <span>Kesan Berproses di Kampus &amp; DEMA:</span>
+                  <div className="alumni-prodi-line">
+                    <span className="alumni-prodi-name">{item.prodi}</span>
+                    {item.angkatan && <span className="alumni-dot-sep">&bull;</span>}
+                    {item.angkatan && <span>Angkatan {item.angkatan}</span>}
                   </div>
-                  <p className="quote-content">
-                    &ldquo;{item.kesan}&rdquo;
-                  </p>
-                </div>
 
-                {/* Pesan Quote Block */}
-                <div className="alumni-quote-block pesan-block">
-                  <div className="quote-label">
-                    <span className="quote-label-dot dot-orange"></span>
-                    <span>Pesan untuk Mahasiswa &amp; Adik Tingkat:</span>
-                  </div>
-                  <p className="quote-content">
-                    &ldquo;{item.pesan}&rdquo;
-                  </p>
-                </div>
-
-                {/* Card Footer */}
-                <div className="alumni-card-footer">
-                  <div className="alumni-footer-tag">
-                    <IconCalendar size={12} /> Lulus {item.tahunLulus || '2023'}
-                  </div>
-                  <button 
-                    type="button" 
-                    className="alumni-read-btn"
-                    onClick={() => setDetailModal(item)}
-                  >
-                    Detail Profil &rarr;
-                  </button>
+                  {(item.jabatan || item.instansi) && (
+                    <div className="alumni-career-line">
+                      {item.jabatan}{item.instansi && item.instansi !== '-' ? ` • ${item.instansi}` : ''}
+                    </div>
+                  )}
                 </div>
               </div>
-            );
-          })}
+
+              {/* Clean Hairline Quote Sections aligned with Portfolio Card */}
+              <div className="alumni-quote-section">
+                <span className="alumni-quote-eyebrow is-green">Kesan di Kampus &amp; DEMA</span>
+                <p className="alumni-quote-excerpt">
+                  &ldquo;{item.kesan}&rdquo;
+                </p>
+              </div>
+
+              <div className="alumni-quote-section">
+                <span className="alumni-quote-eyebrow is-orange">Pesan untuk Mahasiswa</span>
+                <p className="alumni-quote-excerpt is-compact">
+                  &ldquo;{item.pesan}&rdquo;
+                </p>
+              </div>
+
+              {/* Card Footer */}
+              <div className="alumni-card-footer">
+                <div className="alumni-footer-tag">
+                  <IconCalendar size={13} aria-hidden="true" />
+                  <span>Lulus {item.tahunLulus || '2023'}</span>
+                </div>
+                <button
+                  type="button"
+                  className="alumni-read-btn"
+                  onClick={() => setDetailModal(item)}
+                >
+                  <span>Detail Profil</span>
+                  <span className="detail-arrow" aria-hidden="true">&rarr;</span>
+                </button>
+              </div>
+            </article>
+          ))}
         </div>
 
         {/* Empty state if filter has no data */}
         {filteredAlumni.length === 0 && (
           <div className="alumni-empty-state">
-            <IconGraduationCap size={48} className="empty-icon" />
+            <IconGraduationCap size={44} className="empty-icon" aria-hidden="true" />
             <h3>Belum Ada Testimoni di Kategori Ini</h3>
-            <p>Jadilah alumni pertama dari program studi ini yang membagikan kesan dan pesan inspiratif!</p>
-            <button 
-              type="button" 
-              className="btn btn-green btn-sm"
+            <p>Jadilah alumni pertama dari program studi ini yang membagikan kesan dan pesan inspiratif.</p>
+            <button
+              type="button"
+              className="btn-solane-green"
               onClick={() => setModalOpen(true)}
             >
-              <IconPlus size={16} /> Tulis Kesan &amp; Pesan
+              <IconPlus size={16} aria-hidden="true" /> Tulis Kesan &amp; Pesan
             </button>
           </div>
         )}
 
-        {/* Bottom Invitation Banner */}
+        {/* Bottom Invitation Banner aligned with theme */}
         <div className="alumni-banner-card">
           <div className="alumni-banner-text">
-            <h3>Apakah Anda Alumni Fakultas Sains dan Teknologi UINSA?</h3>
+            <h3>Alumni Fakultas Sains dan Teknologi UINSA?</h3>
             <p>
-              Setiap jejak langkah Anda adalah lentera inspirasi bagi generasi penerus. Bagikan pengalaman, pandangan industri, dan motivasi terbaik Anda melalui portal resmi DEMA FST UINSA.
+              Setiap jejak langkah Anda adalah lentera inspirasi bagi generasi penerus. Bagikan pengalaman berorganisasi dan motivasi karir Anda melalui portal resmi DEMA FST UINSA.
             </p>
           </div>
           <button
             type="button"
-            className="btn btn-orange btn-lg"
+            className="btn-solane-green btn-solane-lg"
             onClick={() => setModalOpen(true)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}
           >
-            <IconGraduationCap size={20} />
+            <IconGraduationCap size={18} aria-hidden="true" />
             <span>Bagikan Kesan &amp; Pesan</span>
           </button>
         </div>
       </div>
 
       {/* MODAL: SUBMIT NEW ALUMNI IMPRESSION */}
-      {modalOpen && (
+      {modalOpen && typeof document !== 'undefined' && createPortal(
         <div className="alumni-modal-overlay" onClick={() => setModalOpen(false)}>
-          <div 
-            className="alumni-modal-card" 
-            onClick={(e) => e.stopPropagation()} 
-            role="dialog" 
+          <div
+            className="alumni-modal-card"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
             aria-modal="true"
+            aria-labelledby="alumni-submit-title"
           >
             <div className="alumni-modal-header">
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div className="modal-icon-circle green">
-                  <IconGraduationCap size={22} />
+                <div className="modal-icon-circle green" aria-hidden="true">
+                  <IconGraduationCap size={20} />
                 </div>
                 <div>
-                  <h3 className="alumni-modal-title">Formulir Kesan &amp; Pesan Alumni</h3>
+                  <h3 id="alumni-submit-title" className="alumni-modal-title">Formulir Kesan &amp; Pesan Alumni</h3>
                   <p className="alumni-modal-subtitle">Kontribusi wejangan Anda sangat berarti bagi mahasiswa FST UINSA.</p>
                 </div>
               </div>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="modal-close-btn"
                 onClick={() => setModalOpen(false)}
                 aria-label="Tutup Dialog"
               >
-                <IconClose size={20} />
+                <IconClose size={18} aria-hidden="true" />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="alumni-modal-body">
               <div className="form-row-grid">
                 <div className="form-group">
-                  <label className="form-label">
+                  <label htmlFor="alumni-nama" className="form-label">
                     Nama Lengkap &amp; Gelar <span className="req">*</span>
                   </label>
                   <input
+                    id="alumni-nama"
                     type="text"
                     required
                     placeholder="Contoh: Muhammad Farhan, S.Kom."
@@ -466,10 +490,11 @@ export default function AlumniSection({ initialAlumni = [] }) {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">
+                  <label htmlFor="alumni-prodi" className="form-label">
                     Program Studi <span className="req">*</span>
                   </label>
                   <select
+                    id="alumni-prodi"
                     required
                     value={formData.prodi}
                     onChange={(e) => setFormData({ ...formData, prodi: e.target.value })}
@@ -488,8 +513,9 @@ export default function AlumniSection({ initialAlumni = [] }) {
 
               <div className="form-row-grid">
                 <div className="form-group">
-                  <label className="form-label">Tahun Angkatan Masuk</label>
+                  <label htmlFor="alumni-angkatan" className="form-label">Tahun Angkatan Masuk</label>
                   <input
+                    id="alumni-angkatan"
                     type="text"
                     placeholder="Contoh: 2019"
                     value={formData.angkatan}
@@ -499,8 +525,9 @@ export default function AlumniSection({ initialAlumni = [] }) {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Tahun Kelulusan</label>
+                  <label htmlFor="alumni-lulus" className="form-label">Tahun Kelulusan</label>
                   <input
+                    id="alumni-lulus"
                     type="text"
                     placeholder="Contoh: 2023"
                     value={formData.tahunLulus}
@@ -512,8 +539,9 @@ export default function AlumniSection({ initialAlumni = [] }) {
 
               <div className="form-row-grid">
                 <div className="form-group">
-                  <label className="form-label">Profesi / Jabatan Saat Ini</label>
+                  <label htmlFor="alumni-jabatan" className="form-label">Profesi / Jabatan Saat Ini</label>
                   <input
+                    id="alumni-jabatan"
                     type="text"
                     placeholder="Contoh: Senior Software Engineer"
                     value={formData.jabatan}
@@ -523,10 +551,11 @@ export default function AlumniSection({ initialAlumni = [] }) {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Instansi / Perusahaan / Lembaga</label>
+                  <label htmlFor="alumni-instansi" className="form-label">Instansi / Perusahaan / Lembaga</label>
                   <input
+                    id="alumni-instansi"
                     type="text"
-                    placeholder="Contoh: PT Unicorn Tech Indonesia / Kementerian"
+                    placeholder="Contoh: PT Nusantara Teknologi"
                     value={formData.instansi}
                     onChange={(e) => setFormData({ ...formData, instansi: e.target.value })}
                     className="form-input"
@@ -553,6 +582,12 @@ export default function AlumniSection({ initialAlumni = [] }) {
                   className={`proker-upload-dropzone ${isDraggingAvatar ? 'dragging' : ''}`}
                   style={{ padding: '14px 16px', flexDirection: 'row', justifyContent: 'flex-start', textAlign: 'left', gap: '14px' }}
                   onClick={() => !isUploadingAvatar && avatarInputRef.current?.click()}
+                  onKeyDown={(e) => {
+                    if ((e.key === 'Enter' || e.key === ' ') && !isUploadingAvatar) {
+                      e.preventDefault();
+                      avatarInputRef.current?.click();
+                    }
+                  }}
                   onDragEnter={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingAvatar(true); }}
                   onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); if (!isDraggingAvatar) setIsDraggingAvatar(true); }}
                   onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDraggingAvatar(false); }}
@@ -565,15 +600,18 @@ export default function AlumniSection({ initialAlumni = [] }) {
                   }}
                   role="button"
                   tabIndex={0}
+                  aria-label="Unggah atau seret foto profil alumni"
                 >
                   <img
                     src={formData.avatar || '/default-profile.jpg'}
                     alt="Preview Foto Profil"
-                    style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-color)', flexShrink: 0, background: '#fff' }}
+                    width={52}
+                    height={52}
+                    style={{ width: 52, height: 52, borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border-color)', flexShrink: 0, background: '#fff' }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-heading)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <IconUpload size={15} style={{ color: 'var(--accent-orange)' }} />
+                      <IconUpload size={15} style={{ color: 'var(--primary-green-light)' }} aria-hidden="true" />
                       {isUploadingAvatar
                         ? 'Memproses foto...'
                         : isDraggingAvatar
@@ -602,13 +640,14 @@ export default function AlumniSection({ initialAlumni = [] }) {
               </div>
 
               <div className="form-group">
-                <label className="form-label">
+                <label htmlFor="alumni-kesan" className="form-label">
                   Kesan Selama Berproses di Kampus &amp; DEMA <span className="req">*</span>
                 </label>
                 <textarea
+                  id="alumni-kesan"
                   required
                   rows={3}
-                  placeholder="Ceritakan pengalaman, dinamika organisasi, dan nilai positif yang Anda rasakan selama menempuh studi dan berorganisasi di FST UINSA..."
+                  placeholder="Ceritakan pengalaman organisasi dan nilai positif yang Anda rasakan selama di FST UINSA..."
                   value={formData.kesan}
                   onChange={(e) => setFormData({ ...formData, kesan: e.target.value })}
                   className="form-input form-textarea"
@@ -616,27 +655,31 @@ export default function AlumniSection({ initialAlumni = [] }) {
               </div>
 
               <div className="form-group">
-                <label className="form-label">
-                  Pesan &amp; Wejangan untuk Adik-Adik Mahasiswa <span className="req">*</span>
+                <label htmlFor="alumni-pesan" className="form-label">
+                  Pesan &amp; Wejangan untuk Mahasiswa <span className="req">*</span>
                 </label>
                 <textarea
+                  id="alumni-pesan"
                   required
                   rows={3}
-                  placeholder="Tuliskan motivasi, nasihat karir, atau pesan semangat untuk adik tingkat dan pengurus DEMA FST UINSA ke depan..."
+                  placeholder="Tuliskan motivasi atau nasihat untuk adik tingkat dan pengurus DEMA FST UINSA..."
                   value={formData.pesan}
                   onChange={(e) => setFormData({ ...formData, pesan: e.target.value })}
                   className="form-input form-textarea"
                 />
               </div>
 
-              <div style={{ background: 'rgba(30, 107, 55, 0.08)', border: '1px solid rgba(30, 107, 55, 0.22)', borderRadius: 'var(--radius-sm)', padding: '12px 14px', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.5, margin: '14px 0 18px' }}>
-                ℹ️ <strong>Alur Peninjauan Pengurus:</strong> Kesan dan pesan yang Anda kirim akan masuk ke database pengurus DEMA terlebih dahulu untuk ditinjau dan diverifikasi sebelum dipublikasikan di website demi menjaga integritas informasi.
+              <div className="alumni-review-notice">
+                <IconInfo size={16} aria-hidden="true" />
+                <span>
+                  <strong>Alur Peninjauan Pengurus:</strong> Testimoni yang Anda kirim akan ditinjau terlebih dahulu oleh pengurus DEMA sebelum dipublikasikan di website.
+                </span>
               </div>
 
               <div className="alumni-modal-actions">
                 <button
                   type="button"
-                  className="btn btn-outline-green"
+                  className="cabinet-footer-close"
                   onClick={() => setModalOpen(false)}
                 >
                   Batal
@@ -644,58 +687,51 @@ export default function AlumniSection({ initialAlumni = [] }) {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="btn btn-orange"
-                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                  className="btn-solane-green"
+                  style={{ minHeight: '44px' }}
                 >
                   {submitting ? (
                     'Mengirim...'
                   ) : (
                     <>
-                      <IconSend size={16} /> Kirim untuk Ditinjau Pengurus
+                      <IconSend size={15} aria-hidden="true" /> Kirim Testimoni
                     </>
                   )}
                 </button>
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* MODAL: READ ALUMNI FULL DETAIL */}
-      {detailModal && (
+      {detailModal && typeof document !== 'undefined' && createPortal(
         <div className="alumni-modal-overlay" onClick={() => setDetailModal(null)}>
-          <div 
-            className="alumni-modal-card detail-card" 
-            onClick={(e) => e.stopPropagation()} 
+          <div
+            className="alumni-modal-card detail-card"
+            onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
+            aria-labelledby="alumni-detail-title"
           >
             <div className="alumni-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
                 <div className="alumni-avatar-box large">
-                  <img 
-                    src={detailModal.avatar || '/default-profile.jpg'} 
-                    alt={detailModal.nama} 
-                    className="alumni-avatar-img"
-                    onError={(e) => {
-                      e.currentTarget.onerror = null;
-                      e.currentTarget.src = '/default-profile.jpg';
-                    }} 
-                  />
+                  <AlumniAvatar src={detailModal.avatar} alt={detailModal.nama} size={62} />
                 </div>
 
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <h3 className="alumni-modal-title">{detailModal.nama}</h3>
+                <div style={{ minWidth: 0 }}>
+                  <div className="alumni-name-row">
+                    <h3 id="alumni-detail-title" className="alumni-modal-title">{detailModal.nama}</h3>
                     {detailModal.verified && (
                       <span className="alumni-verified-badge">
-                        <IconCheck size={11} /> Terverifikasi
+                        <IconCheck size={11} aria-hidden="true" /> Terverifikasi
                       </span>
                     )}
                   </div>
-                  <div className="alumni-prodi-badge" style={{ marginTop: '4px' }}>
-                    <IconGraduationCap size={13} />
-                    <span>{detailModal.prodi}</span>
+                  <div className="alumni-prodi-line" style={{ marginTop: '4px' }}>
+                    <span className="alumni-prodi-name">{detailModal.prodi}</span>
                     {detailModal.angkatan && <span className="alumni-dot-sep">&bull;</span>}
                     {detailModal.angkatan && <span>Angkatan {detailModal.angkatan}</span>}
                     {detailModal.tahunLulus && <span> (Lulus {detailModal.tahunLulus})</span>}
@@ -703,53 +739,47 @@ export default function AlumniSection({ initialAlumni = [] }) {
                 </div>
               </div>
 
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="modal-close-btn"
                 onClick={() => setDetailModal(null)}
                 aria-label="Tutup Detail"
               >
-                <IconClose size={20} />
+                <IconClose size={18} aria-hidden="true" />
               </button>
             </div>
 
             <div className="alumni-modal-body">
               {(detailModal.jabatan || detailModal.instansi) && (
-                <div className="detail-meta-box">
-                  <IconBriefcase size={16} style={{ color: 'var(--accent-orange)' }} />
+                <div className="detail-meta-row">
+                  <IconBriefcase size={16} aria-hidden="true" />
                   <div>
-                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Kiprah Saat Ini</div>
-                    <div style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-heading)' }}>
-                      {detailModal.jabatan} {detailModal.instansi && `• ${detailModal.instansi}`}
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-subtle)', fontWeight: 600 }}>Kiprah Saat Ini</div>
+                    <div style={{ fontSize: '0.94rem', fontWeight: 700, color: 'var(--text-heading)' }}>
+                      {detailModal.jabatan}{detailModal.instansi && detailModal.instansi !== '-' ? ` • ${detailModal.instansi}` : ''}
                     </div>
                   </div>
                 </div>
               )}
 
-              <div className="alumni-quote-block kesan-block" style={{ marginTop: '16px' }}>
-                <div className="quote-label">
-                  <span className="quote-label-dot dot-green"></span>
-                  <span>Kesan Mendalam Selama di Kampus &amp; DEMA:</span>
-                </div>
-                <p className="quote-content" style={{ fontSize: '0.95rem' }}>
+              <div className="alumni-quote-section" style={{ marginTop: '16px' }}>
+                <span className="alumni-quote-eyebrow is-green">Kesan Mendalam di Kampus &amp; DEMA</span>
+                <p className="alumni-quote-full">
                   &ldquo;{detailModal.kesan}&rdquo;
                 </p>
               </div>
 
-              <div className="alumni-quote-block pesan-block" style={{ marginTop: '16px' }}>
-                <div className="quote-label">
-                  <span className="quote-label-dot dot-orange"></span>
-                  <span>Pesan Motivasi untuk Rekan Mahasiswa FST:</span>
-                </div>
-                <p className="quote-content" style={{ fontSize: '0.95rem' }}>
+              <div className="alumni-quote-section">
+                <span className="alumni-quote-eyebrow is-orange">Pesan Motivasi untuk Mahasiswa</span>
+                <p className="alumni-quote-full">
                   &ldquo;{detailModal.pesan}&rdquo;
                 </p>
               </div>
 
-              <div style={{ marginTop: '24px', textAlign: 'right' }}>
+              <div className="alumni-modal-actions">
                 <button
                   type="button"
-                  className="btn btn-outline-green"
+                  className="cabinet-footer-close"
                   onClick={() => setDetailModal(null)}
                 >
                   Tutup
@@ -757,7 +787,8 @@ export default function AlumniSection({ initialAlumni = [] }) {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );
