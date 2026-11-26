@@ -40,12 +40,22 @@ export default function PortfolioSection({ initialPrograms, showAllButton = true
     ? programs
     : programs.filter((p) => p.category === selectedCategory);
 
+  const getStatusClass = (status = '') => {
+    const s = status.toLowerCase();
+    if (s.includes('berjalan')) return 'is-ongoing';
+    if (s.includes('segera')) return 'is-upcoming';
+    return 'is-done';
+  };
+
   return (
     <>
-      <div className="portfolio-filter-bar">
+      <div className="portfolio-filter-bar" role="tablist" aria-label="Filter Kategori Program Kerja">
         {categories.map((cat) => (
           <button
             key={cat.key}
+            type="button"
+            role="tab"
+            aria-selected={selectedCategory === cat.key}
             className={`filter-btn ${selectedCategory === cat.key ? 'active' : ''}`}
             onClick={() => setSelectedCategory(cat.key)}
           >
@@ -54,63 +64,90 @@ export default function PortfolioSection({ initialPrograms, showAllButton = true
         ))}
       </div>
 
-      <div className="portfolio-grid">
-        {filtered.map((p) => (
-          <div key={p.id} className="portfolio-card">
-            <div className="portfolio-card-media">
-              <img src={p.image} alt={p.title} className="portfolio-card-img" loading="lazy" />
-              <span className="portfolio-category-badge">{p.categoryName || p.category}</span>
-              <span className="portfolio-status-badge">{p.status}</span>
-            </div>
-
-            <div className="portfolio-card-body">
-              <div className="portfolio-meta">
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                  <IconCalendar size={13} /> {p.date}
+      {filtered.length === 0 ? (
+        <div className="portfolio-empty-state">
+          <p>Belum ada program kerja untuk kategori ini.</p>
+          <button
+            type="button"
+            className="btn btn-outline-green btn-sm"
+            onClick={() => setSelectedCategory('all')}
+          >
+            Tampilkan Semua Kategori
+          </button>
+        </div>
+      ) : (
+        <div className="portfolio-grid">
+          {filtered.map((p) => (
+            <article key={p.id} className="portfolio-card">
+              <div className="portfolio-card-media">
+                <img
+                  src={p.image}
+                  alt={p.title}
+                  width={400}
+                  height={250}
+                  className="portfolio-card-img"
+                  loading="lazy"
+                />
+                <span className={`portfolio-status-badge ${getStatusClass(p.status)}`}>
+                  {p.status}
                 </span>
               </div>
 
-              <h3 className="portfolio-card-title">{p.title}</h3>
-              <p className="portfolio-card-desc">{p.desc}</p>
-
-              <div className="portfolio-impact-strip">
-                <span className="impact-label">Dampak:</span>
-                <span className="impact-value">{p.impact}</span>
-              </div>
-
-              <div className="portfolio-card-footer">
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  {p.tags && p.tags.slice(0, 2).map((tag, idx) => (
-                    <span key={idx} style={{ fontSize: '0.75rem', background: '#f0f6f2', color: '#236139', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>
-                      #{tag}
-                    </span>
-                  ))}
+              <div className="portfolio-card-body">
+                <div className="portfolio-meta">
+                  <span className="portfolio-meta-category">
+                    {p.categoryName || p.category}
+                  </span>
+                  <span className="portfolio-meta-date">
+                    <IconCalendar size={13} aria-hidden="true" />
+                    <span>{p.date}</span>
+                  </span>
                 </div>
-                <button
-                  type="button"
-                  className="btn-detail-link"
-                  onClick={() => setActiveModalProgram(p)}
-                >
-                  Detail &rarr;
-                </button>
+
+                <h3 className="portfolio-card-title">{p.title}</h3>
+                <p className="portfolio-card-desc">{p.desc}</p>
+
+                {p.impact && p.impact !== '-' && (
+                  <div className="portfolio-impact-row">
+                    <span className="impact-label">Capaian</span>
+                    <p className="impact-value">{p.impact}</p>
+                  </div>
+                )}
+
+                <div className="portfolio-card-footer">
+                  <div className="portfolio-tag-list">
+                    {p.tags && p.tags.slice(0, 3).map((tag, idx) => (
+                      <span key={idx} className="portfolio-tag-chip">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="btn-detail-link"
+                    onClick={() => setActiveModalProgram(p)}
+                  >
+                    <span>Detail</span>
+                    <span className="detail-arrow" aria-hidden="true">&rarr;</span>
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
+            </article>
+          ))}
+        </div>
+      )}
 
       {showAllButton && (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <div style={{ textAlign: 'center', marginTop: '48px' }}>
           <Link href="/portofolio" className="btn btn-outline-green btn-lg">
-            Lihat Seluruh Katalog Portofolio &rarr;
+            Lihat Seluruh Portofolio &rarr;
           </Link>
         </div>
       )}
 
-      {/* Detail Modal */}
-      <PortfolioModal 
-        program={activeModalProgram} 
-        onClose={() => setActiveModalProgram(null)} 
+      <PortfolioModal
+        program={activeModalProgram}
+        onClose={() => setActiveModalProgram(null)}
       />
     </>
   );

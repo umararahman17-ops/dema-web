@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { cabinetDetails, orgInfo, stats } from '@/lib/data';
 import {
@@ -39,7 +40,7 @@ export default function CabinetModal({ isOpen, onClose }) {
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === 'undefined') return null;
 
   const tabs = [
     { id: 'overview', label: 'Sekilas & Filosofi' },
@@ -47,7 +48,7 @@ export default function CabinetModal({ isOpen, onClose }) {
     { id: 'actions', label: 'Layanan & Kontak' },
   ];
 
-  return (
+  return createPortal(
     <div
       className="cabinet-modal-overlay"
       onClick={onClose}
@@ -274,6 +275,7 @@ export default function CabinetModal({ isOpen, onClose }) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
