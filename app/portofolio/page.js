@@ -27,20 +27,25 @@ export default async function PortofolioPage() {
       </section>
 
       {/* Portfolio Showcase */}
-      <section style={{ padding: '70px 0 100px', background: 'var(--bg-page)' }}>
-        <div className="container">
-          <PortfolioSection initialPrograms={programs} showAllButton={false} />
+      <section style={{ padding: '70px 0 100px', background: 'var(--bg-page)', position: 'relative', overflow: 'clip' }}>
+        <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="60" aria-hidden="true" />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+          <div data-reveal="up">
+            <PortfolioSection initialPrograms={programs} showAllButton={false} />
+          </div>
 
           {/* Collaboration Callout Box */}
-          <div style={{ marginTop: '70px', background: 'linear-gradient(135deg, #10331b, #19522b)', borderRadius: 'var(--radius-lg)', padding: '40px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '24px' }}>
-            <div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '8px' }}>Punya Ide Program Kolaborasi Bersama DEMA?</h3>
-              <p style={{ fontSize: '0.95rem', color: '#d0e4d7', maxWidth: '600px' }}>Kami terbuka untuk kemitraan riset, sponsor kegiatan, mentoring karir mahasiswa, maupun pengabdian masyarakat lintas instansi.</p>
-            </div>
-            <div>
-              <Link href="/kontak" className="btn btn-orange btn-lg">
-                Hubungi Tim Kemitraan &rarr;
-              </Link>
+          <div data-parallax="-0.03" data-parallax-max="20">
+            <div data-reveal="up" style={{ marginTop: '70px', background: 'linear-gradient(135deg, #10331b, #19522b)', borderRadius: 'var(--radius-lg)', padding: '40px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '24px' }}>
+              <div>
+                <h3 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '8px' }}>Punya Ide Program Kolaborasi Bersama DEMA?</h3>
+                <p style={{ fontSize: '0.95rem', color: '#d0e4d7', maxWidth: '600px' }}>Kami terbuka untuk kemitraan riset, sponsor kegiatan, mentoring karir mahasiswa, maupun pengabdian masyarakat lintas instansi.</p>
+              </div>
+              <div>
+                <Link href="/kontak" className="btn btn-orange btn-lg">
+                  Hubungi Tim Kemitraan &rarr;
+                </Link>
+              </div>
             </div>
           </div>
         </div>

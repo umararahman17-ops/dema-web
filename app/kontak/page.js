@@ -22,9 +22,10 @@ export default function KontakPage() {
       </section>
 
       {/* Contact Info Grid */}
-      <section style={{ padding: '70px 0 40px', background: 'var(--bg-surface)' }}>
-        <div className="container">
-          <div className="contact-info-grid">
+      <section style={{ padding: '70px 0 40px', background: 'var(--bg-surface)', position: 'relative', overflow: 'clip' }}>
+        <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="60" aria-hidden="true" />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+          <div className="contact-info-grid" data-reveal="up">
             {/* Card 1: Sekretariat */}
             <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '28px', textAlign: 'center' }}>
               <div style={{ width: '50px', height: '50px', background: 'rgba(30,107,55,0.15)', color: 'var(--primary-green)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
@@ -58,7 +59,7 @@ export default function KontakPage() {
           </div>
 
           {/* Official Social Media Channels */}
-          <div style={{ marginBottom: '60px' }}>
+          <div style={{ marginBottom: '60px' }} data-reveal="up" data-reveal-delay="80">
             <div style={{ textAlign: 'center', marginBottom: '30px' }}>
               <div className="section-tag">Kanal Resmi</div>
               <h3 style={{ fontSize: '1.55rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '8px' }}>Media Sosial &amp; Publikasi Digital</h3>
@@ -179,15 +180,17 @@ export default function KontakPage() {
           {/* Main Aspirasi & FAQ Grid */}
           <div className="contact-main-grid" id="aspirasi">
             {/* Aspirasi Form */}
-            <div className="contact-form-card">
-              <div className="section-tag">Layanan Terpadu</div>
-              <h2 style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '8px' }}>Formulir Aspirasi &amp; Aduan Mahasiswa</h2>
-              <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginBottom: '24px' }}>Silakan sampaikan usulan, laporan fasilitas, maupun permohonan advokasi dengan mengisi formulir di bawah ini.</p>
-              <AspirasiForm />
+            <div data-parallax="0.03" data-parallax-max="22">
+              <div className="contact-form-card" data-reveal="left">
+                <div className="section-tag">Layanan Terpadu</div>
+                <h2 style={{ fontSize: '1.85rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '8px' }}>Formulir Aspirasi &amp; Aduan Mahasiswa</h2>
+                <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', marginBottom: '24px' }}>Silakan sampaikan usulan, laporan fasilitas, maupun permohonan advokasi dengan mengisi formulir di bawah ini.</p>
+                <AspirasiForm />
+              </div>
             </div>
 
             {/* FAQ Accordion */}
-            <div>
+            <div data-parallax="-0.04" data-parallax-max="24" data-reveal="right" data-reveal-delay="100">
               <div className="section-tag">Pusat Bantuan</div>
               <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '20px' }}>Pertanyaan Sering Diajukan (FAQ)</h3>
 

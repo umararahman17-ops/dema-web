@@ -44,8 +44,10 @@ export default async function HomePage() {
           1. HERO SECTION - ICONIC SOLANE V-BEAM & 3D FLOATING EMBLEM
           ========================================================================= */}
       <section className="solane-hero">
-        {/* Background Ambient Radial Glow */}
+        {/* Background Ambient Radial Glow & Soft Parallax Depth Orbs */}
         <div className="solane-hero-ambient" aria-hidden="true" />
+        <div className="parallax-bg-orb orb-hero-left" data-parallax="0.16" data-parallax-max="70" aria-hidden="true" />
+        <div className="parallax-bg-orb orb-hero-right" data-parallax="-0.14" data-parallax-max="70" aria-hidden="true" />
 
         {/* V-Shaped Converging Neon Laser Ray SVG */}
         <div className="solane-v-beam-container" aria-hidden="true">
@@ -151,47 +153,56 @@ export default async function HomePage() {
           2. SECTION: MEET KABINET WIGYAMERTA ANTASENA & STATS
           ========================================================================= */}
       <section className="solane-section" id="explore">
-        <div className="container">
-          <div className="solane-section-tag">
+        <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="65" aria-hidden="true" />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+          <div className="solane-section-tag" data-reveal="up">
             KABINET WIGYAMERTA ANTASENA &bull; 2026/2027
           </div>
-          <h2 className="solane-section-title">
+          <h2 className="solane-section-title" data-reveal="up" data-reveal-delay="80">
             Kepemimpinan adaptif yang memahami kebutuhan mahasiswa.
           </h2>
 
           {/* Large Minimalist Stats Numbers */}
-          <StatsCounter items={stats} />
+          <div data-reveal="up" data-reveal-delay="140">
+            <StatsCounter items={stats} />
+          </div>
 
           {/* 3 Pillar Cards (Aware / Personalized / Reliable) */}
           <div className="solane-pillars-grid">
-            <div className="solane-pillar-card">
-              <div className="solane-pillar-icon">
-                <IconBulb size={22} />
+            <div data-parallax="0.035" data-parallax-max="22">
+              <div className="solane-pillar-card" data-reveal="up" data-reveal-delay="80">
+                <div className="solane-pillar-icon">
+                  <IconBulb size={22} />
+                </div>
+                <h3 className="solane-pillar-title">Inovatif &amp; Kritis</h3>
+                <p className="solane-pillar-desc">
+                  Mendorong riset terapan dan kreasi solutif yang berorientasi pada pemecahan masalah riil di lingkungan kampus dan masyarakat.
+                </p>
               </div>
-              <h3 className="solane-pillar-title">Inovatif &amp; Kritis</h3>
-              <p className="solane-pillar-desc">
-                Mendorong riset terapan dan kreasi solutif yang berorientasi pada pemecahan masalah riil di lingkungan kampus dan masyarakat.
-              </p>
             </div>
 
-            <div className="solane-pillar-card">
-              <div className="solane-pillar-icon">
-                <IconNetwork size={22} />
+            <div data-parallax="-0.03" data-parallax-max="20">
+              <div className="solane-pillar-card" data-reveal="up" data-reveal-delay="160">
+                <div className="solane-pillar-icon">
+                  <IconNetwork size={22} />
+                </div>
+                <h3 className="solane-pillar-title">Sinergis &amp; Kolaboratif</h3>
+                <p className="solane-pillar-desc">
+                  Menjalin kemitraan strategis yang harmonis antar himpunan mahasiswa prodi, lembaga eksternal, dan mitra industri teknologi.
+                </p>
               </div>
-              <h3 className="solane-pillar-title">Sinergis &amp; Kolaboratif</h3>
-              <p className="solane-pillar-desc">
-                Menjalin kemitraan strategis yang harmonis antar himpunan mahasiswa prodi, lembaga eksternal, dan mitra industri teknologi.
-              </p>
             </div>
 
-            <div className="solane-pillar-card">
-              <div className="solane-pillar-icon">
-                <IconShield size={22} />
+            <div data-parallax="0.045" data-parallax-max="24">
+              <div className="solane-pillar-card" data-reveal="up" data-reveal-delay="240">
+                <div className="solane-pillar-icon">
+                  <IconShield size={22} />
+                </div>
+                <h3 className="solane-pillar-title">Advokatif &amp; Terbuka</h3>
+                <p className="solane-pillar-desc">
+                  Garda terdepan dalam mengawal hak-hak akademis, penjaminan transparansi UKT, serta kanal aspirasi mahasiswa yang selalu siap siaga.
+                </p>
               </div>
-              <h3 className="solane-pillar-title">Advokatif &amp; Terbuka</h3>
-              <p className="solane-pillar-desc">
-                Garda terdepan dalam mengawal hak-hak akademis, penjaminan transparansi UKT, serta kanal aspirasi mahasiswa yang selalu siap siaga.
-              </p>
             </div>
           </div>
         </div>
@@ -201,9 +212,10 @@ export default async function HomePage() {
           3. SECTION: FEATURES / REKAM JEJAK & BENTO SHOWCASE
           ========================================================================= */}
       <section className="solane-section" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.06)' }} id="portofolio">
-        <div className="container">
+        <div className="parallax-bg-orb orb-section-orange" data-parallax="-0.12" data-parallax-max="65" aria-hidden="true" />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           {/* Header Row */}
-          <div className="solane-features-header">
+          <div className="solane-features-header" data-reveal="up">
             <div className="solane-features-title-block">
               <div className="solane-section-tag">PROGRAM KERJA &amp; REKAM JEJAK</div>
               <h2>
@@ -220,31 +232,34 @@ export default async function HomePage() {
           {/* Solane Bento Grid */}
           <div className="solane-bento-grid">
             {/* Bento Left: Inisiatif Nyata */}
-            <div className="solane-bento-card">
-              <div>
-                <div className="solane-bento-top-icon">
-                  <IconRocket size={22} />
+            <div data-parallax="0.04" data-parallax-max="24">
+              <div className="solane-bento-card" data-reveal="left">
+                <div>
+                  <div className="solane-bento-top-icon">
+                    <IconRocket size={22} />
+                  </div>
+                  <h3 className="solane-bento-headline">
+                    Inisiatif Nyata &amp; Dampak Berkelanjutan.
+                  </h3>
+                  <p className="solane-bento-desc">
+                    Setiap inisiatif dirancang dengan indikator dampak yang terukur—mulai dari pameran inovasi berskala nasional, digitalisasi desa binaan, hingga advokasi beasiswa darurat untuk mahasiswa.
+                  </p>
                 </div>
-                <h3 className="solane-bento-headline">
-                  Inisiatif Nyata &amp; Dampak Berkelanjutan.
-                </h3>
-                <p className="solane-bento-desc">
-                  Setiap inisiatif dirancang dengan indikator dampak yang terukur—mulai dari pameran inovasi berskala nasional, digitalisasi desa binaan, hingga advokasi beasiswa darurat untuk mahasiswa.
-                </p>
-              </div>
 
-              <div>
-                <Link href="/portofolio" className="solane-bento-link">
-                  <span>Jelajahi alur program kerja</span>
-                  <span>&rarr;</span>
-                </Link>
+                <div>
+                  <Link href="/portofolio" className="solane-bento-link">
+                    <span>Jelajahi alur program kerja</span>
+                    <span>&rarr;</span>
+                  </Link>
+                </div>
               </div>
             </div>
 
             {/* Bento Right: Futuristic Holographic UI Mockup */}
-            <div className="solane-bento-card" style={{ padding: '24px' }}>
-              <div className="solane-mockup-frame">
-                <div className="solane-mockup-halo" />
+            <div data-parallax="-0.055" data-parallax-max="30">
+              <div className="solane-bento-card" style={{ padding: '24px' }} data-reveal="right" data-reveal-delay="120">
+                <div className="solane-mockup-frame">
+                  <div className="solane-mockup-halo" />
                 
                 {/* Mockup Top Header */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '14px' }}>
@@ -291,11 +306,14 @@ export default async function HomePage() {
                   </svg>
                 </div>
               </div>
+              </div>
             </div>
           </div>
 
           {/* Interactive Dynamic Portfolio Cards */}
-          <PortfolioSection initialPrograms={programs} showAllButton={true} />
+          <div data-reveal="up" data-reveal-delay="120">
+            <PortfolioSection initialPrograms={programs} showAllButton={true} />
+          </div>
         </div>
       </section>
 
@@ -303,21 +321,22 @@ export default async function HomePage() {
           4. SECTION: ABOUT & 3D LOGO PHILOSOPHY
           ========================================================================= */}
       <section className="solane-section" style={{ borderTop: '1px solid var(--border-color)' }}>
-        <div className="container">
+        <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.14" data-parallax-max="70" aria-hidden="true" />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="about-grid">
-            <div className="about-text-content">
-              <div className="solane-section-tag" style={{ textAlign: 'left' }}>IDENTITAS &amp; VISI</div>
-              <h2 style={{ fontSize: '2.4rem', fontWeight: 800, color: 'var(--text-heading)', letterSpacing: '-0.02em', marginBottom: '20px' }}>
+            <div className="about-text-content" data-parallax="0.03" data-parallax-max="22">
+              <div className="solane-section-tag" style={{ textAlign: 'left' }} data-reveal="up">IDENTITAS &amp; VISI</div>
+              <h2 style={{ fontSize: '2.4rem', fontWeight: 800, color: 'var(--text-heading)', letterSpacing: '-0.02em', marginBottom: '20px' }} data-reveal="up" data-reveal-delay="60">
                 Filosofi Lambang &amp; Komitmen Nilai
               </h2>
-              <p className="about-lead" style={{ color: 'var(--text-main)' }}>
+              <p className="about-lead" style={{ color: 'var(--text-main)' }} data-reveal="up" data-reveal-delay="100">
                 DEMA hadir sebagai episentrum pergerakan intelektual dan pengabdian mahasiswa yang memadukan kedalaman riset sains dengan kecanggihan teknologi mutakhir.
               </p>
-              <p className="about-desc" style={{ color: 'var(--text-muted)' }}>
+              <p className="about-desc" style={{ color: 'var(--text-muted)' }} data-reveal="up" data-reveal-delay="140">
                 Setiap elemen pada lambang DEMA memiliki makna mendalam yang mendasari arah langkah dan etos kerja seluruh fungsionaris dalam melayani mahasiswa dan masyarakat.
               </p>
 
-              <div className="philosophy-grid">
+              <div className="philosophy-grid" data-reveal="up" data-reveal-delay="180">
                 {logoPhilosophy.map((philo, index) => (
                   <div key={index} className="philosophy-card" style={{ background: 'var(--solane-card-bg)', border: '1px solid var(--solane-card-border)', borderRadius: '16px' }}>
                     <div className="philosophy-header">
@@ -333,8 +352,8 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Vision Banner with 3D Exploded Philosophy Logo */}
-            <div className="about-visual-column">
-              <div className="about-banner-card" style={{ background: 'var(--solane-card-bg)', border: '1px solid var(--solane-card-border)', borderRadius: '24px' }}>
+            <div className="about-visual-column" data-parallax="-0.065" data-parallax-max="36">
+              <div className="about-banner-card" style={{ background: 'var(--solane-card-bg)', border: '1px solid var(--solane-card-border)', borderRadius: '24px' }} data-reveal="scale" data-reveal-delay="120">
                 <LogoPhilosophy3D defaultExploded={true} />
                 <div className="banner-quote" style={{ color: 'var(--text-main)' }}>
                   &ldquo;Mewujudkan kepemimpinan yang inklusif, profesional, dan berintegritas untuk menciptakan lingkungan organisasi yang hangat serta terbuka bagi seluruh mahasiswa.&rdquo;
@@ -357,9 +376,10 @@ export default async function HomePage() {
           6. SECTION: SUARA MAHASISWA & ASPIRASI (CTA)
           ========================================================================= */}
       <section className="solane-section" style={{ borderTop: '1px solid var(--border-color)' }} id="aspirasi">
-        <div className="container">
+        <div className="parallax-bg-orb orb-section-orange" data-parallax="0.12" data-parallax-max="60" aria-hidden="true" />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="cta-grid">
-            <div className="cta-text">
+            <div className="cta-text" data-parallax="0.035" data-parallax-max="24" data-reveal="left">
               <div style={{ display: 'inline-block', background: 'rgba(52, 211, 153, 0.12)', border: '1px solid rgba(52, 211, 153, 0.3)', padding: '5px 16px', borderRadius: '99px', fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1.2px', color: '#10b981', marginBottom: '18px' }}>
                 Suara &amp; Aspirasi Mahasiswa
               </div>
@@ -378,10 +398,12 @@ export default async function HomePage() {
             </div>
 
             {/* Quick Form Card */}
-            <div className="cta-card-form" style={{ background: 'var(--solane-card-bg)', border: '1px solid var(--solane-card-border)', borderRadius: '24px', padding: '34px' }}>
-              <h3 className="form-title" style={{ color: 'var(--text-heading)', fontSize: '1.4rem', fontWeight: 800 }}>Sampaikan Suara Anda</h3>
-              <p className="form-subtitle" style={{ color: 'var(--text-muted)' }}>Tuliskan pesan Anda secara langsung ke meja Badan Pengurus Harian.</p>
-              <AspirasiForm />
+            <div data-parallax="-0.05" data-parallax-max="30">
+              <div className="cta-card-form" style={{ background: 'var(--solane-card-bg)', border: '1px solid var(--solane-card-border)', borderRadius: '24px', padding: '34px' }} data-reveal="right" data-reveal-delay="120">
+                <h3 className="form-title" style={{ color: 'var(--text-heading)', fontSize: '1.4rem', fontWeight: 800 }}>Sampaikan Suara Anda</h3>
+                <p className="form-subtitle" style={{ color: 'var(--text-muted)' }}>Tuliskan pesan Anda secara langsung ke meja Badan Pengurus Harian.</p>
+                <AspirasiForm />
+              </div>
             </div>
           </div>
         </div>

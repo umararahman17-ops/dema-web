@@ -178,7 +178,8 @@ export default function AlumniSection({ initialAlumni = [] }) {
   };
 
   return (
-    <section className="section-alumni" id="kesan-pesan-alumni">
+    <section className="section-alumni" id="kesan-pesan-alumni" style={{ position: 'relative', overflow: 'clip' }}>
+      <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="65" aria-hidden="true" />
       {/* Toast Notification */}
       {toast && (
         <div className={`alumni-toast ${toast.type}`}>
@@ -189,9 +190,9 @@ export default function AlumniSection({ initialAlumni = [] }) {
         </div>
       )}
 
-      <div className="container">
+      <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         {/* Section Header */}
-        <div className="section-header" style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <div className="section-header" style={{ textAlign: 'center', marginBottom: '40px' }} data-reveal="up">
           <div className="section-tag">
             <IconGraduationCap size={15} /> Jejak Langkah &amp; Inspirasi Alumni
           </div>
@@ -202,7 +203,7 @@ export default function AlumniSection({ initialAlumni = [] }) {
         </div>
 
         {/* Quick Highlights Strip */}
-        <div className="alumni-highlights-grid">
+        <div className="alumni-highlights-grid" data-reveal="up" data-reveal-delay="80">
           <div className="alumni-highlight-item">
             <div className="highlight-icon-wrap green">
               <IconGraduationCap size={22} />

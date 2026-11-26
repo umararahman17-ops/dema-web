@@ -30,10 +30,11 @@ export default function ProfilPage() {
       </section>
 
       {/* Section 1: Sejarah & Visi Misi */}
-      <section style={{ padding: '80px 0', background: 'var(--bg-surface)' }}>
-        <div className="container">
+      <section style={{ padding: '80px 0', background: 'var(--bg-surface)', position: 'relative', overflow: 'clip' }}>
+        <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="60" aria-hidden="true" />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="profile-history-grid">
-            <div>
+            <div data-parallax="0.03" data-parallax-max="20" data-reveal="left">
               <div className="section-tag">Sejarah &amp; Peran</div>
               <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--text-heading)', marginBottom: '20px' }}>Lembaga Eksekutif Tertinggi Mahasiswa</h2>
               <p style={{ fontSize: '1.02rem', lineHeight: 1.8, color: 'var(--text-main)', marginBottom: '16px' }}>
@@ -44,7 +45,8 @@ export default function ProfilPage() {
               </p>
             </div>
 
-            <div className="profile-history-card">
+            <div data-parallax="-0.045" data-parallax-max="26">
+              <div className="profile-history-card" data-reveal="right" data-reveal-delay="120">
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(30, 107, 55, 0.15)', color: 'var(--primary-green)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <IconTarget size={26} />
@@ -69,15 +71,17 @@ export default function ProfilPage() {
                   <span>Mengoptimalkan aspirasi mahasiswa dengan menyediakan wadah yang responsif, kolaboratif, dan berorientasi pada kemajuan seluruh program studi di FST.</span>
                 </li>
               </ul>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Section 2: Bedah Filosofi Logo */}
-      <section style={{ padding: '80px 0', background: 'var(--bg-page)', borderTop: '1px solid var(--border-color)' }}>
-        <div className="container">
-          <div className="section-header">
+      <section style={{ padding: '80px 0', background: 'var(--bg-page)', borderTop: '1px solid var(--border-color)', position: 'relative', overflow: 'clip' }}>
+        <div className="parallax-bg-orb orb-section-orange" data-parallax="-0.12" data-parallax-max="60" aria-hidden="true" />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+          <div className="section-header" data-reveal="up">
             <div className="section-tag">Identitas Visual</div>
             <h2 className="section-title">Filosofi &amp; Makna Simbol Lambang</h2>
             <p className="section-subtitle">Setiap garis, warna, dan lambang geometris dirancang dengan makna filosofis yang merefleksikan karakter DEMA.</p>
@@ -85,14 +89,16 @@ export default function ProfilPage() {
 
           <div className="profile-logo-grid">
             {/* Logo Showcase Box with 3D Exploded Layers */}
-            <div className="profile-logo-showcase">
-              <LogoPhilosophy3D defaultExploded={true} />
-              <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-heading)', marginTop: '16px', marginBottom: '4px' }}>Lambang Resmi DEMA</h3>
-              <p style={{ fontSize: '0.85rem', color: 'var(--accent-orange)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '0' }}>Integrasi Sains &amp; Teknologi</p>
+            <div data-parallax="0.04" data-parallax-max="24">
+              <div className="profile-logo-showcase" data-reveal="scale">
+                <LogoPhilosophy3D defaultExploded={true} />
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--text-heading)', marginTop: '16px', marginBottom: '4px' }}>Lambang Resmi DEMA</h3>
+                <p style={{ fontSize: '0.85rem', color: 'var(--accent-orange)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '0' }}>Integrasi Sains &amp; Teknologi</p>
+              </div>
             </div>
 
             {/* Philosophy Detailed Breakdown */}
-            <div className="profile-philo-list">
+            <div className="profile-philo-list" data-parallax="-0.035" data-parallax-max="22" data-reveal="up" data-reveal-delay="120">
               {logoPhilosophy.map((philo, index) => (
                 <div key={index} className="profile-philo-item">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '14px' }}>
