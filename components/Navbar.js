@@ -64,10 +64,17 @@ export default function Navbar() {
   const openCabinet = () => {
     closeMenu();
     setCabinetModalOpen(true);
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('dema:open-cabinet'));
-    }
   };
+
+  // Allow MobileTaskbar or external triggers to open this single CabinetModal instance
+  useEffect(() => {
+    const handleOpenCabinet = () => {
+      closeMenu();
+      setCabinetModalOpen(true);
+    };
+    window.addEventListener('dema:open-cabinet', handleOpenCabinet);
+    return () => window.removeEventListener('dema:open-cabinet', handleOpenCabinet);
+  }, []);
 
   const handleNavLinkClick = (targetPath, e) => {
     closeMenu();
@@ -164,7 +171,7 @@ export default function Navbar() {
               onClick={openCabinet}
               title="Lihat Struktur & Profil Kabinet Wigyamerta Antasena"
             >
-              <span className="dot-live"></span> Kabinet 26/27
+              Kabinet 26/27
             </button>
 
             {/* Kirim Aspirasi Pill CTA */}
@@ -219,24 +226,18 @@ export default function Navbar() {
         </div>
 
         {/* Interactive Cabinet Card Inside Drawer */}
-        <div className="drawer-cabinet-banner" onClick={openCabinet}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+        <button type="button" className="drawer-cabinet-banner" onClick={openCabinet}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '6px' }}>
             <div className="drawer-cabinet-logo-thumb">
-              <img src="/logo-kabinet.png" alt="Logo Kabinet Wigyamerta Antasena" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              <img src="/logo-kabinet.png" alt="" width={40} height={40} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
             </div>
-            <div>
-              <div className="drawer-cabinet-badge">
-                <span className="dot-live"></span> KABINET SAAT INI • 2026/2027
-              </div>
+            <div style={{ textAlign: 'left' }}>
               <h4 className="drawer-cabinet-name">Kabinet Wigyamerta Antasena</h4>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Periode 2026/2027</div>
             </div>
           </div>
-          <p className="drawer-cabinet-desc">Sentuh untuk melihat filosofi, visi misi, &amp; struktur BPI serta 6 departemen</p>
-          <div className="drawer-cabinet-action">
-            <span>Buka Detail Kabinet</span>
-            <span className="arrow-right">&rarr;</span>
-          </div>
-        </div>
+          <p className="drawer-cabinet-desc">Lihat filosofi, visi misi, &amp; struktur BPI serta 6 departemen</p>
+        </button>
 
         {/* Drawer Links */}
         <div className="mobile-drawer-links">
