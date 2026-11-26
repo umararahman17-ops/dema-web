@@ -5953,6 +5953,116 @@ nextjs-portal,
   background: radial-gradient(circle, rgba(224, 99, 31, 0.14) 0%, transparent 70%);
 }
 
+/* Subtle Atmospheric DEMA Logo Watermarks */
+.bg-dema-watermark {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: translate, transform;
+}
+
+.bg-dema-watermark-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.045;
+  filter: grayscale(40%) saturate(0.7);
+  -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 28%, rgba(0, 0, 0, 0) 74%);
+  mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 28%, rgba(0, 0, 0, 0) 74%);
+}
+
+[data-theme="light"] .bg-dema-watermark-img {
+  opacity: 0.042;
+  filter: grayscale(50%) contrast(0.9);
+}
+
+.bg-wm-hero {
+  width: 720px;
+  height: 720px;
+  top: 52%;
+  left: 50%;
+  margin-left: -360px;
+  margin-top: -360px;
+  transform: translate3d(0, calc(var(--hero-scroll, 0) * 0.28px), 0) scale(calc(1 + var(--hero-progress, 0) * 0.08));
+}
+
+.bg-wm-hero .bg-dema-watermark-img {
+  opacity: 0.036;
+  filter: grayscale(45%) saturate(0.65) blur(1px);
+}
+
+[data-theme="light"] .bg-wm-hero .bg-dema-watermark-img {
+  opacity: 0.032;
+}
+
+.bg-wm-right {
+  width: 520px;
+  height: 520px;
+  top: 50%;
+  right: -130px;
+  margin-top: -260px;
+}
+
+.bg-wm-left {
+  width: 520px;
+  height: 520px;
+  top: 50%;
+  left: -130px;
+  margin-top: -260px;
+}
+
+.bg-wm-center {
+  width: 560px;
+  height: 560px;
+  top: 50%;
+  left: 50%;
+  margin-left: -280px;
+  margin-top: -280px;
+}
+
+.bg-wm-banner {
+  width: 380px;
+  height: 380px;
+  top: 50%;
+  right: -60px;
+  margin-top: -190px;
+  transform: translate3d(0, calc(var(--hero-scroll, 0) * 0.22px), 0);
+}
+
+.page-banner .container {
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 768px) {
+  .bg-wm-hero {
+    width: 440px;
+    height: 440px;
+    margin-left: -220px;
+    margin-top: -220px;
+  }
+  .bg-wm-right,
+  .bg-wm-left,
+  .bg-wm-center {
+    width: 340px;
+    height: 340px;
+    margin-top: -170px;
+  }
+  .bg-wm-right { right: -110px; }
+  .bg-wm-left { left: -110px; }
+  .bg-wm-center { margin-left: -170px; }
+  .bg-wm-banner {
+    width: 260px;
+    height: 260px;
+    margin-top: -130px;
+    right: -70px;
+  }
+}
+
 /* Section Layer Parallax via CSS individual `translate` property (zero conflict with hover `transform`) */
 [data-parallax] {
   translate: 0 var(--px-y, 0px);
@@ -5998,6 +6108,8 @@ nextjs-portal,
   .solane-partner-strip,
   .solane-scroll-explore,
   .page-banner .container,
+  .bg-wm-hero,
+  .bg-wm-banner,
   [data-parallax] {
     transform: none !important;
     translate: none !important;

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import AspirasiForm from '@/components/AspirasiForm';
+import BgDemaWatermark from '@/components/BgDemaWatermark';
 import { IconMapPin, IconMail, IconPhone } from '@/components/Icons';
 
 export const metadata = {
@@ -12,6 +13,7 @@ export default function KontakPage() {
     <>
       {/* Page Banner */}
       <section className="page-banner">
+        <BgDemaWatermark variant="banner" speed={null} />
         <div className="container">
           <h1>Kontak &amp; Saluran Aspirasi</h1>
           <p>Kami hadir untuk mendengar dan memperjuangkan suara Anda. Hubungi kami melalui kanal resmi atau sampaikan aspirasi Anda secara langsung.</p>
@@ -24,6 +26,7 @@ export default function KontakPage() {
       {/* Contact Info Grid */}
       <section style={{ padding: '70px 0 40px', background: 'var(--bg-surface)', position: 'relative', overflow: 'clip' }}>
         <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="60" aria-hidden="true" />
+        <BgDemaWatermark variant="right" speed={0.14} maxShift={75} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="contact-info-grid" data-reveal="up">
             {/* Card 1: Sekretariat */}

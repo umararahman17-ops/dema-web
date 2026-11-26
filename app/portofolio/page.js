@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getAllPrograms } from '@/lib/db';
 import PortfolioSection from '@/components/PortfolioSection';
+import BgDemaWatermark from '@/components/BgDemaWatermark';
 
 export const metadata = {
   title: 'Portofolio & Rekam Jejak Program Kerja | DEMA',
@@ -17,6 +18,7 @@ export default async function PortofolioPage() {
     <>
       {/* Page Banner */}
       <section className="page-banner">
+        <BgDemaWatermark variant="banner" speed={null} />
         <div className="container">
           <h1>Portofolio &amp; Rekam Jejak</h1>
           <p>Katalog dokumentasi inisiatif, expo teknologi, proyek riset mahasiswa, aksi kemanusiaan, serta advokasi kesejahteraan yang tersimpan di database DEMA.</p>
@@ -29,6 +31,7 @@ export default async function PortofolioPage() {
       {/* Portfolio Showcase */}
       <section style={{ padding: '70px 0 100px', background: 'var(--bg-page)', position: 'relative', overflow: 'clip' }}>
         <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="60" aria-hidden="true" />
+        <BgDemaWatermark variant="right" speed={0.14} maxShift={75} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div data-reveal="up">
             <PortfolioSection initialPrograms={programs} showAllButton={false} />

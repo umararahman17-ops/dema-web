@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { logoPhilosophy } from '@/lib/data';
 import LogoPhilosophy3D from '@/components/LogoPhilosophy3D';
+import BgDemaWatermark from '@/components/BgDemaWatermark';
 import { IconAtom, IconGear, IconOctagon, IconPillar, IconTarget } from '@/components/Icons';
 
 const philoIcons = {
@@ -20,6 +21,7 @@ export default function ProfilPage() {
     <>
       {/* Page Banner */}
       <section className="page-banner">
+        <BgDemaWatermark variant="banner" speed={null} />
         <div className="container">
           <h1>Profil &amp; Identitas Organisasi</h1>
           <p>Mengenal lebih dekat Dewan Eksekutif Mahasiswa, visi misi pergerakan, dan filosofi lambang kebanggaan organisasi.</p>
@@ -32,6 +34,7 @@ export default function ProfilPage() {
       {/* Section 1: Sejarah & Visi Misi */}
       <section style={{ padding: '80px 0', background: 'var(--bg-surface)', position: 'relative', overflow: 'clip' }}>
         <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="60" aria-hidden="true" />
+        <BgDemaWatermark variant="right" speed={0.15} maxShift={75} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="profile-history-grid">
             <div data-parallax="0.03" data-parallax-max="20" data-reveal="left">
@@ -80,6 +83,7 @@ export default function ProfilPage() {
       {/* Section 2: Bedah Filosofi Logo */}
       <section style={{ padding: '80px 0', background: 'var(--bg-page)', borderTop: '1px solid var(--border-color)', position: 'relative', overflow: 'clip' }}>
         <div className="parallax-bg-orb orb-section-orange" data-parallax="-0.12" data-parallax-max="60" aria-hidden="true" />
+        <BgDemaWatermark variant="left" speed={-0.15} maxShift={75} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="section-header" data-reveal="up">
             <div className="section-tag">Identitas Visual</div>

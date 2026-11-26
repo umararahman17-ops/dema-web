@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import BgDemaWatermark from '@/components/BgDemaWatermark';
 import { 
   IconGraduationCap, 
   IconQuote, 
@@ -180,6 +181,7 @@ export default function AlumniSection({ initialAlumni = [] }) {
   return (
     <section className="section-alumni" id="kesan-pesan-alumni" style={{ position: 'relative', overflow: 'clip' }}>
       <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="65" aria-hidden="true" />
+      <BgDemaWatermark variant="left" speed={0.15} maxShift={80} />
       {/* Toast Notification */}
       {toast && (
         <div className={`alumni-toast ${toast.type}`}>

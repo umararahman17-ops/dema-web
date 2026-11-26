@@ -8,6 +8,7 @@ import AlumniSection from '@/components/AlumniSection';
 import AspirasiForm from '@/components/AspirasiForm';
 import HeroEmblem from '@/components/HeroEmblem';
 import LogoPhilosophy3D from '@/components/LogoPhilosophy3D';
+import BgDemaWatermark from '@/components/BgDemaWatermark';
 import { 
   IconCompass, 
   IconBook, 
@@ -44,8 +45,9 @@ export default async function HomePage() {
           1. HERO SECTION - ICONIC SOLANE V-BEAM & 3D FLOATING EMBLEM
           ========================================================================= */}
       <section className="solane-hero">
-        {/* Background Ambient Radial Glow & Soft Parallax Depth Orbs */}
+        {/* Background Ambient Radial Glow, Watermark Logo & Soft Parallax Depth Orbs */}
         <div className="solane-hero-ambient" aria-hidden="true" />
+        <BgDemaWatermark variant="hero" speed={null} />
         <div className="parallax-bg-orb orb-hero-left" data-parallax="0.16" data-parallax-max="70" aria-hidden="true" />
         <div className="parallax-bg-orb orb-hero-right" data-parallax="-0.14" data-parallax-max="70" aria-hidden="true" />
 
@@ -154,6 +156,7 @@ export default async function HomePage() {
           ========================================================================= */}
       <section className="solane-section" id="explore">
         <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.12" data-parallax-max="65" aria-hidden="true" />
+        <BgDemaWatermark variant="right" speed={0.16} maxShift={80} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="solane-section-tag" data-reveal="up">
             KABINET WIGYAMERTA ANTASENA &bull; 2026/2027
@@ -213,6 +216,7 @@ export default async function HomePage() {
           ========================================================================= */}
       <section className="solane-section" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.06)' }} id="portofolio">
         <div className="parallax-bg-orb orb-section-orange" data-parallax="-0.12" data-parallax-max="65" aria-hidden="true" />
+        <BgDemaWatermark variant="left" speed={-0.15} maxShift={80} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           {/* Header Row */}
           <div className="solane-features-header" data-reveal="up">
@@ -322,6 +326,7 @@ export default async function HomePage() {
           ========================================================================= */}
       <section className="solane-section" style={{ borderTop: '1px solid var(--border-color)' }}>
         <div className="parallax-bg-orb orb-section-emerald" data-parallax="0.14" data-parallax-max="70" aria-hidden="true" />
+        <BgDemaWatermark variant="center" speed={0.14} maxShift={75} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="about-grid">
             <div className="about-text-content" data-parallax="0.03" data-parallax-max="22">
@@ -377,6 +382,7 @@ export default async function HomePage() {
           ========================================================================= */}
       <section className="solane-section" style={{ borderTop: '1px solid var(--border-color)' }} id="aspirasi">
         <div className="parallax-bg-orb orb-section-orange" data-parallax="0.12" data-parallax-max="60" aria-hidden="true" />
+        <BgDemaWatermark variant="right" speed={-0.14} maxShift={75} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div className="cta-grid">
             <div className="cta-text" data-parallax="0.035" data-parallax-max="24" data-reveal="left">
