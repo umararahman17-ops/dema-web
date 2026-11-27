@@ -37,6 +37,9 @@ export default function ParallaxController() {
       parallaxElements.forEach((el) => {
         appliedShifts.set(el, 0);
         el.style.setProperty('--px-y', '0px');
+        el.style.setProperty('--px-x', '0px');
+        el.style.setProperty('--px-rot', '0deg');
+        el.style.setProperty('--px-scale', '1');
       });
     };
 
@@ -97,7 +100,7 @@ export default function ParallaxController() {
       root.style.setProperty('--scroll-progress', scrollProgress.toFixed(4));
 
       const viewCenter = viewportH * 0.5;
-      const responsiveFactor = viewportW <= 768 ? 0.35 : 1;
+      const defaultMobileFactor = viewportW <= 768 ? 0.35 : 1;
 
       for (let i = 0; i < parallaxElements.length; i++) {
         const el = parallaxElements[i];
@@ -106,18 +109,40 @@ export default function ParallaxController() {
         const layoutTop = rect.top - prevShift;
         const layoutBottom = rect.bottom - prevShift;
 
-        if (layoutBottom < -240 || layoutTop > viewportH + 240) {
+        if (layoutBottom < -320 || layoutTop > viewportH + 320) {
           continue;
         }
 
+        const responsiveFactor =
+          viewportW <= 768
+            ? parseFloat(el.dataset.parallaxMobileScale || String(defaultMobileFactor))
+            : 1;
         const speed = parseFloat(el.dataset.parallax || '0.06') * responsiveFactor;
         const maxShift = parseFloat(el.dataset.parallaxMax || '46') * responsiveFactor;
         const elCenter = layoutTop + rect.height * 0.5;
-        const rawShift = (elCenter - viewCenter) * speed;
+        const deltaCenter = elCenter - viewCenter;
+        const rawShift = deltaCenter * speed;
         const clamped = Math.max(-maxShift, Math.min(maxShift, rawShift));
 
         appliedShifts.set(el, clamped);
         el.style.setProperty('--px-y', `${clamped.toFixed(2)}px`);
+
+        const normOffset = Math.max(-1, Math.min(1, deltaCenter / Math.max(viewportH * 0.65, 360)));
+
+        if (el.dataset.parallaxX) {
+          const shiftX = normOffset * parseFloat(el.dataset.parallaxX) * responsiveFactor;
+          el.style.setProperty('--px-x', `${shiftX.toFixed(2)}px`);
+        }
+
+        if (el.dataset.parallaxRotate) {
+          const rot = normOffset * parseFloat(el.dataset.parallaxRotate) * responsiveFactor;
+          el.style.setProperty('--px-rot', `${rot.toFixed(2)}deg`);
+        }
+
+        if (el.dataset.parallaxScale) {
+          const scale = 1 - normOffset * parseFloat(el.dataset.parallaxScale) * responsiveFactor;
+          el.style.setProperty('--px-scale', scale.toFixed(4));
+        }
       }
     };
 
@@ -140,12 +165,23 @@ export default function ParallaxController() {
 
     updateParallax();
 
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            scheduleUpdate();
+          })
+        : null;
+    if (resizeObserver && document.body) {
+      resizeObserver.observe(document.body);
+    }
+
     window.addEventListener('scroll', scheduleUpdate, { passive: true });
     window.addEventListener('resize', scheduleUpdate, { passive: true });
     reducedMotionQuery.addEventListener?.('change', handleMotionChange);
 
     return () => {
       observer.disconnect();
+      resizeObserver?.disconnect();
       if (rafId !== null) window.cancelAnimationFrame(rafId);
       window.removeEventListener('scroll', scheduleUpdate);
       window.removeEventListener('resize', scheduleUpdate);
